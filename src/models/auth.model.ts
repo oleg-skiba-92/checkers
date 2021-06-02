@@ -19,6 +19,7 @@ export interface IAuthClientInfo {
   name: string;
 }
 
+// TODO rename IAuthData
 export interface IAuthSession {
   userId: string;
   userName: string;

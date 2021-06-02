@@ -1,5 +1,6 @@
 import { EDataEntity, EUsersColumns, IUserTable } from '../../../models/db.model';
 import { dataService } from '../core/db.service';
+import { IUserInfo } from '../../../models';
 
 export interface IUserService {
   getByGoogleId(id: string, userName?: string, email?: string): Promise<IUserTable>;
@@ -13,6 +14,8 @@ export interface IUserService {
   registerUser(userName :string, email: string, passwordHash: string): Promise<IUserTable>;
 
   updatePassword(id:string, passwordHash: string): Promise<void>;
+
+  toUserInfo(user: IUserTable): IUserInfo;
 }
 
 class UserService implements IUserService {
@@ -85,6 +88,15 @@ class UserService implements IUserService {
 
   public async updatePassword(id:string, passwordHash: string): Promise<void> {
     await dataService.updateObject(this.entity, EUsersColumns.ID, id, {[EUsersColumns.Password]: passwordHash});
+  }
+
+  toUserInfo(user: IUserTable): IUserInfo {
+    return {
+      id: user.id.toString(),
+      userName: user.user_name,
+      email: user.email,
+      dateCreated: user.date_created,
+    }
   }
 }
 

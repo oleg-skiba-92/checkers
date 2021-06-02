@@ -1,4 +1,4 @@
-import { IUserInfo } from '../../models/user.model';
+import { IUserInfo } from '../../models';
 
 export class ApiService {
   private get baseUrl(): string {
@@ -15,7 +15,7 @@ export class ApiService {
   }
 
   me(): Promise<IUserInfo> {
-    return fetch(`${this.apiUrl}/me`)
+    return fetch(`${this.apiUrl}/user/me`)
       .then((response) => response.json());
   }
 

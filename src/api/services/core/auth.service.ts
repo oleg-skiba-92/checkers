@@ -34,6 +34,12 @@ export class AuthService implements IAuthService {
   }
 
   route(server: IServer) {
+    server.app.use((req: IRequest, res: IResponse, next) => {
+      req.authData = (req.session && req.session.auth) || null;
+      next();
+    })
+
+
     server.app.get('/auth/google', (req, res: IResponse) => {
       this.log.info(`login with google`);
       const url = this.googleClient.generateAuthUrl({

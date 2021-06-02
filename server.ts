@@ -4,10 +4,10 @@ import { join } from 'path';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
 
-import { ILogger, Logger } from './src/api/libs/logger';
-import { IRequest, IServer, IUserTable } from './src/models';
+import { ILogger, Logger } from './src/api/libs';
+import { IRequest, IServer } from './src/models';
 import { sessionService, socketService, authService, dataService } from './src/api/services/core';
-import { userService } from './src/api/services/data/user.service';
+import { UserCtrl } from './src/api/controllers';
 
 const DEFAULT_PORT = 3000;
 
@@ -44,7 +44,6 @@ export class App implements IServer {
     this.app.use(bodyParser.urlencoded({extended: true}));
     this.app.use(bodyParser.json());
     this.app.use((req, res, next) => {
-      this.log.info('cors');
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-auth-token");
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -70,18 +69,8 @@ export class App implements IServer {
       res.sendFile(__dirname + '/src/client/login.html');
     });
 
-    this.app.get('/api/me', authService.isAuthorised('/login'), async (req: IRequest, res) => {
-      // TODO: IUserInfo
-      let user: IUserTable = await userService.getById(req.session.auth.userId);
+    UserCtrl.init(this);
 
-      res.status(200);
-      res.json({
-        id: user.id.toString(),
-        userName: user.user_name,
-        email: user.email,
-        dateCreated: user.date_created,
-      });
-    })
   }
 
   private async initServices() {

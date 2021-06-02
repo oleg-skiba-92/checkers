@@ -21,6 +21,7 @@ export interface ISession extends Session{
 
 export interface IRequest extends Request {
   session: ISession
+  authData?: IAuthSession;
 }
 
 export interface IResponse extends Response {
