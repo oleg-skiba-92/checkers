@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkers</title>
+  <script src="dist/bundle.js"></script>
+</head>
+<body class="page-list">
+
+<div style="display: flex; justify-content: flex-end; margin-bottom: 10px"><a class="btn btn--blue" style="color: black;text-decoration: none" href="/auth/logout">Вийти</a></div>
+
+<div class="lists">
+  <!--#region free players-->
+  <div class="free-players user-list">
+    <div class="user-list__title">Вільні гравці</div>
+
+    <div class="user-list__items" id="free-players"></div>
+  </div>
+  <!--#endregion free players-->
+
+  <!--#region suggests-->
+  <div class="suggest-players user-list">
+    <div class="user-list__title">Запити на гру</div>
+
+    <div class="user-list__items" id="suggests"></div>
+  </div>
+</div>
+
+
+<div class="game">
+  <div class="game__players" id="game-players"></div>
+
+  <div class="game__info game-info">
+    <div class="game-info__current-turn" id="current-turn"></div>
+    <div class="game-info__error" id="game-error"></div>
+  </div>
+
+
+  <!--  TODO -->
+  <!--  <div class="game__actions">-->
+  <!--    -->
+  <!--  </div>-->
+
+  <div class="game__wrapper">
+    <div id="game"></div>
+  </div>
+</div>
+
+<div id="confirm" class="confirm"></div>
+</body>
+</html>
