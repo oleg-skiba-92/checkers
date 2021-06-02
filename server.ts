@@ -4,10 +4,10 @@ import { join } from 'path';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
 
-import { ILogger, Logger } from './src/libs/logger';
+import { ILogger, Logger } from './src/api/libs/logger';
 import { IRequest, IServer, IUserTable } from './src/models';
-import { sessionService, socketService, authService, dataService } from './src/api-services/core';
-import { userService } from './src/api-services/data/user.service';
+import { sessionService, socketService, authService, dataService } from './src/api/services/core';
+import { userService } from './src/api/services/data/user.service';
 
 const DEFAULT_PORT = 3000;
 

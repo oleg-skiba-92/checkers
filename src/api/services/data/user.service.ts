@@ -1,4 +1,4 @@
-import { EDataEntity, EUsersColumns, IUserTable } from '../../models/db.model';
+import { EDataEntity, EUsersColumns, IUserTable } from '../../../models/db.model';
 import { dataService } from '../core/db.service';
 
 export interface IUserService {

@@ -1,6 +1,6 @@
 import { IPlayer, IUserEntity, UserEntity } from '../entities/user.entity';
-import { socketService } from '../api-services/core';
-import { ISocket } from '../models';
+import { socketService } from '../services/core';
+import { ISocket } from '../../models';
 
 export interface IUsersCollection {
 

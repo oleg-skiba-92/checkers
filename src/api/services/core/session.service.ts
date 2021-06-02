@@ -1,4 +1,4 @@
-import { IInitializedService, IServer, ISessionService, TMiddleware } from '../../models';
+import { IInitializedService, IServer, ISessionService, TMiddleware } from '../../../models';
 import * as connectRedis from 'connect-redis';
 import * as session from 'express-session';
 import * as redis from 'redis';

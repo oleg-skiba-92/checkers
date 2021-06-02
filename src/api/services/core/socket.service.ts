@@ -1,7 +1,7 @@
 import * as io from 'socket.io';
 
-import { EColor, IAuthSession, ISocket, ISocketService, ITurn, SocketEvents } from '../../models';
-import { App } from '../../../server';
+import { EColor, IAuthSession, ISocket, ISocketService, ITurn, SocketEvents } from '../../../models';
+import { App } from '../../../../server';
 import { users } from '../../collections';
 import { IRoomInfo, IPlayer } from '../../entities';
 import { Logger } from '../../libs/logger';

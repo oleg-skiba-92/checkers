@@ -13,7 +13,7 @@ import {
   IResponse, IServer,
   IUserTable,
   TMiddleware
-} from '../../models';
+} from '../../../models';
 import { ILogger, Logger } from '../../libs/logger';
 import { userService } from '../data/user.service';
 

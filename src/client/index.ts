@@ -7,7 +7,7 @@ import { IRoom } from '../models/room.model';
 import { EColor, ITurn, SocketEvents } from '../models';
 import { SocketService, UiService, ApiService } from './services';
 import { Game } from './game/game';
-import { IPlayer } from '../entities';
+import { IPlayer } from '../api/entities';
 
 window.addEventListener('load', async () => {
   let apiService = new ApiService();

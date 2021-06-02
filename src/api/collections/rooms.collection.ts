@@ -1,7 +1,7 @@
 import { IPlayer, IRoomEntity, RoomEntity } from '../entities';
 import { users } from './users.collection';
-import { socketService } from '../api-services/core';
-import { ITurn } from '../models';
+import { socketService } from '../services/core';
+import { ITurn } from '../../models';
 
 export interface IRoomsCollection {
   getById(id: string): IRoomEntity;

@@ -1,7 +1,7 @@
-import { EColor, ISocket, SocketEvents } from '../models';
+import { EColor, ISocket, SocketEvents } from '../../models';
 import { ILogger, Logger } from '../libs/logger';
 import { rooms, users } from '../collections';
-import { socketService } from '../api-services/core';
+import { socketService } from '../services/core';
 
 export interface IPlayer {
   id: string;

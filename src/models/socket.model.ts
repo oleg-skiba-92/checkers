@@ -1,7 +1,7 @@
 import * as io from 'socket.io';
 import { IncomingMessage } from 'http';
 
-import { IRoomInfo, IPlayer } from '../entities';
+import { IRoomInfo, IPlayer } from '../api/entities';
 import { EColor, ITurn } from './game.model';
 import { IInitializedService, ISession } from './app.model';
 

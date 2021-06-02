@@ -1,6 +1,6 @@
 import { IPlayer, IUserEntity } from './user.entity';
-import { EColor } from '../models';
-import { socketService } from '../api-services/core';
+import { EColor } from '../../models';
+import { socketService } from '../services/core';
 
 export interface IRoomInfo {
   id: string;
