@@ -1,6 +1,6 @@
 import * as io from 'socket.io';
 
-import { EColor, IAuthSession, ISocket, ISocketService, ITurn, SocketEvents } from '../../../models';
+import { EColor, IAuthData, ISocket, ISocketService, ITurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
 import { users } from '../../collections';
 import { IRoomInfo, IPlayer } from '../../entities';
@@ -19,7 +19,7 @@ export class SocketService implements ISocketService {
 
     this.io.on('connection', (socket: ISocket) => {
 
-      let auth: IAuthSession = socket.request.session && socket.request.session.auth
+      let auth: IAuthData = socket.request.session && socket.request.session.auth
 
       if (!auth) {
         this.log.error('unauthorised user')

@@ -7,7 +7,7 @@ import * as bodyParser from 'body-parser';
 import { ILogger, Logger } from './src/api/libs';
 import { IRequest, IServer } from './src/models';
 import { sessionService, socketService, authService, dataService } from './src/api/services/core';
-import { UserCtrl } from './src/api/controllers';
+import { UserCtrl, AuthCtrl } from './src/api/controllers';
 
 const DEFAULT_PORT = 3000;
 
@@ -56,11 +56,10 @@ export class App implements IServer {
 
     this.app.use(sessionService.sessionMiddleware);
     socketService.config(sessionService.sessionMiddleware);
+    authService.config(this);
   }
 
   private route() {
-    authService.route(this);
-
     this.app.get('/', authService.isAuthorised('/login'), (req, res) => {
       res.sendFile(__dirname + '/src/client/index.html');
     });
@@ -69,8 +68,8 @@ export class App implements IServer {
       res.sendFile(__dirname + '/src/client/login.html');
     });
 
+    AuthCtrl.init(this)
     UserCtrl.init(this);
-
   }
 
   private async initServices() {

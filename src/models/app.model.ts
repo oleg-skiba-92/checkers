@@ -3,7 +3,7 @@ import * as http from 'http';
 import { Session } from 'express-session';
 import { NextFunction } from 'express-serve-static-core';
 
-import { IAuthSession } from './auth.model';
+import { IAuthData } from './auth.model';
 
 export type TMiddleware = (request: IRequest, response: IResponse, next: NextFunction) => void;
 
@@ -16,12 +16,12 @@ export interface IConfiguredService {
 }
 
 export interface ISession extends Session{
-  auth?: IAuthSession;
+  auth?: IAuthData;
 }
 
 export interface IRequest extends Request {
   session: ISession
-  authData?: IAuthSession;
+  authData?: IAuthData;
 }
 
 export interface IResponse extends Response {

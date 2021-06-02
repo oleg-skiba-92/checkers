@@ -2,9 +2,9 @@ import {
   BaseController,
   EAPIEndpoints,
   IApiResponse,
-  IAuthSession,
   IBaseCtrl,
   IControllerRoute,
+  IRequest,
   IUserInfo
 } from '../../models';
 import { authService } from '../services/core';
@@ -12,7 +12,7 @@ import { userService } from '../services/data/user.service';
 import { ResHelper } from '../libs';
 
 export interface IUserCtrl extends IBaseCtrl {
-  getMe(data: null, authData: IAuthSession): Promise<IApiResponse>;
+  getMe(data: null, req: IRequest): Promise<IApiResponse>;
 }
 
 class UserController extends BaseController implements IUserCtrl {
@@ -30,8 +30,8 @@ class UserController extends BaseController implements IUserCtrl {
     return [authService.isAuthorised('/login')];
   }
 
-  async getMe(data, authData: IAuthSession): Promise<IApiResponse> {
-    let user: IUserInfo = userService.toUserInfo(await userService.getById(authData.userId));
+  async getMe(data, req: IRequest): Promise<IApiResponse> {
+    let user: IUserInfo = userService.toUserInfo(await userService.getById(req.authData.userId));
 
     return ResHelper.successJson(user);
   }

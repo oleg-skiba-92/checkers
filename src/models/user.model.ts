@@ -9,6 +9,17 @@ export interface IUser  {
   userName: string;
 }
 
+export interface IRegistrationRequest  {
+  userName: string;
+  password: string;
+  email: string;
+}
+
+export interface ILoginRequest  {
+  password: string;
+  email: string;
+}
+
 export interface IUserInfo {
   id: string;
   userName: string;

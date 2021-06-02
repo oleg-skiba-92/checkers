@@ -19,6 +19,13 @@ export class ResHelper {
     });
   }
 
+  static redirect(data: string): IApiResponse {
+    return new ApiResponse({
+      type: EApiResponseType.REDIRECT,
+      data
+    });
+  }
+
   static unknownError(data: TApiResponseData = null, message: string = ERROR_MESSAGES.UNKNOWN): IApiResponse {
     return new ApiResponse({
       status: 520,

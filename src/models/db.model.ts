@@ -8,7 +8,6 @@ export enum EDataEntity {
 export enum EUsersColumns {
   ID = 'id',
   GoogleId = 'google_id',
-  FacebookId = 'facebook_id',
   UserName = 'user_name',
   Password = 'password',
   DateCreated = 'date_created',
@@ -30,11 +29,10 @@ export interface IDataTable {
 
 export interface IUserTable {
   id: string;
-  google_id: string;
-  facebook_id: string;
+  email: string;
+  google_id?: string;
   user_name?: string;
   password?: string;
-  email?: string;
   date_created?: string;
 }
 

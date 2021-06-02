@@ -6,9 +6,8 @@ const TABLES: IDataTable[] = [
   {
     name: EDataEntity.Users,
     cols: [
-      {name: EUsersColumns.ID, type: 'SERIAL', keys: ['NOT NULL', 'UNIQUE', 'PRIMARY KEY']},
+      {name: EUsersColumns.ID, type: 'VARCHAR(36)', keys: ['NOT NULL', 'UNIQUE', 'PRIMARY KEY']},
       {name: EUsersColumns.GoogleId, type: 'VARCHAR(50)', keys: ['UNIQUE']},
-      {name: EUsersColumns.FacebookId, type: 'VARCHAR(50)', keys: ['UNIQUE']},
       {name: EUsersColumns.UserName, type: 'VARCHAR(50)', keys: []},
       {name: EUsersColumns.Email, type: 'VARCHAR(200)', keys: ['UNIQUE']},
       {name: EUsersColumns.Password, type: 'VARCHAR(60)', keys: []},

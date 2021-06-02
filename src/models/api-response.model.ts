@@ -14,6 +14,7 @@ export const enum EApiResponseType {
   JSON,
   XML,
   ERROR,
+  REDIRECT,
 }
 
 //#region types
@@ -29,7 +30,7 @@ export interface IApiResponseHeader {
 }
 
 export interface IApiResponseError {
-  code: EApiErrorCode;
+  code: EApiErrorCode;  // TODO: error
   message: string;
 }
 
@@ -61,7 +62,7 @@ export class ApiResponse implements IApiResponse {
   constructor(options: IApiResponsesOptions) {
     this.status = options.status || 200;
     this.headers = options.headers || [];
-    this.type = options.type || !!options.error ? EApiResponseType.ERROR : EApiResponseType.JSON;
+    this.type = options.type || (!!options.error ? EApiResponseType.ERROR : EApiResponseType.JSON);
     this.data = options.data || null;
     this.error = options.error || null;
   }
@@ -76,11 +77,14 @@ export class ApiResponse implements IApiResponse {
     res.status(this.status);
 
     switch (this.type) {
+      case EApiResponseType.REDIRECT:
+        res.redirect(<string>this.data);
+        break;
       case EApiResponseType.JSON:
         res.json(this.data);
         break;
       case EApiResponseType.ERROR:
-        res.json({...this.error, data: this.data});
+        res.json({...this.error, error: this.data});
         break;
       default:
         res.send(this.data);
