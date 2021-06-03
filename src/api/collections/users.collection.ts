@@ -1,71 +1,62 @@
-import { IPlayer, IUserEntity, UserEntity } from '../entities/user.entity';
-import { socketService } from '../services/core';
-import { ISocket } from '../../models';
+import { IPlayer, IUserEntity, UserEntity } from '../entities';
 
 export interface IUsersCollection {
 
   readonly freePlayers: IPlayer[];
 
-  create(id: string, userName: string, socket: ISocket): IUserEntity
-
-  remove(id: string): void;
+  create(id: string, userName: string, socketId: string): IUserEntity;
 
   getById(id: string): IUserEntity;
 
   getByIds(ids: string[]): IUserEntity[];
 
-  removeSuggests(userId: string): void;
+  getPlayersByIds(ids: string[]): IPlayer[];
+
+  remove(id: string): void
 }
 
 export class UsersCollection implements IUsersCollection {
-  private users: IUserEntity[];
+  private _users: IUserEntity[];
 
   get freePlayers(): IPlayer[] {
-    return this.users.filter(user => !user.inGame).map(user => user.toPlayerData);
+    return this._users.filter(user => !user.inGame).map(user => user.playerData);
   }
 
   constructor() {
-    this.users = [];
+    this._users = [];
   }
 
-  create(id: string, userName: string, socket: ISocket): IUserEntity {
+  create(id: string, userName: string, socketId: string): IUserEntity {
     let user = this.getById(id);
     if (user) {
+      user.socketId = socketId;
       return user;
     }
-    user = new UserEntity(id, userName, socket);
-    this.users.push(user);
 
-    socketService.updateFreePlayerList();
+    user = new UserEntity(id, userName, socketId);
+
+    this._users.push(user);
+
+    return user;
   }
 
   getById(id: string): IUserEntity {
-    return this.users.find((u) => u.id === id);
+    return this._users.find((u) => u.id === id);
   }
 
   getByIds(ids: string[]): IUserEntity[] {
-    return this.users.filter(user => ids.indexOf(user.id) !== -1);
+    return this._users.filter(user => ids.indexOf(user.id) !== -1);
+  }
+
+  getPlayersByIds(ids: string[]): IPlayer[] {
+    return this.getByIds(ids).map((user) => user.playerData);
   }
 
   remove(id: string): void {
-    let userIdx = this.users.findIndex(u => u.id === id);
+    let userIdx = this._users.findIndex(u => u.id === id);
 
-    if (userIdx === -1) {
-      return;
+    if (userIdx !== -1) {
+      this._users.splice(userIdx, 1);
     }
-
-    this.users.splice(userIdx, 1);
-
-    this.removeSuggests(id);
-
-    socketService.updateFreePlayerList();
-  }
-
-  removeSuggests(userId: string) {
-    this.users.forEach((user) => {
-      user.removeSuggest(userId);
-    });
   }
 }
-
-export const users: IUsersCollection = new UsersCollection();

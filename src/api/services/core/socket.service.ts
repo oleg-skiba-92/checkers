@@ -1,12 +1,13 @@
 import * as io from 'socket.io';
 
-import { EColor, IAuthData, ISocket, ISocketService, ITurn, SocketEvents } from '../../../models';
+import { EColor, IAuthData, IInitializedService, ISocket, ITurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
-import { users } from '../../collections';
 import { IRoomInfo, IPlayer } from '../../entities';
-import { Logger } from '../../libs/logger';
+import { Logger } from '../../libs';
+import { GameCtrl } from '../../controllers';
+import { ISuggest } from '../../collections';
 
-export class SocketService implements ISocketService {
+export class SocketService implements IInitializedService {
   private io: io.Server;
   private log = new Logger('SOCKET')
 
@@ -24,11 +25,37 @@ export class SocketService implements ISocketService {
       if (!auth) {
         this.log.error('unauthorised user')
         socket.disconnect(true);
+        return
       }
 
       socket.join('general')
 
-      users.create(auth.userId.toString(), auth.userName, socket);
+      let socketUser = GameCtrl.userConnected(auth, socket.id);
+
+      socket.on(SocketEvents.Suggest, (userId) => {
+        this.log.info('Suggest', userId);
+        GameCtrl.newSuggest(socketUser, userId);
+      });
+
+      socket.on(SocketEvents.AgreeSuggest, (userId) => {
+        this.log.info('AgreeSuggest', userId);
+        GameCtrl.agreeSuggest(socketUser, userId);
+      })
+
+      socket.on(SocketEvents.DisagreeSuggest, (userId) => {
+        this.log.info('DisagreeSuggest', userId)
+        GameCtrl.disagreeSuggest(socketUser, userId);
+      })
+
+      socket.on(SocketEvents.TurnEnd, (roomId, turns, isWin) => {
+        this.log.info('TurnEnd', {roomId, turns, isWin})
+        GameCtrl.turnEnd(socketUser, roomId, turns, isWin);
+      })
+
+      socket.on(SocketEvents.Disconnect, (reason) => {
+        this.log.info('Disconnect', reason);
+        GameCtrl.userDisconnected(socketUser);
+      })
     });
 
     return true;
@@ -41,20 +68,28 @@ export class SocketService implements ISocketService {
     });
   }
 
-  updateSuggest(socketId: string, suggests: IPlayer[]): void {
-    this.io.to(socketId).emit(SocketEvents.SuggestListUpdate, suggests);
+  updateSuggestList(suggests: ISuggest[]): void {
+    this.io.to('general').emit(SocketEvents.SuggestList, suggests);
   }
 
-  updateFreePlayerList(): void {
-    this.io.in('general').emit(SocketEvents.FreePlayersUpdate, users.freePlayers);
+  updateFreePlayerList(freePlayers: IPlayer[]): void {
+    this.io.in('general').emit(SocketEvents.FreePlayerList, freePlayers);
   }
+
+  updateRoomList(rooms: IRoomInfo[]): void {
+    this.io.in('general').emit(SocketEvents.RoomList, rooms);
+  }
+
+
 
   startGame(room: IRoomInfo): void {
     this.io.to(room.id).emit(SocketEvents.GameStart, room)
   }
 
-  joinToRoom(socketId: string, roomId: string): void {
-    this.io.sockets.sockets.get(socketId).join(roomId);
+  joinToRooms(socketIds: string[], roomId: string): void {
+    socketIds.forEach((socketId) => {
+      this.io.sockets.sockets.get(socketId).join(roomId);
+    })
   }
 
   endTurn(roomId: string, turns: ITurn[], userId: string, color: EColor): void {
@@ -74,4 +109,4 @@ export class SocketService implements ISocketService {
   }
 }
 
-export const socketService: ISocketService = new SocketService()
+export const socketService = new SocketService()

@@ -8,6 +8,7 @@ import { EColor, ITurn, SocketEvents } from '../models';
 import { SocketService, UiService, ApiService } from './services';
 import { Game } from './game/game';
 import { IPlayer } from '../api/entities';
+import { ISuggest } from '../api/collections';
 
 window.addEventListener('load', async () => {
   let apiService = new ApiService();
@@ -43,13 +44,14 @@ window.addEventListener('load', async () => {
   let socketService = new SocketService();
   let game = new Game(socketService, ui);
 
-  socketService.socket.on(SocketEvents.FreePlayersUpdate, (users: IUser[]) => {
+  socketService.socket.on(SocketEvents.FreePlayerList, (users: IUser[]) => {
     ui.updateFreePlayers(users.filter((user) => user.id !== me.id), (userId) => {
       socketService.sendSuggest(userId);
     });
   });
 
-  socketService.socket.on(SocketEvents.SuggestListUpdate, (users: IUser[]) => {
+  socketService.socket.on(SocketEvents.SuggestList, (suggests: ISuggest[]) => {
+    let users = suggests.filter((suggest) => suggest.to.id === me.id).map((suggest) => suggest.from)
     ui.updateSuggests(users, (userId) => {
       socketService.agreeSuggest(userId);
     }, (userId) => {

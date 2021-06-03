@@ -1,6 +1,6 @@
 import { IPlayer, IUserEntity } from './user.entity';
-import { EColor } from '../../models';
-import { socketService } from '../services/core';
+import { EColor, ITurn } from '../../models';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IRoomInfo {
   id: string;
@@ -16,6 +16,8 @@ export interface IRoomEntity {
   newGame(): void;
 
   endGame(): void;
+
+  endTurn(turns: ITurn[]): void;
 }
 
 export class RoomEntity implements IRoomEntity {
@@ -24,33 +26,27 @@ export class RoomEntity implements IRoomEntity {
   get info(): IRoomInfo {
     return {
       id: this.id,
-      players: this.users.map(u => u.toPlayerData),
+      players: this.users.map(u => u.playerData),
     }
   }
 
   constructor(private users: IUserEntity[]) {
-    this.id = this.generateId();
+    this.id = uuidv4();
   }
 
   newGame(): void {
     let randIdx = Math.floor(Math.random() * 2)
     this.users[randIdx].startGame(this.id, EColor.White);
     this.users[+(!randIdx)].startGame(this.id, EColor.Black);
-    socketService.startGame(this.info);
   }
 
-  endGame() {
+  endGame(): void {
     this.users[0].endGame();
     this.users[1].endGame();
   }
 
-  private generateId(): string {
-    const len = 10;
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let randString = '';
-    for (let i = 0, n = charset.length; i < len; ++i) {
-      randString += charset.charAt(Math.floor(Math.random() * n));
-    }
-    return randString;
+  // TODO
+  endTurn(turns: ITurn[]): void {
+
   }
 }
