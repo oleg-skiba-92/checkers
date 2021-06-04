@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "webpack --mode development && webpack serve --mode development",
-    "build": "webpack --mode production"
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv dist --no-clear",
+    "check": "svelte-check --tsconfig tsconfig.svelte.json"
   },
   "author": "",
   "license": "ISC",
@@ -27,18 +29,26 @@
     "socket.io": "^4.1.0",
     "socket.io-client": "^4.1.0",
     "ts-lint": "^4.5.1",
-    "ts-loader": "^9.1.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "css-loader": "^5.2.6",
-    "node-sass": "^5.0.0",
-    "sass-loader": "^11.1.1",
-    "style-loader": "^2.0.0",
-    "webpack": "^5.37.1",
-    "webpack-dev-server": "^3.11.2",
-    "webpack-cli": "^4.7.0"
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rollup/plugin-typescript": "^8.0.0",
+    "@tsconfig/svelte": "^2.0.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "sirv-cli": "^1.0.0",
+    "svelte": "^3.0.0",
+    "svelte-check": "^2.0.0",
+    "svelte-preprocess": "^4.0.0",
+    "tslib": "^2.0.0",
+    "typescript": "^4.0.0"
   }
 }

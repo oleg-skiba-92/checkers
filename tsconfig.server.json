@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "Phaser"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "module": "commonjs",
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/client"
+  ]
+}
