@@ -6,7 +6,8 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
-import copy from 'rollup-plugin-copy'
+import copy from 'rollup-plugin-copy';
+import scss from 'rollup-plugin-scss';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -49,6 +50,7 @@ export default {
       }
     }),
     css({output: 'style.css'}),
+    scss({output: 'dist/global.css'}),
     resolve({
       browser: true,
       dedupe: ['svelte']
