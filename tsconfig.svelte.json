@@ -19,7 +19,9 @@
     "src/client/index.ts"
   ],
   "include": [
-    "src/client/global.d.ts"
+    "src/client/global.d.ts",
+    "src/models/user.model.ts",
+    "src/client/services/store.service.ts"
   ],
   "exclude": [
     "node_modules",

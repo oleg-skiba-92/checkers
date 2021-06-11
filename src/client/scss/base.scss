@@ -1,0 +1,31 @@
+html, body {
+  box-sizing: border-box;
+  height: 100%;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  // browsers default to 16px for font-size,
+  // so setting top-level font-size to 62.5%
+  // scales 1rem to equal 10px.
+  font-size: 1.4rem;
+  color: #000000;
+  position: relative;
+  background-color: #ffffff;
+  line-height: 1.5;
+  margin: 0;
+  padding: 3rem;
+}
+
+*,
+*:focus,
+*:active {
+  outline: none;
+}
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
