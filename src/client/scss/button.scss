@@ -1,0 +1,44 @@
+@import "./variables";
+
+button {
+  margin: 0;
+  padding: 0;
+}
+
+.fco-btn  {
+  display: inline;
+  height: 4rem;
+  margin: 1rem;
+  padding: 0.7rem;
+  border: none;
+  background: white;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+
+  &--orange {
+    background: rgb(245, 184, 71);
+    &:hover {
+      background: rgb(250, 209, 133);
+    }
+  }
+
+  &--green {
+    background: rgb(58, 143, 58);
+    &:hover {
+      background: rgb(97, 160, 97);
+    }
+  }
+
+  &--red {
+    background: rgb(248, 141, 141);
+    &:hover {
+      background: rgb(255, 128, 128);
+    }
+  }
+
+  &--disabled {
+    background: rgb(216, 216, 216);
+    cursor: not-allowed;
+  }
+}
