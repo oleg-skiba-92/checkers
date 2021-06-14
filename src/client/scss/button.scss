@@ -6,7 +6,9 @@ button {
 }
 
 .fco-btn  {
-  display: inline;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 0;
   height: 4rem;
   margin: 1rem;
   padding: 0.7rem;
