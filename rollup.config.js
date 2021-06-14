@@ -50,7 +50,7 @@ export default {
       }
     }),
     css({output: 'style.css'}),
-    scss({output: 'dist/global.css'}),
+    scss({output: 'dist/global.css', watch: ['src/client/scss']}),
     resolve({
       browser: true,
       dedupe: ['svelte']
@@ -67,7 +67,8 @@ export default {
         {src: ['src/client/index.html'], dest: 'dist'},
         {src: ['src/client/public/**/*'], dest: 'dist'},
         {src: ['assets/**/*',], dest: 'dist/assets'}
-      ]
+      ],
+    copyOnce: true
     }),
 
     !production && serve(),

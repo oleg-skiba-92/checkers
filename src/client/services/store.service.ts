@@ -1,14 +1,12 @@
-import type { IUser } from '../../models/user.model';
-
 export class StoreService {
-  freePlayers: IUser[];
+  freePlayers;
 
   constructor() {
     this.freePlayers = [
-      {id: '111', userName: 'Test User 1'},
-      {id: '222', userName: 'Test User 2'},
-      {id: '333', userName: 'Test User 3'},
-      {id: '444', userName: 'Test User 4'},
+      {id: '111', userName: 'Test User 1', picture: 'assets/avatar.png', rating: 1234},
+      {id: '222', userName: 'Test User 2', picture: 'assets/avatar.png', rating: 1234},
+      {id: '333', userName: 'Test User 3', picture: 'assets/avatar.png', rating: 1234},
+      {id: '444', userName: 'Test User 4', picture: 'assets/avatar.png', rating: 1234},
     ]
   }
 }

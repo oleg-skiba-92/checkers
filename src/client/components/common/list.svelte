@@ -5,6 +5,8 @@
   export let actions: { label: string; btnClasses: string; onClick: (id: string) => void }[] = [];
 </script>
 
+<!--------------------------------HTML CODE-------------------------------->
+
 <div class="fco-list">
   {#if title}
     <div class="fco-list__title">{title}</div>
@@ -12,8 +14,10 @@
 
   {#each list as item}
     <div class="fco-list__item">
+      <img src="{item.picture}" alt="avatar">
 
       <div class="fco-list__item-title">{item.userName}</div>
+      <div class="fco-list__item-info">{item.rating}</div>
 
       {#if actions.length}
         <div class="fco-list__item-actions">

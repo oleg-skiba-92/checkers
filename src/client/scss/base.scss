@@ -1,3 +1,5 @@
+@import "./variables";
+
 html, body {
   box-sizing: border-box;
   height: 100%;
@@ -11,13 +13,14 @@ body {
   // browsers default to 16px for font-size,
   // so setting top-level font-size to 62.5%
   // scales 1rem to equal 10px.
-  font-size: 1.4rem;
-  color: #000000;
+  font-size: $font-size-md;
+  color: $font-color-light;
   position: relative;
-  background-color: #ffffff;
+  background-color: $bg-color;
   line-height: 1.5;
   margin: 0;
   padding: 3rem;
+  overflow: hidden;
 }
 
 *,
@@ -28,4 +31,29 @@ body {
 
 *, ::after, ::before {
   box-sizing: border-box;
+}
+
+main {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  .fco-left-sidebar-wrapper {
+  }
+
+  .fco-container {
+    flex: 1 1 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .fco-game-wrapper {
+    flex: 1 0 $board-size;
+    margin: 2rem;
+  }
+
+  .fco-right-sidebar-wrapper {
+    flex: 1 1 100%;
+  }
 }

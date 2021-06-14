@@ -3,6 +3,6 @@
 
 <!--------------------------------HTML CODE-------------------------------->
 
-<aside class="fco-left-sidebar">
-  left-sidebar component
-</aside>
+<div class="fco-login">
+  login component
+</div>
