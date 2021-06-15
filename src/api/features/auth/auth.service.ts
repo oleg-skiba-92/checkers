@@ -4,7 +4,7 @@ import { NextFunction } from 'express-serve-static-core';
 import * as jwt from 'jsonwebtoken';
 
 import { ILogger, Logger } from '../../libs';
-import { IUserInfo } from '../user/user.model';
+import { IUserInfo } from '../../../models';
 import { EAuthMethod, IAuthService, IGoogleUserInfo } from './auth.model';
 import { IRequest, IResponse, IServer, TMiddleware } from '../../models/app.model';
 

@@ -1,7 +1,6 @@
-import { ILoginRequest, IRegistrationRequest } from '../../../models';
+import { ILoginRequest, IRegistrationRequest, IUserInfo } from '../../../models';
 import { IBaseCtrl } from '../../common/controller/controller.model';
 import { IApiResponse } from '../../common/response/api-response.model';
-import { IUserInfo } from '../user/user.model';
 import { IInitializedService, IRequest, TMiddleware } from '../../models/app.model';
 
 export enum EAuthMethod {

@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt-nodejs';
 
-import { IRegistrationRequest, } from '../../../models';
+import { IRegistrationRequest, IUserInfo } from '../../../models';
 import { authService } from './auth.service';
 import { userData } from '../user/user.data';
 import { EAuthMethod, IAuthCtrl, IGoogleUserInfo } from './auth.model';
-import { IUserInfo, IUserTable } from '../user/user.model';
+import { IUserTable } from '../user/user.model';
 import { BaseController } from '../../common/controller/controller.base';
 import { EAPIEndpoints, IControllerRoute } from '../../common/controller/controller.model';
 import { IApiResponse } from '../../common/response/api-response.model';
