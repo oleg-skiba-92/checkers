@@ -2,6 +2,7 @@ import { google, } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 import { NextFunction } from 'express-serve-static-core';
 import * as jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 import { ILogger, Logger } from '../../libs';
 import { IUserInfo } from '../../../models';
@@ -27,6 +28,7 @@ export class AuthService implements IAuthService {
   config(server: IServer) {
     server.app.use((req: IRequest, res: IResponse, next) => {
       req.authData = (req.session && req.session.auth) || null;
+      req.userId = req.authData ? req.authData.userId : uuidv4();
       next();
     });
   }
@@ -44,7 +46,7 @@ export class AuthService implements IAuthService {
       }
 
       return next();
-    }
+    };
   }
 
   googleAuthUrl(): string {
@@ -59,7 +61,7 @@ export class AuthService implements IAuthService {
       userId: user.id,
       userName: user.userName,
       loginMethod,
-    }
+    };
     this.log.success(`login`, req.session['auth']);
   }
 
@@ -71,9 +73,9 @@ export class AuthService implements IAuthService {
   async authenticateGoogle(code: string): Promise<IGoogleUserInfo> {
     try {
       const token = await this.getGoogleToken(code);
-      return await this.getGoggleClientInfo(token)
+      return await this.getGoggleClientInfo(token);
     } catch (e) {
-      throw new Error(e)
+      throw new Error(e);
     }
   }
 
@@ -86,7 +88,7 @@ export class AuthService implements IAuthService {
       auth: oauth2Client,
       version: 'v2'
     });
-    const {data} = await oauth2.userinfo.get()
+    const {data} = await oauth2.userinfo.get();
 
     return {
       id: data.id,

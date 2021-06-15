@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt-nodejs';
 
 import { IRegistrationRequest, IUserInfo } from '../../../models';
@@ -7,10 +6,11 @@ import { userData } from '../user/user.data';
 import { EAuthMethod, IAuthCtrl, IGoogleUserInfo } from './auth.model';
 import { IUserTable } from '../user/user.model';
 import { BaseController } from '../../common/controller/controller.base';
-import { EAPIEndpoints, IControllerRoute } from '../../common/controller/controller.model';
+import { IControllerRoute } from '../../common/controller/controller.model';
 import { IApiResponse } from '../../common/response/api-response.model';
 import { ResponseService } from '../../common/response/response.service';
 import { IRequest } from '../../models/app.model';
+import { EAPIEndpoints } from '../../../models/api.model';
 
 class AuthController extends BaseController implements IAuthCtrl {
   get routes(): IControllerRoute[] {
@@ -34,7 +34,7 @@ class AuthController extends BaseController implements IAuthCtrl {
   async googleCallback(data: { code: string }, req: IRequest): Promise<IApiResponse> {
     try {
       let authUser: IGoogleUserInfo = await authService.authenticateGoogle(data.code);
-      let user: IUserInfo = await this.loginWithGoggle(authUser);
+      let user: IUserInfo = await this.loginWithGoggle(authUser, req.userId);
 
       authService.login(user, EAuthMethod.Google, req);
 
@@ -62,7 +62,7 @@ class AuthController extends BaseController implements IAuthCtrl {
       await userData.updatePassword(user.id, pass);
     } else {
       user = await userData.createUser({
-        id: uuidv4(),
+        id: req.userId,
         user_name: data.userName,
         email: data.email,
         password: pass
@@ -98,7 +98,7 @@ class AuthController extends BaseController implements IAuthCtrl {
     return ResponseService.redirect('/login');
   }
 
-  private async loginWithGoggle(data: IGoogleUserInfo): Promise<IUserInfo> {
+  private async loginWithGoggle(data: IGoogleUserInfo, userId: string): Promise<IUserInfo> {
     let tableUser: IUserTable = await userData.getByGoogleId(data.id);
 
     if (!tableUser && !!data.email) {
@@ -107,7 +107,7 @@ class AuthController extends BaseController implements IAuthCtrl {
 
     if (!tableUser) {
       tableUser = await userData.createUser({
-        id: uuidv4(),
+        id: userId,
         user_name: data.name,
         google_id: data.id,
         email: data.email

@@ -1,7 +1,8 @@
 import { ILogger, Logger } from '../../libs';
-import { EAPIEndpoints, IBaseCtrl, IControllerRoute } from './controller.model';
+import { IBaseCtrl, IControllerRoute } from './controller.model';
 import { IApiResponse } from '../response/api-response.model';
 import { IRequest, IResponse, IServer, TMiddleware } from '../../models/app.model';
+import { EAPIEndpoints } from '../../../models/api.model';
 
 const log = new Logger('req');
 

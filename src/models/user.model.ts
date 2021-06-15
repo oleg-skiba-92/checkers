@@ -5,8 +5,8 @@ export interface IUserInfo {
   userName: string;
   picture?: string;
   rating?: number;
-  email: string;
-  dateCreated: string;
+  email?: string;
+  dateCreated?: string;
 }
 
 export interface IRegistrationRequest {
@@ -24,4 +24,6 @@ export interface IPlayer {
   id: string;
   userName: string;
   color?: EColor;
+  picture?: string;
+  rating?: number;
 }

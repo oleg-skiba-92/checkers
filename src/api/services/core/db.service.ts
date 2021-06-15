@@ -10,6 +10,7 @@ const TABLES: IDataTable[] = [
       {name: EUsersColumns.GoogleId, type: 'VARCHAR(50)', keys: ['UNIQUE']},
       {name: EUsersColumns.UserName, type: 'VARCHAR(50)', keys: []},
       {name: EUsersColumns.Email, type: 'VARCHAR(200)', keys: ['UNIQUE']},
+      {name: EUsersColumns.Picture, type: 'VARCHAR(200)', keys: []},
       {name: EUsersColumns.Password, type: 'VARCHAR(60)', keys: []},
       {name: EUsersColumns.DateCreated, type: 'VARCHAR(50)', keys: ['DEFAULT NOW()']},
     ]
@@ -44,7 +45,6 @@ class DataService implements IDataService {
       this.log.error(`Database initialise error: ${e.message}`, e.stack);
       return false;
     }
-
 
     try {
       // await this.dropTables(TABLES);

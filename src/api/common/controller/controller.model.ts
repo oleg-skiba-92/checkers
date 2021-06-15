@@ -1,19 +1,7 @@
 import { ILogger } from '../../libs';
 import { IRequest, IResponse, IServer, TMiddleware } from '../../models/app.model';
 import { IApiResponse } from '../response/api-response.model';
-
-//#region enums
-export const enum EAPIEndpoints {
-  Api = 'api',
-  Auth = 'auth',
-  User = 'user',
-  Me = 'me',
-  Google = 'google',
-  GoogleCallback = 'google/callback',
-  Registration = 'registration',
-  Login = 'login',
-  Logout = 'logout',
-}
+import { EAPIEndpoints } from '../../../models/api.model';
 
 //#endregion enums
 

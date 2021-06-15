@@ -56,6 +56,7 @@ export class App implements IServer {
     this.app.use('/assets', express.static(join(process.cwd(), 'dist/assets')));
     this.app.use('/favicon.png', express.static(join(process.cwd(), 'dist/favicon.png')));
     this.app.use('/style.css', express.static(join(process.cwd(), 'dist/style.css')));
+    this.app.use('/global.css', express.static(join(process.cwd(), 'dist/global.css')));
     this.app.use('/bundle.js', express.static(join(process.cwd(), 'dist/bundle.js')));
 
     this.app.use(sessionService.sessionMiddleware);
@@ -70,10 +71,6 @@ export class App implements IServer {
     // this.app.get('/', authService.isAuthorised('/login'), (req, res) => {
     //   res.sendFile(__dirname + '/dist/index.html');
     // });
-
-    this.app.get('/login', (req, res) => {
-      res.sendFile(__dirname + '/src/client/login.html');
-    });
 
     AuthCtrl.init(this)
     UserCtrl.init(this);

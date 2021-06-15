@@ -2,6 +2,10 @@
   import LeftSideBar from './components/left-sidebar.svelte';
   import Game from './components/game.svelte';
   import RightSideBar from './components/right-sidebar.svelte';
+
+  import { usersService } from './services';
+
+  usersService.getMe();
 </script>
 
 <!--------------------------------HTML CODE-------------------------------->

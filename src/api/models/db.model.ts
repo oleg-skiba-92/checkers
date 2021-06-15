@@ -12,6 +12,7 @@ export enum EUsersColumns {
   Password = 'password',
   DateCreated = 'date_created',
   Email = 'email',
+  Picture = 'picture',
 }
 
 //#endregion enums
