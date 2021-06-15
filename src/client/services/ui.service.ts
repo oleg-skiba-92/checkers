@@ -1,7 +1,10 @@
-import { IUser } from '../../models/user.model';
-import { TSimpleDataCallback } from '../game/models/views.model';
+import { TSimpleDataCallback } from '../game/views.model';
 import { IRoomPlayer } from '../../models/room.model';
 import { EColor, EGameError } from '../../models';
+
+interface IUser {
+  [key: string]: any;
+}
 
 export class UiService {
   private freePlayersList: HTMLElement;

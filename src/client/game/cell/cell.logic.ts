@@ -1,7 +1,8 @@
-import { CellView } from '../views';
 import { EColor } from '../../../models';
-import { IGameScene } from '../scenes';
-import { ECellState, ICell, IChecker } from '../models';
+import { CellView } from './cell.view';
+import { ECellState, ICell } from './cell.model';
+import { IChecker } from '../checker/checker.model';
+import { IGameScene } from '../views.model';
 
 export class Cell extends CellView implements ICell {
   color: EColor;

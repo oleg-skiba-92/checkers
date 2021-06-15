@@ -1,15 +1,17 @@
-import { GameScene, IGameScene } from './scenes';
-import { GameLogic, IGameLogic } from './logic';
-import { IRoom } from '../../models/room.model';
+import 'phaser';
+
+import { IRoom } from '../../models';
 import { SocketService, UiService } from '../services';
 import { EColor, ITurn } from '../../models';
+import { IGameScene } from './views.model';
+import { GameLogic, IGameLogic } from './game.logic';
+import { GameScene } from './game.scene';
 
 const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
   width: 540,
   height: 540,
   type: Phaser.AUTO,
   parent: 'game',
-  disableContextMenu: true,
   physics: {
     default: 'arcade',
     arcade: {
@@ -52,6 +54,6 @@ export class Game extends Phaser.Game implements IGame {
 
     this.gameLogic.onError((error) => {
       this.uiService.showError(error);
-    })
+    });
   }
 }

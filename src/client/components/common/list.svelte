@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let list; // TODO interface
+  import type { IUserInfo } from '../../../models';
+
+  export let list: IUserInfo[]; // TODO interface
   export let title: string;
   // TODO btnClasses to btnTypeEnum
   export let actions: { label: string; btnClasses: string; onClick: (id: string) => void }[] = [];

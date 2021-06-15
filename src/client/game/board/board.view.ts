@@ -1,5 +1,5 @@
-import { IGameScene } from '../scenes';
-import { IBoardView } from '../models';
+import { IBoardView } from './board.model';
+import { IGameScene } from '../views.model';
 
 export class BoardView extends Phaser.GameObjects.Container implements IBoardView {
   scene: IGameScene;

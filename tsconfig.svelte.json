@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "importsNotUsedAsValues": "error",
     "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -10,9 +9,7 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types": [
-      "Phaser"
-    ],
+    "types": [],
     "module": "esnext"
   },
   "files": [
@@ -20,10 +17,11 @@
   ],
   "include": [
     "src/client/global.d.ts",
-    "src/models/user.model.ts",
-    "src/client/services/store.service.ts"
+    "src/models/**/*.ts",
+    "src/client/**/*.ts"
   ],
   "exclude": [
+    "src/client/index.old.ts",
     "node_modules",
     "dist"
   ]

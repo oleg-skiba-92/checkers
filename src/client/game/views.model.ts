@@ -22,3 +22,12 @@ export interface IPoint {
 }
 
 //#endregion interfaces
+export interface IGameScene extends Phaser.Scene {
+  isRevers: boolean;
+  boardMargin: number;
+  cellSize: number;
+  letters: string[];
+  numbers: string[];
+
+  boardPositionToPosition(boardPosition: string): IPoint;
+}

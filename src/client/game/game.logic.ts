@@ -1,9 +1,11 @@
-import { IGameScene } from '../scenes';
-import { BoardLogic } from './board.logic';
-import { EVENTS, TSimpleDataCallback, IBoardLogic, ICell, IChecker } from '../models';
-import { Checker } from './checker.logic';
-import { EColor, EGameError, ITurn } from '../../../models';
-import { IPossibleTurnLogic, PossibleTurnLogic } from './turn.logic';
+import { BoardLogic } from './board/board.logic';
+import { Checker } from './checker/checker.logic';
+import { EColor, EGameError, ITurn } from '../../models';
+import { IPossibleTurnLogic, PossibleTurnLogic } from './logic/turn.logic';
+import { EVENTS, IGameScene, TSimpleDataCallback } from './views.model';
+import { IBoardLogic } from './board/board.model';
+import { IChecker } from './checker/checker.model';
+import { ICell } from './cell/cell.model';
 
 const WHITE_POSITIONS = ['a1', 'c1', 'e1', 'g1', 'b2', 'd2', 'f2', 'h2', 'a3', 'c3', 'e3', 'g3'];
 const BLACK_POSITIONS = ['b6', 'd6', 'f6', 'h6', 'a7', 'c7', 'e7', 'g7', 'b8', 'd8', 'f8', 'h8'];

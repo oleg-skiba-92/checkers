@@ -1,5 +1,7 @@
 import { EColor, EDirections, ITurn } from '../../../models';
-import { IBoardLogic, ICell, IChecker } from '../models';
+import { ICell } from '../cell/cell.model';
+import { IChecker } from '../checker/checker.model';
+import { IBoardLogic } from '../board/board.model';
 
 interface IDiagonalCells {
   ru: ICell[];

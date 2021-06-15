@@ -1,7 +1,7 @@
-import { CheckerView } from '../views/checker.view';
+import { CheckerView } from './checker.view';
 import { EColor, ITurn } from '../../../models';
-import { IGameScene } from '../scenes/game.scene';
-import { IChecker } from '../models';
+import { IGameScene } from '../views.model';
+import { IChecker } from './checker.model';
 
 export class Checker extends CheckerView implements IChecker {
   color: EColor;

@@ -1,11 +1,4 @@
-import { EColor, IPlayer } from '../../../models';
-
-export interface IUserInfo {
-  id: string;
-  userName: string;
-  email: string;
-  dateCreated: string;
-}
+import { EColor, IPlayer, IUserInfo } from '../../../models';
 
 export interface IUserTable {
   id: string;

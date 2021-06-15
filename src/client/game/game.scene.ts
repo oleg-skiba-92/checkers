@@ -1,18 +1,8 @@
-import { IPoint } from '../models';
-import { IGame } from '../game';
+import { IGame } from './game';
+import { IGameScene, IPoint } from './views.model';
 
 export const LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 export const NUMBERS = ['8', '7', '6', '5', '4', '3', '2', '1'];
-
-export interface IGameScene extends Phaser.Scene {
-  isRevers: boolean;
-  boardMargin: number;
-  cellSize: number;
-  letters: string[];
-  numbers: string[];
-
-  boardPositionToPosition(boardPosition: string): IPoint;
-}
 
 export class GameScene extends Phaser.Scene implements IGameScene {
   boardMargin: number = 30;

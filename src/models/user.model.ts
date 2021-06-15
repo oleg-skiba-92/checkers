@@ -1,8 +1,12 @@
 import { EColor } from './game.model';
 
-export interface IUser {
+export interface IUserInfo {
   id: string;
   userName: string;
+  picture?: string;
+  rating?: number;
+  email: string;
+  dateCreated: string;
 }
 
 export interface IRegistrationRequest {

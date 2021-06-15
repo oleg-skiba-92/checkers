@@ -1,5 +1,7 @@
+import { IUserInfo } from '../../models';
+
 export class StoreService {
-  freePlayers;
+  freePlayers: Partial<IUserInfo>[];
 
   constructor() {
     this.freePlayers = [

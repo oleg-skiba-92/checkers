@@ -1,5 +1,5 @@
-import { IGameScene } from '../scenes';
-import { ICell } from './cell.model';
+import { ICell } from '../cell/cell.model';
+import { IGameScene } from '../views.model';
 
 export interface IBoardView extends Phaser.GameObjects.Container {
   scene: IGameScene;

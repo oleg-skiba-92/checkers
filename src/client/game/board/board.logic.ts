@@ -1,7 +1,9 @@
-import { BoardView } from '../views';
-import { IGameScene } from '../scenes';
-import { Cell } from './cell.logic';
-import { IBoardLogic, ICell, IChecker, EVENTS } from '../models';
+import { Cell } from '../cell/cell.logic';
+import { BoardView } from './board.view';
+import { IBoardLogic } from './board.model';
+import { EVENTS, IGameScene } from '../views.model';
+import { ICell } from '../cell/cell.model';
+import { IChecker } from '../checker/checker.model';
 
 export class BoardLogic extends BoardView implements IBoardLogic {
   cells: { [key: string]: ICell }
