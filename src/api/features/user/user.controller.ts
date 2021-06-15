@@ -1,11 +1,11 @@
 import { userData } from './user.data';
-import { IUserInfo } from './user.model';
 import { EAPIEndpoints, IBaseCtrl, IControllerRoute } from '../../common/controller/controller.model';
 import { IApiResponse } from '../../common/response/api-response.model';
 import { IRequest } from '../../models/app.model';
 import { BaseController } from '../../common/controller/controller.base';
 import { authService } from '../auth/auth.service';
 import { ResponseService } from '../../common/response/response.service';
+import { IUserInfo } from '../../../models';
 
 export interface IUserCtrl extends IBaseCtrl {
   getMe(data: null, req: IRequest): Promise<IApiResponse>;
