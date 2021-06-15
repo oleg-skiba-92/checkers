@@ -1,28 +1,23 @@
-export interface IUserSession {
-  userId: string;
-  googleId: string;
-  facebookId: string;
-}
+import { EColor } from './game.model';
 
-export interface IUser  {
+export interface IUser {
   id: string;
   userName: string;
 }
 
-export interface IRegistrationRequest  {
+export interface IRegistrationRequest {
   userName: string;
   password: string;
   email: string;
 }
 
-export interface ILoginRequest  {
+export interface ILoginRequest {
   password: string;
   email: string;
 }
 
-export interface IUserInfo {
+export interface IPlayer {
   id: string;
   userName: string;
-  email: string;
-  dateCreated: string;
+  color?: EColor;
 }

@@ -1,19 +1,6 @@
-import { IPlayer, IUserEntity, UserEntity } from '../entities';
-
-export interface IUsersCollection {
-
-  readonly freePlayers: IPlayer[];
-
-  create(id: string, userName: string, socketId: string): IUserEntity;
-
-  getById(id: string): IUserEntity;
-
-  getByIds(ids: string[]): IUserEntity[];
-
-  getPlayersByIds(ids: string[]): IPlayer[];
-
-  remove(id: string): void
-}
+import { IUserEntity, IUsersCollection } from './user.model';
+import { IPlayer } from '../../../models';
+import { UserEntity } from './user.entity';
 
 export class UsersCollection implements IUsersCollection {
   private _users: IUserEntity[];

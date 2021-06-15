@@ -1,14 +1,12 @@
-import {
-  IRoomsCollection,
-  ISuggestCollection,
-  IUsersCollection,
-  RoomsCollection,
-  SuggestCollection,
-  UsersCollection
-} from '../collections';
-import { IAuthData, ITurn } from '../../models';
-import { IUserEntity } from '../entities';
-import { socketService } from '../services/core';
+import { ITurn } from '../../../models';
+import { socketService } from '../../services/core';
+import { IUserEntity, IUsersCollection } from '../user/user.model';
+import { IRoomsCollection } from '../room/room.model';
+import { ISuggestCollection } from '../suggest/suggest.model';
+import { UsersCollection } from '../user/users.collection';
+import { RoomsCollection } from '../room/rooms.collection';
+import { SuggestCollection } from '../suggest/suggest.collection';
+import { IAuthData } from '../auth/auth.model';
 
 class GameController {
   private users: IUsersCollection;

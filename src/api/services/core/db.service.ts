@@ -1,6 +1,6 @@
 import { Client } from 'pg';
-import { ILogger, Logger } from '../../libs/logger';
-import { EDataEntity, EUsersColumns, IDataService, IDataTable } from '../../../models';
+import { ILogger, Logger } from '../../libs';
+import { EDataEntity, EUsersColumns, IDataService, IDataTable } from '../../models/db.model';
 
 const TABLES: IDataTable[] = [
   {

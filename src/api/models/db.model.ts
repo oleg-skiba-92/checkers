@@ -27,15 +27,6 @@ export interface IDataTable {
   cols: IColTable[];
 }
 
-export interface IUserTable {
-  id: string;
-  email: string;
-  google_id?: string;
-  user_name?: string;
-  password?: string;
-  date_created?: string;
-}
-
 export interface IDataService extends IInitializedService {
   getObject<T>(entity: string, key: string, value: string | number): Promise<T>;
 

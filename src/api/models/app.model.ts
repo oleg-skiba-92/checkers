@@ -2,8 +2,7 @@ import { Express, Request, Response } from 'express';
 import * as http from 'http';
 import { Session } from 'express-session';
 import { NextFunction } from 'express-serve-static-core';
-
-import { IAuthData } from './auth.model';
+import { IAuthData } from '../features/auth/auth.model';
 
 export type TMiddleware = (request: IRequest, response: IResponse, next: NextFunction) => void;
 
@@ -25,11 +24,9 @@ export interface IRequest extends Request {
 }
 
 export interface IResponse extends Response {
-
 }
 
 export interface IServer {
   app: Express;
   http: http.Server;
-
 }

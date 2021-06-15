@@ -1,24 +1,7 @@
-import { IPlayer, IUserEntity } from './user.entity';
-import { EColor, ITurn } from '../../models';
+import { EColor, ITurn } from '../../../models';
 import { v4 as uuidv4 } from 'uuid';
-
-export interface IRoomInfo {
-  id: string;
-  players: IPlayer[];
-}
-
-
-export interface IRoomEntity {
-  id: string;
-
-  readonly info: IRoomInfo;
-
-  newGame(): void;
-
-  endGame(): void;
-
-  endTurn(turns: ITurn[]): void;
-}
+import { IRoomEntity, IRoomInfo } from './room.model';
+import { IUserEntity } from '../user/user.model';
 
 export class RoomEntity implements IRoomEntity {
   id: string;
@@ -27,7 +10,7 @@ export class RoomEntity implements IRoomEntity {
     return {
       id: this.id,
       players: this.users.map(u => u.playerData),
-    }
+    };
   }
 
   constructor(private users: IUserEntity[]) {
@@ -35,7 +18,7 @@ export class RoomEntity implements IRoomEntity {
   }
 
   newGame(): void {
-    let randIdx = Math.floor(Math.random() * 2)
+    let randIdx = Math.floor(Math.random() * 2);
     this.users[randIdx].startGame(this.id, EColor.White);
     this.users[+(!randIdx)].startGame(this.id, EColor.Black);
   }

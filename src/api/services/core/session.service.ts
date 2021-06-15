@@ -1,7 +1,9 @@
-import { IInitializedService, IServer, ISessionService, TMiddleware } from '../../../models';
 import * as connectRedis from 'connect-redis';
 import * as session from 'express-session';
 import * as redis from 'redis';
+
+import { IInitializedService, IServer, TMiddleware } from '../../models/app.model';
+import { ISessionService } from '../../models/session.model';
 
 export class SessionService implements IInitializedService {
   private redisStore: connectRedis.RedisStore

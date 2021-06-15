@@ -5,9 +5,11 @@ import * as http from 'http';
 import * as bodyParser from 'body-parser';
 
 import { ILogger, Logger } from './src/api/libs';
-import { IRequest, IServer } from './src/models';
-import { sessionService, socketService, authService, dataService } from './src/api/services/core';
-import { UserCtrl, AuthCtrl } from './src/api/controllers';
+import { sessionService, socketService, dataService } from './src/api/services/core';
+import { IServer } from './src/api/models/app.model';
+import { authService } from './src/api/features/auth/auth.service';
+import { AuthCtrl } from './src/api/features/auth/auth.controller';
+import { UserCtrl } from './src/api/features/user/user.controller';
 
 const DEFAULT_PORT = 3000;
 

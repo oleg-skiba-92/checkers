@@ -3,17 +3,10 @@ import { OAuth2Client } from 'google-auth-library';
 import { NextFunction } from 'express-serve-static-core';
 import * as jwt from 'jsonwebtoken';
 
-import {
-  EAuthMethod,
-  IGoogleUserInfo,
-  IAuthService,
-  IRequest,
-  IResponse,
-  IServer,
-  IUserInfo,
-  TMiddleware
-} from '../../../models';
 import { ILogger, Logger } from '../../libs';
+import { IUserInfo } from '../user/user.model';
+import { EAuthMethod, IAuthService, IGoogleUserInfo } from './auth.model';
+import { IRequest, IResponse, IServer, TMiddleware } from '../../models/app.model';
 
 export class AuthService implements IAuthService {
   private log: ILogger = new Logger('AUTH');

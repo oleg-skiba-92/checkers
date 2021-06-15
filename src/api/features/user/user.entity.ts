@@ -1,25 +1,6 @@
-import { EColor } from '../../models';
-import { ILogger, Logger } from '../libs';
-
-export interface IPlayer {
-  id: string;
-  userName: string;
-  color?: EColor;
-}
-
-export interface IUserEntity {
-  id: string;
-  userName: string;
-  socketId: string;
-  roomId: string;
-  inGame: boolean;
-  color: EColor;
-  readonly playerData: IPlayer;
-
-  startGame(roomId: string, color: EColor): void;
-
-  endGame(): void;
-}
+import { EColor, IPlayer } from '../../../models';
+import { ILogger, Logger } from '../../libs';
+import { IUserEntity } from './user.model';
 
 export class UserEntity implements IUserEntity {
   inGame: boolean;
@@ -37,7 +18,7 @@ export class UserEntity implements IUserEntity {
     public userName: string,
     public socketId: string,
   ) {
-    this.log = new Logger(`UserEntity ${id} - ${userName}`)
+    this.log = new Logger(`UserEntity ${id} - ${userName}`);
 
     this.inGame = false;
     this.color = null;

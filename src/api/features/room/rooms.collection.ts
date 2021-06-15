@@ -1,14 +1,6 @@
-import { IRoomEntity, IRoomInfo, IUserEntity, RoomEntity } from '../entities';
-
-export interface IRoomsCollection {
-  readonly list: IRoomInfo[]
-
-  getById(id: string): IRoomEntity;
-
-  createRoom(users: IUserEntity[]): IRoomEntity;
-
-  remove(id: string): void;
-}
+import { IRoomEntity, IRoomInfo, IRoomsCollection } from './room.model';
+import { IUserEntity } from '../user/user.model';
+import { RoomEntity } from './room.entity';
 
 export class RoomsCollection implements IRoomsCollection {
   private _rooms: IRoomEntity[];

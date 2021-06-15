@@ -1,4 +1,5 @@
-import { ApiResponse, EApiErrorCode, EApiResponseType, IApiResponse, TApiResponseData } from '../../models';
+import { EApiErrorCode, EApiResponseType, IApiResponse, TApiResponseData } from './api-response.model';
+import { ApiResponse } from './api-response.logic';
 
 const ERROR_MESSAGES = {
   INVALID_DATA: 'Bad request',
@@ -6,7 +7,7 @@ const ERROR_MESSAGES = {
   UNKNOWN: 'Что то пошло не так',
 };
 
-export class ResHelper {
+export class ResponseService {
   static successJson(data: TApiResponseData = 'success'): IApiResponse {
     return new ApiResponse({data});
   }

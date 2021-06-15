@@ -1,11 +1,14 @@
 import * as io from 'socket.io';
 
-import { EColor, IAuthData, IInitializedService, ISocket, ITurn, SocketEvents } from '../../../models';
+import { EColor, IPlayer, ITurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
-import { IRoomInfo, IPlayer } from '../../entities';
 import { Logger } from '../../libs';
-import { GameCtrl } from '../../controllers';
-import { ISuggest } from '../../collections';
+import { ISuggest } from '../../features/suggest/suggest.model';
+import { IRoomInfo } from '../../features/room/room.model';
+import { GameCtrl } from '../../features/game/game.controller';
+import { IInitializedService } from '../../models/app.model';
+import { ISocket } from '../../models/socket.model';
+import { IAuthData } from '../../features/auth/auth.model';
 
 export class SocketService implements IInitializedService {
   private io: io.Server;
