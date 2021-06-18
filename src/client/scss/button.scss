@@ -12,14 +12,15 @@ button {
   flex-direction: column;
   justify-content: center;
   border-radius: 0;
-  height: 4rem;
-  margin: 1rem;
-  padding: 0.7rem;
+  height: $hight-button;
+  margin: $margin-button;
+  padding: $padding-button;
   border: none;
-  background: $color-white;
+  background: $font-color-light;
   text-decoration: none;
-  color: $color-black;
+  color: $font-color-dark;
   text-align: center;
+  font-size: $font-size-md;
 
   &--orange {
     background: $color-orange_01;
