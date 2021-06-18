@@ -6,41 +6,47 @@ button {
 }
 
 .fco-btn  {
-  display: inline-block;
-  vertical-align: middle;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   border-radius: 0;
   height: 4rem;
   margin: 1rem;
   padding: 0.7rem;
   border: none;
-  background: white;
+  background: $color-white;
   text-decoration: none;
-  color: black;
+  color: $color-black;
   text-align: center;
 
   &--orange {
-    background: rgb(245, 184, 71);
+    background: $color-orange_01;
     &:hover {
-      background: rgb(250, 209, 133);
+      background: $color-orange_02;
     }
   }
 
   &--green {
-    background: rgb(58, 143, 58);
+    background: $color-green_01;
     &:hover {
-      background: rgb(97, 160, 97);
+      background: $color-green_02;
     }
   }
 
   &--red {
-    background: rgb(248, 141, 141);
+    background: $color-red_01;
     &:hover {
-      background: rgb(255, 128, 128);
+      background: $color-red_02;
     }
   }
 
   &--disabled {
-    background: rgb(216, 216, 216);
+    background: $color-disabled_01;
     cursor: not-allowed;
+    &:hover {
+      background: $color-disabled_02;
+    }
   }
 }
