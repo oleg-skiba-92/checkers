@@ -21,18 +21,6 @@ export interface IAuthData {
   loginMethod: EAuthMethod;
 }
 
-export interface IAuthCtrl extends IBaseCtrl {
-  getGoogleAuthUrl(): Promise<IApiResponse>;
-
-  googleCallback(data: { code: string }, req: IRequest): Promise<IApiResponse>;
-
-  registration(data: ILoginRequest, req: IRequest): Promise<IApiResponse>;
-
-  login(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse>;
-
-  logout(data: null, req: IRequest): Promise<IApiResponse>;
-}
-
 export interface IAuthService extends IInitializedService {
   googleAuthUrl(): string;
 

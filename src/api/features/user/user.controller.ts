@@ -7,11 +7,7 @@ import { ResponseService } from '../../common/response/response.service';
 import { IUserInfo } from '../../../models';
 import { EAPIEndpoints } from '../../../models/api.model';
 
-export interface IUserCtrl extends IBaseCtrl {
-  getMe(data: null, req: IRequest): Promise<IApiResponse>;
-}
-
-class UserController extends BaseController implements IUserCtrl {
+class UserController extends BaseController {
   get routes(): IControllerRoute[] {
     return [
       {path: EAPIEndpoints.Me, method: 'get', handler: this.getMe},
@@ -25,7 +21,7 @@ class UserController extends BaseController implements IUserCtrl {
   async getMe(data, req: IRequest): Promise<IApiResponse> {
     let user: IUserInfo;
 
-    if(!!req.authData) {
+    if (!!req.authData) {
       user = await this.getAuthorisedData(req.userId);
     } else {
       user = await this.getUnauthorisedData(req.userId, req.sessionID);
@@ -38,9 +34,9 @@ class UserController extends BaseController implements IUserCtrl {
     return userData.toUserInfo(await userData.getById(userId));
   }
 
-  private async getUnauthorisedData(userId: string, sessionId :string): Promise<IUserInfo> {
+  private async getUnauthorisedData(userId: string, sessionId: string): Promise<IUserInfo> {
     return {id: userId, userName: 'Anonymous'};
   }
 }
 
-export const UserCtrl: IUserCtrl = new UserController();
+export const UserCtrl = new UserController();
