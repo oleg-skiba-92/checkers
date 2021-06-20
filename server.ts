@@ -42,9 +42,6 @@ export class App implements IServer {
   }
 
   private config() {
-    this.app.use(require('cookie-parser')());
-    this.app.use(bodyParser.urlencoded({extended: true}));
-    this.app.use(bodyParser.json());
     this.app.use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-auth-token");
@@ -52,6 +49,9 @@ export class App implements IServer {
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       next();
     });
+    this.app.use(require('cookie-parser')());
+    this.app.use(bodyParser.urlencoded({extended: true}));
+    this.app.use(bodyParser.json());
 
     this.app.use('/assets', express.static(join(process.cwd(), 'dist/assets')));
     this.app.use('/favicon.png', express.static(join(process.cwd(), 'dist/favicon.png')));
@@ -60,8 +60,8 @@ export class App implements IServer {
     this.app.use('/bundle.js', express.static(join(process.cwd(), 'dist/bundle.js')));
 
     this.app.use(sessionService.sessionMiddleware);
-    socketService.config(sessionService.sessionMiddleware);
     authService.config(this);
+    socketService.config(sessionService.sessionMiddleware);
   }
 
   private route() {
@@ -80,8 +80,8 @@ export class App implements IServer {
     const initialisedServices = await Promise.all([
       dataService.initialise(),
       authService.initialise(),
-      socketService.initialise(this),
-      sessionService.initialise(this)
+      sessionService.initialise(this),
+      socketService.initialise(this)
     ]);
 
     return initialisedServices.reduce((acc, curr) => curr && acc, true);

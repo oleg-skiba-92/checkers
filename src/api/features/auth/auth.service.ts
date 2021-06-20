@@ -8,6 +8,7 @@ import { ILogger, Logger } from '../../libs';
 import { IUserInfo } from '../../../models';
 import { EAuthMethod, IAuthService, IGoogleUserInfo } from './auth.model';
 import { IRequest, IResponse, IServer, TMiddleware } from '../../models/app.model';
+import { guestData } from '../guest/guest.data';
 
 export class AuthService implements IAuthService {
   private log: ILogger = new Logger('AUTH');
@@ -26,9 +27,25 @@ export class AuthService implements IAuthService {
   }
 
   config(server: IServer) {
-    server.app.use((req: IRequest, res: IResponse, next) => {
+    server.app.use(async (req: IRequest, res: IResponse, next) => {
+      if (!req.session) {
+        this.log.error('session not found');
+
+        return;
+      }
+
+      if(!req.session.auth) {
+        let guest = await guestData.create({
+          id: uuidv4(),
+          user_name: 'Guest'
+        });
+
+        this.login(guestData.toUserInfo(guest), EAuthMethod.Guest, req)
+      }
+
       req.authData = (req.session && req.session.auth) || null;
-      req.userId = req.authData ? req.authData.userId : uuidv4();
+      req.isAuthorised = req.authData.loginMethod !== EAuthMethod.Guest;
+
       next();
     });
   }

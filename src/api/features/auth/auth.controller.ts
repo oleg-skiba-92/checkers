@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt-nodejs';
+import { v4 as uuidv4 } from 'uuid';
 
 import { IRegistrationRequest, IUserInfo } from '../../../models';
 import { authService } from './auth.service';
@@ -34,7 +35,7 @@ class AuthController extends BaseController {
   private async googleCallback(data: { code: string }, req: IRequest): Promise<IApiResponse> {
     try {
       let authUser: IGoogleUserInfo = await authService.authenticateGoogle(data.code);
-      let user: IUserInfo = await this.loginWithGoggle(authUser, req.userId);
+      let user: IUserInfo = await this.loginWithGoggle(authUser);
 
       authService.login(user, EAuthMethod.Google, req);
 
@@ -62,7 +63,7 @@ class AuthController extends BaseController {
       await userData.updatePassword(user.id, pass);
     } else {
       user = await userData.createUser({
-        id: req.userId,
+        id: uuidv4(),
         user_name: data.userName,
         email: data.email,
         password: pass
@@ -100,7 +101,7 @@ class AuthController extends BaseController {
     return ResponseService.redirect('/login');
   }
 
-  private async loginWithGoggle(data: IGoogleUserInfo, userId: string): Promise<IUserInfo> {
+  private async loginWithGoggle(data: IGoogleUserInfo): Promise<IUserInfo> {
     let tableUser: IUserTable = await userData.getByGoogleId(data.id);
 
     if (!tableUser && !!data.email) {
@@ -109,7 +110,7 @@ class AuthController extends BaseController {
 
     if (!tableUser) {
       tableUser = await userData.createUser({
-        id: userId,
+        id: uuidv4(),
         user_name: data.name,
         google_id: data.id,
         email: data.email

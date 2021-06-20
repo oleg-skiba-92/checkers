@@ -9,6 +9,7 @@ import { GameCtrl } from '../../features/game/game.controller';
 import { IInitializedService } from '../../models/app.model';
 import { ISocket } from '../../models/socket.model';
 import { IAuthData } from '../../features/auth/auth.model';
+import { UserCtrl } from '../../features/user/user.controller';
 
 export class SocketService implements IInitializedService {
   private io: io.Server;
@@ -22,6 +23,7 @@ export class SocketService implements IInitializedService {
     });
 
     this.io.on('connection', (socket: ISocket) => {
+      this.log.info('Connect');
 
       let auth: IAuthData = socket.request.session && socket.request.session.auth
 
@@ -58,6 +60,7 @@ export class SocketService implements IInitializedService {
       socket.on(SocketEvents.Disconnect, (reason) => {
         this.log.info('Disconnect', reason);
         GameCtrl.userDisconnected(socketUser);
+        UserCtrl.userDisconnected(auth)
       })
     });
 

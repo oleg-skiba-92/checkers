@@ -79,5 +79,7 @@ export interface IUserDataService {
 
   createUser(data: IUserTable): Promise<IUserTable>;
 
+  updateLastVisited(id: string): Promise<void>;
+
   toUserInfo(user: IUserTable): IUserInfo;
 }

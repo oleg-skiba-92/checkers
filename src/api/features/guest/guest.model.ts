@@ -1,4 +1,5 @@
 import { EDataEntity } from '../../models/db.model';
+import { IUserInfo } from '../../../models';
 
 
 export enum EGuestsColumns {
@@ -19,3 +20,22 @@ export const GUEST_DATA_TABLE = {
     {name: EGuestsColumns.CountNumber, type: 'SERIAL', keys: ['NOT NULL', 'UNIQUE']},
   ]
 };
+
+export interface IGuestTable {
+  id: string;
+  user_name: string;
+  date_created?: string;
+  last_visited?: string;
+  count_number?: string;
+}
+
+export interface IGuestDataService {
+  getById(id: string): Promise<IGuestTable>;
+
+  create(data: IGuestTable): Promise<IGuestTable>;
+
+  updateLastVisited(id: string): Promise<void>;
+
+  toUserInfo(guest: IGuestTable): IUserInfo;
+
+}

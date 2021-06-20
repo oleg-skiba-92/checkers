@@ -5,7 +5,8 @@ import { IInitializedService, IRequest, TMiddleware } from '../../models/app.mod
 
 export enum EAuthMethod {
   Google,
-  Password
+  Password,
+  Guest,
 }
 
 export interface IGoogleUserInfo {

@@ -16,8 +16,25 @@ export class ApiService {
   get<T>(urlParts: EAPIEndpoints[]): Promise<T> {
     return fetch(this.buildUrl(urlParts))
       .then((response) => {
-        if(response.ok) {
-          return response.json()
+        if (response.ok) {
+          return response.json();
+        } else {
+          // TODO handling error;
+          throw new Error(response.statusText);
+        }
+      });
+  }
+
+  post<T, R>(urlParts: EAPIEndpoints[], data: T): Promise<R> {
+    return fetch(this.buildUrl(urlParts), {
+      method: 'POST', headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify(data)
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         } else {
           // TODO handling error;
           throw new Error(response.statusText);

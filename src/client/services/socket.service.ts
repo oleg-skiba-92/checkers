@@ -5,8 +5,16 @@ import { EColor, ITurn, SocketEvents } from '../../models';
 export class SocketService {
   public socket: Socket;
 
-  constructor() {
-    this.socket = io('/');
+  private get baseUrl(): string {
+    return 'http://localhost:3000';
+  }
+
+  connect() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+
+    this.socket = io(this.baseUrl);
     this.socket.on('connect', () => {
       console.log('connect');
     });
@@ -15,7 +23,6 @@ export class SocketService {
     this.socket.on('disconnect', (...args) => {
       console.log('disconnect');
     });
-
   }
 
   sendSuggest(userId: string) {
@@ -38,3 +45,5 @@ export class SocketService {
     this.socket.emit(SocketEvents.GameEnd, roomId)
   }
 }
+
+export const socketService = new SocketService();
