@@ -69,9 +69,10 @@ class AuthController extends BaseController {
       });
     }
 
-    authService.login(userData.toUserInfo(user), EAuthMethod.Password, req);
+    let userInfo = userData.toUserInfo(user);
+    authService.login(userInfo, EAuthMethod.Password, req);
 
-    return ResponseService.successJson();
+    return ResponseService.successJson(userInfo);
   }
 
   private async login(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse> {
@@ -88,9 +89,10 @@ class AuthController extends BaseController {
       return ResponseService.badRequest('INVALID_PASSWORD', `Пароль не вірний`);
     }
 
-    authService.login(userData.toUserInfo(user), EAuthMethod.Password, req);
+    let userInfo = userData.toUserInfo(user);
+    authService.login(userInfo, EAuthMethod.Password, req);
 
-    return ResponseService.successJson();
+    return ResponseService.successJson(userInfo);
   }
 
   private async logout(data, req: IRequest): Promise<IApiResponse> {
