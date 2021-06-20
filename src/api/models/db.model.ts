@@ -3,16 +3,7 @@ import { IInitializedService } from './app.model';
 
 export enum EDataEntity {
   Users = 'users',
-}
-
-export enum EUsersColumns {
-  ID = 'id',
-  GoogleId = 'google_id',
-  UserName = 'user_name',
-  Password = 'password',
-  DateCreated = 'date_created',
-  Email = 'email',
-  Picture = 'picture',
+  Guests = 'guests',
 }
 
 //#endregion enums

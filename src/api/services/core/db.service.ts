@@ -1,30 +1,12 @@
 import { Client } from 'pg';
 import { ILogger, Logger } from '../../libs';
-import { EDataEntity, EUsersColumns, IDataService, IDataTable } from '../../models/db.model';
+import { IDataService, IDataTable } from '../../models/db.model';
+import { USER_DATA_TABLE } from '../../features/user/user.model';
+import { GUEST_DATA_TABLE } from '../../features/guest/guest.model';
 
 const TABLES: IDataTable[] = [
-  {
-    name: EDataEntity.Users,
-    cols: [
-      {name: EUsersColumns.ID, type: 'VARCHAR(36)', keys: ['NOT NULL', 'UNIQUE', 'PRIMARY KEY']},
-      {name: EUsersColumns.GoogleId, type: 'VARCHAR(50)', keys: ['UNIQUE']},
-      {name: EUsersColumns.UserName, type: 'VARCHAR(50)', keys: []},
-      {name: EUsersColumns.Email, type: 'VARCHAR(200)', keys: ['UNIQUE']},
-      {name: EUsersColumns.Picture, type: 'VARCHAR(200)', keys: []},
-      {name: EUsersColumns.Password, type: 'VARCHAR(60)', keys: []},
-      {name: EUsersColumns.DateCreated, type: 'VARCHAR(50)', keys: ['DEFAULT NOW()']},
-    ]
-  },
-  // {
-  //   name: 'auth',
-  //   cols: [
-  //     { name: EUsersColumns.ID, type: 'SERIAL', keys: ['NOT NULL', 'UNIQUE', 'PRIMARY KEY'] },
-  //     { name: EUsersColumns.GoogleId, type: 'VARCHAR(50)', keys: ['UNIQUE'] },
-  //     { name: EUsersColumns.UserName, type: 'VARCHAR(50)', keys: ['UNIQUE'] },
-  //     { name: EUsersColumns.Password, type: 'VARCHAR(50)', keys: [] },
-  //     { name: EUsersColumns.DateCreated, type: 'VARCHAR(50)', keys: ['DEFAULT NOW()'] },
-  //   ]
-  // }
+  {...USER_DATA_TABLE},
+  {...GUEST_DATA_TABLE},
 ];
 
 class DataService implements IDataService {
