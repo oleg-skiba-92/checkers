@@ -11,6 +11,7 @@ const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
   width: 540,
   height: 540,
   type: Phaser.AUTO,
+  disableContextMenu: false,
   parent: 'game',
   physics: {
     default: 'arcade',
@@ -28,10 +29,7 @@ export class Game extends Phaser.Game implements IGame {
   gameLogic: IGameLogic;
   room: IRoom;
 
-  constructor(
-    public socketService: SocketService,
-    public uiService: UiService
-  ) {
+  constructor() {
     super({...GAME_CONFIG, ...{scene: [GameScene]}});
   }
 
@@ -49,11 +47,11 @@ export class Game extends Phaser.Game implements IGame {
   initGameLogic(scene: IGameScene) {
     this.gameLogic = new GameLogic(scene);
     this.gameLogic.onEndTurn((turns: ITurn[], isWin: boolean) => {
-      this.socketService.turnEnd(turns, this.room.id, isWin);
+      // this.socketService.turnEnd(turns, this.room.id, isWin);
     });
 
     this.gameLogic.onError((error) => {
-      this.uiService.showError(error);
+      console.log('onError', error);
     });
   }
 }
