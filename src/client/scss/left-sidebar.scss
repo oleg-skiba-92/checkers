@@ -1,0 +1,8 @@
+@import "./variables";
+
+.fco-left-sidebar {
+  width: $left-sidebar-width;
+  height: $left-sidebar-height;
+  background-color: $left-sidebar-color;
+  color: red;
+}
