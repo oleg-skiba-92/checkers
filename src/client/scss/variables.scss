@@ -11,6 +11,11 @@ $color-green_01:                      #3a8f3a;
 $color-green_02:                      #61a061;
 $color-disabled_01:                   #d8d8d8;
 $color-disabled_02:                   #f0f0f0;
+$color-gray_01:                       #868686;
+$list-title-bg:                       #313131;
+$fco-list-bg:                         #2c2a2a;
+$item-background-hover:               #383636;
+$border-bottom-item-color:            #909090;
 
 $hight-button:                        4rem;
 $padding-button:                      0.7rem;
@@ -24,6 +29,8 @@ $font-size-md:                        1.4rem;
 $font-size-lg:                        2rem;
 $font-size-xl:                        2.4rem;
 
+$lines-header:                        1;
+
 $font-color-light:                    #e6e6e6;
 $font-color-dark:                     $color-dark_01;
 
@@ -35,3 +42,12 @@ $screen-sm:                           600px;
 $screen-xs:                           400px;
 
 $board-size:                          540px;
+
+$img-icon-size:                       50px;
+$img-icon-margin-left:                1rem;
+$img-icon-margin-right:               1.5rem;
+
+$item-padding:                        5px;
+$border-bottom-item-size:                  2px;
+$line-height-size-sm:                 1.2;
+$fco-list-height:                     265px;

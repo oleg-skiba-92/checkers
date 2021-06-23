@@ -2,75 +2,71 @@
 
 .fco-list {
   
-  width: 100%;
-  height: 300px;
+  max-height: $fco-list-height;
   overflow: auto;
-  background-color: rgb(44, 42, 42);
+  background-color: $fco-list-bg;
 
   &__title {
-    color:red;
-    font-size: 40px;
-    border-bottom:2px solid gray;
-    padding: 0 10px;
-    background-color: rgb(37, 35, 35);
+    color: $font-color-light;
+    font-size: $font-size-xl;
+    font-family: $font-family;
+    border-bottom: $border-bottom-item-size solid $border-bottom-item-color;
+    padding: $item-padding;
+    background-color: $list-title-bg;
   }
   
   &__item {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     align-items: center;
-    border-bottom:2px solid gray;
-    padding: 0 10px;
-    margin-top: 2px; 
+    border-bottom: $border-bottom-item-size solid $border-bottom-item-color;
+    padding: $item-padding; 
 
     &:last-child {
       border:none;
     }
 
     &:hover {
-      background-color: rgb(56, 54, 54);  
+      background-color: $item-background-hover;  
     }
 
     &-actions {
       display: flex;
       justify-content: flex-end;
     }
-    
-    &--title-info-wrapper{
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: column;
-      line-height: 1;
-    }
-
-    &--wrapper {
-      display: flex; 
-      justify-content: space-between;     
-      align-items: center;
-    }
   }
   
+  &__title-info-wrapper{
+    display: flex;
+    flex-direction: column;
+    line-height: $line-height-size-sm;
+    flex: 1;
+  }
+
   &__item img {
-    width: 40px;
-    height: 40px;
-    margin-left: 1rem;
-    margin-right: 1.5rem;
+    width: $img-icon-size;
+    height: $img-icon-size;
+    margin-left: $img-icon-margin-left;
+    margin-right: $img-icon-margin-right;
   }
   
   &__item-title {
-    color: green;
-    font-size: 30px;
-    text-overflow: ellipsis;
+    color: $font-color-light;
+    font-size: $font-size-lg;
+    font-family: $font-family;
     white-space: nowrap;
+    line-height: $line-height-size-sm;
+    -webkit-line-clamp: $lines-header;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    
-    
+    text-overflow: ellipsis;
+    // width: 265px; // типу шоб 3 крапки працювали
   }
 
   &__item-info {
-    color: yellow;
-    font-size: 20px;    
+    color: $font-color-light;
+    font-family: $font-family;
+    font-size: $font-size-md;    
   }
 
 }
