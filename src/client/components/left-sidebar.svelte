@@ -1,24 +1,22 @@
-<script lang="ts">
-  import type { IUserInfo } from '../../../models';
+<script type="ts">
+  import {usersService} from '../services/users.service';
+  let me = usersService.me;
 
-  export let list: IUserInfo[]; // TODO interface
-  export let title: string;
-  // TODO btnClasses to btnTypeEnum
-  export let actions: { label: string; btnClasses: string; onClick: (id: string) => void }[] = [];
+  
 </script>
-
 <!--------------------------------HTML CODE-------------------------------->
 
 <aside class="fco-left-sidebar">
-  left-sidebar component
-
-
-
-      <img src="{item.picture}" alt="avatar">
-
-      <div class="fco-list__title-info-wrapper">
-        <div class="fco-list__item-title">{item.userName}</div>
-        <div class="fco-list__item-info">{item.rating}</div>
-      </div>
-    
+  {#if $me}
+  
+    <img src="{$me.picture}" alt="avatar">  
+    <div class="fco-left-sidebar__title-info-wrapper">
+      <div class="fco-left-sidebar__title">{$me.userName}</div>
+      <div class="fco-left-sidebar__info">{$me.rating}</div>
+    </div>
+  {/if} 
+  <div class="fco-left-sidebar__button-wrapper"> 
+    <img src="assets\settings.svg" alt="avatar">       
+    <img src="assets\exit_to_app.svg" alt="avatar"> 
+  </div>
 </aside>

@@ -31,12 +31,7 @@
                 type="button"
                 class="fco-btn {action.btnClasses}"
                 on:click={action.onClick(item.id)}
-            >{action.label}</button>   
-            <button
-                type="button"
-                class="fco-btn {action.btnClasses}"
-                on:click={action.onClick(item.id)}
-            >{action.label}</button>                   
+            >{action.label}</button>           
           {/each}
         </div>
       {/if}

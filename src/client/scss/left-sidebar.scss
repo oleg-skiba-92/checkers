@@ -1,8 +1,23 @@
 @import "./variables";
 
 .fco-left-sidebar {
+  display: flex;
+  flex-wrap: wrap;
   width: $left-sidebar-width;
   height: $left-sidebar-height;
   background-color: $left-sidebar-color;
   color: red;
+
+  & img {
+    width: $img-icon-size;
+    height: $img-icon-size;
+    margin-left: $img-icon-margin-left;
+    margin-right: $img-icon-margin-right;
+  }
+  
+
+  & button-wrapper {
+    display: flex;
+  }
 }
+
