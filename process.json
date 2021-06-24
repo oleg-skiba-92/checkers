@@ -1,0 +1,13 @@
+{
+  "apps": [
+    {
+      "name": "checkers",
+      "script": "./server.ts",
+      "instances": 1,
+      "max_memory_restart": "1G",
+      "error_file": "./log/checkers.errors.log",
+      "out_file": "./log/checkers.out.log",
+      "node_args": "-r dotenv/config"
+    }
+  ]
+}
