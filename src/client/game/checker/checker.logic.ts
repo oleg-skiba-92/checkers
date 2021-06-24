@@ -1,5 +1,5 @@
 import { CheckerView } from './checker.view';
-import { EColor, ITurn } from '../../../models';
+import { EColor } from '../../../models';
 import { IGameScene } from '../views.model';
 import { IChecker } from './checker.model';
 
@@ -8,7 +8,6 @@ export class Checker extends CheckerView implements IChecker {
   boardPosition: string;
   isQueen: boolean;
   isBeaten: boolean;
-  possibleTurns: ITurn[]
 
   constructor(scene: IGameScene, color: EColor, boardPosition: string) {
     super(scene, color, scene.boardPositionToPosition(boardPosition));
@@ -34,10 +33,6 @@ export class Checker extends CheckerView implements IChecker {
   markAsBeaten() {
     this.isBeaten = true;
     this.setAlpha(0.5);
-  }
-
-  calculatePossibleTurns(possibleTurnLogic) {
-    this.possibleTurns = possibleTurnLogic.calculate(this);
   }
 
   private setAsQueen(): void {

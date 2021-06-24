@@ -12,7 +12,6 @@ export interface IChecker extends ICheckerView {
   boardPosition: string;
   isQueen: boolean;
   isBeaten: boolean;
-  possibleTurns?: ITurn[];
 
   moveToBoardPosition(boardPosition: string): void;
 

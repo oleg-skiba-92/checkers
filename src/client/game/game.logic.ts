@@ -1,7 +1,6 @@
 import { BoardLogic } from './board/board.logic';
 import { Checker } from './checker/checker.logic';
 import { EColor, EGameError, ITurn } from '../../models';
-import { IPossibleTurnLogic, PossibleTurnLogic } from './logic/turn.logic';
 import { EVENTS, IGameScene, TSimpleDataCallback } from './views.model';
 import { IBoardLogic } from './board/board.model';
 import { IChecker } from './checker/checker.model';
@@ -10,10 +9,8 @@ import { ICell } from './cell/cell.model';
 const WHITE_POSITIONS = ['a1', 'c1', 'e1', 'g1', 'b2', 'd2', 'f2', 'h2', 'a3', 'c3', 'e3', 'g3'];
 const BLACK_POSITIONS = ['b6', 'd6', 'f6', 'h6', 'a7', 'c7', 'e7', 'g7', 'b8', 'd8', 'f8', 'h8'];
 
-// const BLACK_POSITIONS = ['c7', 'e5', 'g5', 'c5'];
-
 export interface IGameLogic {
-  onEndTurn(cb: (turns: ITurn[], isWin: boolean) => void): void;
+  onEndTurn(cb: (turns: ITurn[]) => void): void;
 
   onError(cb: TSimpleDataCallback<EGameError>): void;
 
@@ -24,7 +21,6 @@ export interface IGameLogic {
 
 export class GameLogic implements IGameLogic {
   board: IBoardLogic;
-  possibleTurnLogic: IPossibleTurnLogic;
 
   checkers: IChecker[];
 
@@ -35,7 +31,7 @@ export class GameLogic implements IGameLogic {
   possibleTurns: ITurn[];
   currentTurns: ITurn[];
 
-  _endTurnCb: (turns: ITurn[], isWin: boolean) => void;
+  _endTurnCb: (turns: ITurn[]) => void;
   _showErrorCb: TSimpleDataCallback<EGameError>;
 
   private _activeCell: string;
@@ -75,7 +71,7 @@ export class GameLogic implements IGameLogic {
     });
   }
 
-  onEndTurn(cb: (turns: ITurn[], isWin: boolean) => void) {
+  onEndTurn(cb: (turns: ITurn[]) => void) {
     if (typeof cb === 'function') {
       this._endTurnCb = cb
     } else {
@@ -100,11 +96,10 @@ export class GameLogic implements IGameLogic {
     this.currentTurns = null;
 
     this.scene.isRevers = this.playerColor === EColor.Black;
-    this.possibleTurnLogic = new PossibleTurnLogic(this.board, this.scene.letters, this.scene.numbers);
-
 
     this.board.initBoardView();
 
+    // TODO from room info
     this.checkers = [
       ...BLACK_POSITIONS.map((boardPosition) => {
         const checker = new Checker(this.scene, EColor.Black, boardPosition);
@@ -123,10 +118,6 @@ export class GameLogic implements IGameLogic {
         this.checkerClick(c)
       })
     })
-
-    this.checkers.filter((c) => c.color === this.currentTurnColor).forEach((c: any) => {
-      c.calculatePossibleTurns(this.possibleTurnLogic)
-    });
   }
 
   checkerClick(checker: IChecker) {
@@ -144,6 +135,7 @@ export class GameLogic implements IGameLogic {
       return;
     }
 
+    /* old logic
     let turns = this.checkers.filter((c) => c.color === this.currentTurnColor)
       .reduce((a, c) => {return [...a, {pos: c.boardPosition, turns: [...c.possibleTurns]}]}, <{pos: string, turns: ITurn[]}[]>[]);
 
@@ -159,9 +151,10 @@ export class GameLogic implements IGameLogic {
       this.activeCell = null;
       return;
     }
+     */
 
 
-    this.possibleTurns = this.possibleTurnLogic.calculate(checker);
+    this.possibleTurns = [];
     console.log('this.possibleTurns', this.possibleTurns);
 
     if (this.possibleTurns.length) {
@@ -199,7 +192,7 @@ export class GameLogic implements IGameLogic {
       let beatenChecker = this.checkers.find((checker) => checker.boardPosition === turn.beatPosition)
       beatenChecker.markAsBeaten();
 
-      this.possibleTurns = this.possibleTurnLogic.nextBeats(this.activeChecker, turn.direction);
+      this.possibleTurns = [];
       if (this.possibleTurns.length) {
         return;
       }
@@ -212,12 +205,13 @@ export class GameLogic implements IGameLogic {
     this.removeBeatenCheckers();
     this.activeCell = null;
     this.addHistory(this.currentTurns);
-    this._endTurnCb(this.currentTurns, this.checkWin());
+    this._endTurnCb(this.currentTurns);
     this.changeCurrentColor();
     this.currentTurns = null;
   }
 
   outsideTurn(turns: ITurn[]) {
+    // TODO validate checkers (may history)
     this._showErrorCb(null);
     for (let i = 1; i < turns.length; i++) {
       this.board.moveChecker(turns[i - 1].turnPosition, turns[i].turnPosition);
@@ -229,11 +223,6 @@ export class GameLogic implements IGameLogic {
 
     this.changeCurrentColor();
     this.addHistory(turns);
-
-    this.checkers.filter((c) => c.color === this.currentTurnColor).forEach((c: any) => {
-      c.calculatePossibleTurns(this.possibleTurnLogic)
-    })
-
   }
 
   removeBeatenCheckers() {
@@ -255,10 +244,6 @@ export class GameLogic implements IGameLogic {
     this.board.highlightAsHistory(positions);
 
     console.log('history', this.history);
-  }
-
-  private checkWin(): boolean {
-    return this.checkers.filter((checker) => checker.color !== this.currentTurnColor).length === 0
   }
 
   private removeChecker(position: string): void {
