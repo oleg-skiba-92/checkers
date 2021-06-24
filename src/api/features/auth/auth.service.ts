@@ -1,4 +1,4 @@
-import { google, } from 'googleapis';
+const {google} = require('googleapis');
 import { OAuth2Client } from 'google-auth-library';
 import { NextFunction } from 'express-serve-static-core';
 import * as jwt from 'jsonwebtoken';
@@ -34,13 +34,13 @@ export class AuthService implements IAuthService {
         return;
       }
 
-      if(!req.session.auth) {
+      if (!req.session.auth) {
         let guest = await guestData.create({
           id: uuidv4(),
           user_name: 'Guest'
         });
 
-        this.login(guestData.toUserInfo(guest), EAuthMethod.Guest, req)
+        this.login(guestData.toUserInfo(guest), EAuthMethod.Guest, req);
       }
 
       req.authData = (req.session && req.session.auth) || null;
