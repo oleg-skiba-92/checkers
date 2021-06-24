@@ -46,7 +46,7 @@ export class Game extends Phaser.Game implements IGame {
 
   initGameLogic(scene: IGameScene) {
     this.gameLogic = new GameLogic(scene);
-    this.gameLogic.onEndTurn((turns: ITurn[], isWin: boolean) => {
+    this.gameLogic.onEndTurn((turns: ITurn[]) => {
       // this.socketService.turnEnd(turns, this.room.id, isWin);
     });
 
