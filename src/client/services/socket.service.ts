@@ -1,12 +1,13 @@
 import { io } from 'socket.io-client';
 import { Socket } from 'socket.io-client/build/socket';
 import { EColor, ITurn, SocketEvents } from '../../models';
+import { BASE_SERVER_URL } from '../environment';
 
 export class SocketService {
   public socket: Socket;
 
   private get baseUrl(): string {
-    return 'http://localhost:3000';
+    return BASE_SERVER_URL;
   }
 
   connect() {
@@ -14,7 +15,7 @@ export class SocketService {
       this.socket.disconnect();
     }
 
-    this.socket = io(this.baseUrl);
+    this.socket = io(this.baseUrl, {withCredentials: true});
     this.socket.on('connect', () => {
       console.log('connect');
     });
@@ -38,11 +39,11 @@ export class SocketService {
   }
 
   turnEnd(turns: ITurn[], roomId: string, isWin: boolean) {
-    this.socket.emit(SocketEvents.TurnEnd, roomId, turns, isWin)
+    this.socket.emit(SocketEvents.TurnEnd, roomId, turns, isWin);
   }
 
   gameEnd(roomId: string) {
-    this.socket.emit(SocketEvents.GameEnd, roomId)
+    this.socket.emit(SocketEvents.GameEnd, roomId);
   }
 }
 

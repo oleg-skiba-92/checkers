@@ -1,8 +1,9 @@
 import { EAPIEndpoints, IUserInfo } from '../../models';
+import { BASE_SERVER_URL } from '../environment';
 
 export class ApiService {
   private get baseUrl(): string {
-    return 'http://localhost:3000';
+    return BASE_SERVER_URL;
   }
 
   private get authUrl(): string {
@@ -14,7 +15,9 @@ export class ApiService {
   }
 
   get<T>(urlParts: EAPIEndpoints[]): Promise<T> {
-    return fetch(this.buildUrl(urlParts))
+    return fetch(this.buildUrl(urlParts), {
+      credentials: 'include'
+    })
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -27,10 +30,14 @@ export class ApiService {
 
   post<T, R>(urlParts: EAPIEndpoints[], data: T): Promise<R> {
     return fetch(this.buildUrl(urlParts), {
-      method: 'POST', headers: {
+      method: 'POST',
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      }, body: JSON.stringify(data)
+      },
+      mode: "cors",
+      body: JSON.stringify(data),
+      credentials: 'include'
     })
       .then((response) => {
         if (response.ok) {

@@ -8,31 +8,12 @@ import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import copy from 'rollup-plugin-copy';
 import scss from 'rollup-plugin-scss';
+import serve from 'rollup-plugin-serve-proxy';
 
 const production = !process.env.ROLLUP_WATCH;
 
 const PORT = 3001;
-
-function serve() {
-  let server;
-
-  function toExit() {
-    if (server) server.kill(0);
-  }
-
-  return {
-    writeBundle() {
-      if (server) return;
-      server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev', `--port ${PORT}`], {
-        stdio: ['ignore', 'inherit', 'inherit'],
-        shell: true
-      });
-
-      process.on('SIGTERM', toExit);
-      process.on('exit', toExit);
-    }
-  };
-}
+const BASE_SERVER_URL = 'http://localhost:3000';
 
 export default {
   input: 'src/client/index.ts',
@@ -71,7 +52,21 @@ export default {
     copyOnce: true
     }),
 
-    !production && serve(),
+    // !production && serve(),
+
+    serve({
+      open: true,
+      verbose: false,
+      contentBase: 'dist',
+      historyApiFallback: false,
+      host: 'localhost',
+      port: PORT,
+      proxy: {
+        api: BASE_SERVER_URL,
+        'socket.io': BASE_SERVER_URL
+      }
+    }),
+
     !production && livereload('dist'),
     production && terser()
   ],
