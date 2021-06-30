@@ -13,6 +13,7 @@ button {
   justify-content: center;
   border-radius: 0;
   height: $hight-button;
+  min-width: $fco-btn-min-width;
   margin: $margin-button;
   padding: $padding-button;
   border: none;
@@ -21,6 +22,12 @@ button {
   color: $font-color-dark;
   text-align: center;
   font-size: $font-size-md;
+  font-family: $font-family;
+
+  &:hover {
+    cursor: pointer;
+    background-color: $color-disabled_01;
+  }
 
   &--orange {
     background: $color-orange_01;
@@ -54,4 +61,9 @@ button {
   &--full {
     Width: 100%;
   }
+  
+  &--align-center {
+    margin: 0 auto;
+  }
+  
 }

@@ -2,22 +2,79 @@
 
 .fco-left-sidebar {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: $left-sidebar-width;
   height: $left-sidebar-height;
   background-color: $left-sidebar-color;
-  color: red;
-
+  color: $font-color-light;
+  
   & img {
     width: $img-icon-size;
     height: $img-icon-size;
-    margin-left: $img-icon-margin-left;
-    margin-right: $img-icon-margin-right;
   }
   
-
-  & button-wrapper {
-    display: flex;
+  &__items {
+   flex: 1;
   }
-}
 
+  &__item {
+    display:flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    
+    &:hover {
+      background-color: $item-background-hover;
+    }
+
+    &--no-bg-hover:hover {
+      background-color: $left-sidebar-color;
+    }
+  }
+  
+  &__title-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    line-height: $line-height-size-sm;
+    flex: 1;
+  }
+
+  &__title {
+    font-size:$font-size-lg;
+    line-height: $line-height-size-sm;
+  }
+  &__info {
+    font-size:$font-size-sm;
+    line-height: $line-height-size-sm;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  &__button-setting {
+    width: $img-icon-size;
+    height: $img-icon-size;
+    fill: $icon-color;
+
+    &:hover svg {
+      fill: $color-disabled_01;
+      cursor: pointer;
+    }
+  }
+
+  &__button-exit {
+    width: $img-icon-size;
+    height: $img-icon-size;
+    fill: $icon-color;
+
+    &:hover svg {
+      fill: $color-disabled_01;
+      cursor: pointer;
+    }
+  }
+  
+}

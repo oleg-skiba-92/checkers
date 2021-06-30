@@ -16,8 +16,10 @@ $list-title-bg:                       #313131;
 $fco-list-bg:                         #2c2a2a;
 $item-background-hover:               #383636;
 $border-bottom-item-color:            #909090;
+$icon-color:                          #ffffff;
 
 $hight-button:                        4rem;
+$fco-btn-min-width:                   10rem;
 $padding-button:                      0.7rem;
 $margin-button:                       1rem;
 
@@ -43,14 +45,15 @@ $screen-xs:                           400px;
 
 $board-size:                          540px;
 
-$img-icon-size:                       50px;
+$img-icon-size:                       40px;
 $img-icon-margin-left:                1rem;
 $img-icon-margin-right:               1.5rem;
 
 $item-padding:                        5px;
-$border-bottom-item-size:                  2px;
-$line-height-size-sm:                 1.2;
-$fco-list-height:                     265px;
+$border-bottom-item-size:             2px;
+$line-height-size-sm:                 1.5rem;
+$line-height-size-md:                 2.5rem;
+$fco-list-height:                     100%;
 
 $left-sidebar-width:                  15rem;
 $left-sidebar-height:                 100%;
