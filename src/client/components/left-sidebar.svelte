@@ -13,19 +13,16 @@
     {#if $me}
       <div class="fco-left-sidebar__item">
         <img src="{$me.picture}" alt="avatar">  
-
         <div class="fco-left-sidebar__title-info-wrapper">
           <div class="fco-left-sidebar__title">{$me.userName}</div>
           <div class="fco-left-sidebar__info">{$me.rating}</div>
         </div>
       </div>    
     {/if} 
-
-    <!-- Button play -->
-    <div class="fco-left-sidebar__item fco-left-sidebar__item--no-bg-hover">
-      <button class="fco-btn fco-btn--align-center">Play</button>
-    </div>
   </div>
+
+  <!-- Button play -->
+  <button class="fco-btn fco-btn--align-center">Play</button>
 
   <!-- foote buttons -->
   <div class="fco-left-sidebar__footer">
