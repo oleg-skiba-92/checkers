@@ -12,7 +12,10 @@ export class SessionService implements IInitializedService {
 
   async initialise(server?: IServer): Promise<boolean> {
     let RedisStore = connectRedis(session)
-    let redisClient = redis.createClient();
+    let redisClient = redis.createClient({
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT
+    });
     this.redisStore = new RedisStore({
       client: redisClient
     });
