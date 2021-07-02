@@ -54,7 +54,7 @@ export default {
 
     // !production && serve(),
 
-    serve({
+    !production && serve({
       open: true,
       verbose: false,
       contentBase: 'dist',
