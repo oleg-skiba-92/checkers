@@ -8,7 +8,7 @@
     "dev": "rollup -c -w",
     "start": "sirv dist --no-clear",
     "check": "svelte-check --tsconfig tsconfig.svelte.json",
-    "heroku": "rollup -c && ts-node server.ts"
+    "heroku": "ts-node server.ts"
   },
   "author": "",
   "license": "ISC",
