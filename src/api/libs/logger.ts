@@ -44,18 +44,28 @@ export class Logger implements ILogger {
   private get logLevel(): TLogLevel {
     return process.env.LOG_LEVEL || 'INFO';
   }
+
   private get showDate(): boolean {
+    let value = this.convertStringToBoolean(process.env.LOG_SHOW_DATE);
+    return value !== null ? value : false;
     return process.env.LOG_SHOW_DATE || false;
   }
+
   private get showTime(): boolean {
-    return process.env.LOG_SHOW_TIME || true;
+    let value = this.convertStringToBoolean(process.env.LOG_SHOW_TIME);
+    return value !== null ? value : true;
   }
+
   private get showModule(): boolean {
-    return process.env.LOG_SHOW_MODULE || true;
+    let value = this.convertStringToBoolean(process.env.LOG_SHOW_MODULE);
+    return value !== null ? value : true;
   }
+
   private get showColor(): boolean {
-    return process.env.LOG_SHOW_COLOR || true;
+    let value = this.convertStringToBoolean(process.env.LOG_SHOW_COLOR);
+    return value !== null ? value : true;
   }
+
   private get delimiter(): string {
     return process.env.LOG_DELIMITER || ' | ';
   }
@@ -161,6 +171,21 @@ export class Logger implements ILogger {
         return `\x1b[34m${message}\x1b[39m`;
       case 'cyan':
         return `\x1b[36m${message}\x1b[39m`;
+    }
+  }
+
+  private convertStringToBoolean(value: string): boolean {
+    if (value === undefined) {
+      return null;
+    }
+
+    switch (value.toLowerCase()) {
+      case 'true':
+        return true;
+      case 'false':
+        return false;
+      default:
+        return null;
     }
   }
 
