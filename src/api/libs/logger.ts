@@ -1,12 +1,3 @@
-const CONFIG = {
-  isServer: false,
-  showDate: false,
-  showTime: true,
-  showModule: true,
-  color: true,
-  delimiter: ' | ',
-};
-
 //#region types
 declare var process;
 
@@ -51,11 +42,22 @@ export class Logger implements ILogger {
 
   //#region private getters
   private get logLevel(): TLogLevel {
-    if (CONFIG.isServer) {
-      return <TLogLevel>process.env.LOG_LEVEL;
-    }
-
-    return 'DEBUG';
+    return process.env.LOG_LEVEL || 'INFO';
+  }
+  private get showDate(): boolean {
+    return process.env.LOG_SHOW_DATE || false;
+  }
+  private get showTime(): boolean {
+    return process.env.LOG_SHOW_TIME || true;
+  }
+  private get showModule(): boolean {
+    return process.env.LOG_SHOW_MODULE || true;
+  }
+  private get showColor(): boolean {
+    return process.env.LOG_SHOW_COLOR || true;
+  }
+  private get delimiter(): string {
+    return process.env.LOG_DELIMITER || ' | ';
   }
 
   private get date(): string {
@@ -75,7 +77,7 @@ export class Logger implements ILogger {
     ].join('/');
     // tslint:enable:no-magic-numbers
 
-    return `${CONFIG.showTime ? _timeStr : ''} ${CONFIG.showDate ? _dateStr : ''}`.trim();
+    return `${this.showTime ? _timeStr : ''} ${this.showDate ? _dateStr : ''}`.trim();
   }
 
   //#endregion private getters
@@ -108,7 +110,7 @@ export class Logger implements ILogger {
       return acc;
     }, []);
 
-    console.log(_arr.join(CONFIG.delimiter));
+    console.log(_arr.join(this.delimiter));
   }
 
   //#endregion public methods
@@ -121,11 +123,11 @@ export class Logger implements ILogger {
 
     let _arr = [];
 
-    if (CONFIG.showDate || CONFIG.showTime) {
+    if (this.showDate || this.showTime) {
       _arr.push(this.color(`[${this.date}]`, 'gray'));
     }
 
-    if (CONFIG.showModule) {
+    if (this.showModule) {
       _arr.push(this.color(`(${this.module})`, 'cyan'));
     }
 
@@ -136,11 +138,11 @@ export class Logger implements ILogger {
     }
 
     // tslint:disable-next-line:no-console
-    console.log(_arr.join(CONFIG.delimiter));
+    console.log(_arr.join(this.delimiter));
   }
 
   private color(message: string, color: TLogColor): string {
-    if (!CONFIG.color) {
+    if (!this.showColor) {
       return message;
     }
 
