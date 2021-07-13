@@ -19,7 +19,11 @@ export class SocketService implements IInitializedService {
 
   async initialise(server: App): Promise<boolean> {
     this.io = new io.Server(server.http, {
-      cors: {origin: '*',}
+      cors: {
+        // TODO: find another way
+        origin: 'http://localhost:3001',
+        credentials: true
+      }
     });
 
     this.io.on('connection', (socket: ISocket) => {
