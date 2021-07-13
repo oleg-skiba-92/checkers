@@ -26,7 +26,7 @@ export class SessionService implements IInitializedService {
       store: this.redisStore,
       resave: true,
       saveUninitialized: true,
-        // proxy: true,
+        proxy: true,
       cookie: {
         httpOnly: false,
         secure: true,
