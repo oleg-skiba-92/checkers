@@ -12,6 +12,7 @@
   & img {
     width: $img-icon-size;
     height: $img-icon-size;
+    margin-right: 5px;
   }
   
   &__items {
@@ -21,7 +22,7 @@
   &__item {
     display:flex;
     flex-wrap: wrap;
-    margin-bottom: 10px;
+    margin: 10px 5px 10px 5px;
     
     &:hover {
       background-color: $item-background-hover;

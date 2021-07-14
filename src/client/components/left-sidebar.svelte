@@ -1,4 +1,5 @@
 <script type="ts">
+  import App from '../app.svelte';
   import {usersService} from '../services/users.service';
   let me = usersService.me;
 
@@ -12,13 +13,19 @@
     <!-- left side bar items (avatar, title, info) -->
     {#if $me}
       <div class="fco-left-sidebar__item">
-        <img src="{$me.picture}" alt="avatar">  
+        
+        {#if $me.picture}
+          <img src="{$me.picture}" alt="avatar">
+        {:else}
+          <img src="../../../assets/avatar.png" alt="avatar">
+        {/if}
+        
         <div class="fco-left-sidebar__title-info-wrapper">
           <div class="fco-left-sidebar__title">{$me.userName}</div>
           <div class="fco-left-sidebar__info">{$me.rating}</div>
         </div>
       </div>    
-    {/if} 
+    {/if}
   </div>
 
   <!-- Button play -->

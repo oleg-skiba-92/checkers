@@ -17,6 +17,7 @@
     border-bottom: $border-bottom-item-size solid $border-bottom-item-color;
     padding: $item-padding;
     background-color: $list-title-bg;
+    line-height: $line-height-size-md;
   }
   
   &__item {
