@@ -1,9 +1,12 @@
 <script type="ts">
-  import App from '../app.svelte';
+  import Login from './login.svelte';
   import {usersService} from '../services/users.service';
+  import { modalService } from '../services/modal.service';
   let me = usersService.me;
 
-  
+  let openLogin = () => {
+    modalService.openModal(Login);
+  }
 </script>
 <!--------------------------------HTML CODE-------------------------------->
 
@@ -33,6 +36,7 @@
 
   <!-- foote buttons -->
   <div class="fco-left-sidebar__footer">
+    <!--TODO: icon btn-->
     <div class="fco-left-sidebar__button-setting">
       <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24">
         <path d="M0,0h24v24H0V0z" fill="none"/>
@@ -40,7 +44,7 @@
      </svg>
     </div>
 
-    <div class="fco-left-sidebar__button-exit">
+    <div class="fco-left-sidebar__button-exit" on:click={openLogin}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M0 0h24v24H0z" fill="none"/>
         <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>

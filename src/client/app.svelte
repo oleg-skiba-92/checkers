@@ -2,6 +2,7 @@
   import LeftSideBar from './components/left-sidebar.svelte';
   import Game from './components/game.svelte';
   import RightSideBar from './components/right-sidebar.svelte';
+  import Modal from './components/common/modal.svelte';
 
   import { socketService, usersService } from './services';
   import { SocketEvents } from '../models';
@@ -40,3 +41,5 @@
     </div>
   </div>
 </main>
+
+<Modal/>
