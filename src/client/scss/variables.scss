@@ -1,3 +1,4 @@
+//#region colors
 $color-dark_01:                       #0d0d0d;
 $color-dark_02:                       #1a1a1a;
 $color-dark_03:                       #262626;
@@ -17,12 +18,14 @@ $fco-list-bg:                         #2c2a2a;
 $item-background-hover:               #383636;
 $border-bottom-item-color:            #909090;
 $icon-color:                          #ffffff;
+//#endregion colors
 
 $hight-button:                        4rem;
 $fco-btn-min-width:                   10rem;
 $padding-button:                      0.7rem;
 $margin-button:                       1rem;
 
+//#region fonts
 $font-family:                         'Roboto', sans-serif;
 
 $font-size-xs:                        1rem;
@@ -31,26 +34,31 @@ $font-size-md:                        1.4rem;
 $font-size-lg:                        2rem;
 $font-size-xl:                        2.4rem;
 
-$lines-header:                        1;
-
 $font-color-light:                    #e6e6e6;
 $font-color-dark:                     $color-dark_01;
+//#endregion fonts
+
+$lines-header:                        1;
 
 $bg-color:                            $color-dark_03;
 
+//#region
 $screen-lg:                           1200px;
 $screen-md:                           960px;
 $screen-sm:                           600px;
 $screen-xs:                           400px;
+//#endregion
 
 $board-size:                          540px;
 
+//#region icons
 $img-icon-size:                       40px;
 $img-icon-margin-left:                1rem;
 $img-icon-margin-right:               1.5rem;
+//#endregion icons
 
 $item-padding:                        5px;
-$border-bottom-item-size:             2px;                
+$border-bottom-item-size:             2px;
 $line-height-size-sm:                 1.5rem;
 $line-height-size-md:                 2.5rem;
 $fco-list-height:                     100%;
@@ -60,3 +68,15 @@ $left-sidebar-height:                 100%;
 $left-sidebar-color:                  #2c2a2a;
 $min-height-left-right-side-bar:      180px;
 $min-width-title-info-wrapper:        50px;
+
+//#region z-indexes
+$modal-z-index:                       99;
+//#endregion z-indexes
+
+//#region modal
+$modal-bg:                            $bg-color;
+$modal-backdrop-bg:                   #ffffffb3;
+
+$modal-size-md:                       60%;
+$modal-size-full:                     100%;
+//#endregion modal
