@@ -15,7 +15,6 @@
 <!--------------------------------HTML CODE-------------------------------->
 
 <div class="fco-right-sidebar">
-  {$suggests.length}
   {#if $suggests.length}
     <List
         list={$suggests}
