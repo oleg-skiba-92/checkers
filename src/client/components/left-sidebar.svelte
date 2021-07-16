@@ -4,7 +4,7 @@
   import { modalService } from '../services/modal.service';
   import { EPageState } from './../models';
 
-  let me = usersService.me;
+  let me = usersService.me$;
 
   let openLogin = () => {
     modalService.openModal(Login);
