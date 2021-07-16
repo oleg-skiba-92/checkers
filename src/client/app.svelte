@@ -1,11 +1,17 @@
 <script lang="ts">
   import LeftSideBar from './components/left-sidebar.svelte';
   import Game from './components/game.svelte';
+  import Home from './components/home.svelte';
+  import Profile from './components/profile.svelte';
   import RightSideBar from './components/right-sidebar.svelte';
+  import FindGame from './components/find-game.svelte';
   import Modal from './components/common/modal.svelte';
 
-  import { socketService, usersService } from './services';
+  import { EPageState } from './models';
+  import { socketService, usersService, routerService } from './services';
   import { SocketEvents } from '../models';
+
+  let currentState = routerService.currentState$;
 
   usersService.getMe().then(() => {
     socketService.connect();
@@ -32,8 +38,16 @@
   </div>
 
   <div class="fco-container">
-    <div class="fco-game-wrapper">
-      <Game/>
+    <div class="fco-content-wrapper">
+      {#if $currentState === EPageState.Home}
+        <Home/>
+      {:else if $currentState === EPageState.Profile}
+        <Profile/>
+      {:else if $currentState === EPageState.Game}
+        <Game/>
+      {:else if $currentState === EPageState.FindGame}
+        <FindGame/>
+      {/if}
     </div>
 
     <div class="fco-right-sidebar-wrapper">
