@@ -1,18 +1,39 @@
 <script lang="ts">
-  import List from './common/list.svelte'
-  import { storeService } from '../services/store.service';
+  import List from './common/list.svelte';
+  import { playersService, socketService } from '../services';
 
-  let test = (id: string) => {
-    console.log('test clicked', id);
-  }
+  let suggests = playersService.invitesToMe$;
+
+  const agree = (id: string) => {
+    socketService.agreeSuggest(id);
+  };
+  const disagree = (id: string) => {
+    socketService.disagreeSuggest(id);
+  };
 </script>
 
 <!--------------------------------HTML CODE-------------------------------->
 
 <div class="fco-right-sidebar">
-  <List
-      list={storeService.freePlayers}
-      title={'Вільні гравці'}
-      actions={[{label: 'Запропонувати', btnClasses: 'fco-btn__primary', onClick: (id) => test(id)}]}
-  />
+  {#if $suggests.length}
+    <List
+        list={$suggests}
+        title={'Players want to play with you'}
+        let:id
+    >
+      <svelte:fragment slot="actions">
+        <button
+            type="button"
+            class="fco-btn fco-btn--orange"
+            on:click={() => agree(id)}
+        >Yes</button>
+
+        <button
+            type="button"
+            class="fco-btn fco-btn--red"
+            on:click={() => disagree(id)}
+        >No</button>
+      </svelte:fragment>
+    </List>
+  {/if}
 </div>

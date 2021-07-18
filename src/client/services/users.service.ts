@@ -1,20 +1,24 @@
 import { apiService } from './api.service';
 import { EAPIEndpoints, ILoginRequest, IRegistrationRequest, IUserInfo } from '../../models';
-import { Writable, writable } from 'svelte/store';
+import { get, Writable, writable } from 'svelte/store';
 import { mock, mUser } from '../mock-data';
 
 export class UsersService {
-  me: Writable<IUserInfo>;
+  me$: Writable<IUserInfo>;
+
+  get me(): IUserInfo {
+    return get(this.me$);
+  }
 
   constructor() {
-    this.me = writable(null);
+    this.me$ = writable(null);
   }
 
   getMe(): Promise<IUserInfo> {
     return apiService.get<IUserInfo>([EAPIEndpoints.User, EAPIEndpoints.Me])
       .catch(err => mock(err, mUser))
       .then(res => {
-        this.me.set(res);
+        this.me$.set(res);
         return res;
       });
   }
@@ -23,7 +27,7 @@ export class UsersService {
     return apiService.post<ILoginRequest, IUserInfo>([EAPIEndpoints.Auth, EAPIEndpoints.Login], data)
       .catch(err => mock(err, mUser))
       .then(res => {
-        this.me.set(res);
+        this.me$.set(res);
         return res;
       });
   }
@@ -32,7 +36,7 @@ export class UsersService {
     return apiService.post<IRegistrationRequest, IUserInfo>([EAPIEndpoints.Auth, EAPIEndpoints.Registration], data)
       .catch(err => mock(err, mUser))
       .then(res => {
-        this.me.set(res);
+        this.me$.set(res);
         return res;
       });
   }
