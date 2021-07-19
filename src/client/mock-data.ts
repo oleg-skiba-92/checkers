@@ -1,4 +1,5 @@
-import { playersService, usersService } from './services';
+import { playersService } from './services/players.service';
+import { usersService } from './services/users.service';
 
 export function mock(err, data) {
   if(err == 'TypeError: Failed to fetch') {
