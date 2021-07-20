@@ -1,8 +1,7 @@
 import 'phaser';
 
 import { IRoom } from '../../models';
-import { SocketService, UiService } from '../services';
-import { EColor, ITurn } from '../../models';
+import { ITurn } from '../../models';
 import { IGameScene } from './views.model';
 import { GameLogic, IGameLogic } from './game.logic';
 import { GameScene } from './game.scene';
@@ -23,14 +22,20 @@ const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
 
 export interface IGame extends Phaser.Game {
   initGameLogic(scene: IGameScene): void;
+
+  afterLoad(fn: () => void): void;
 }
 
 export class Game extends Phaser.Game implements IGame {
   gameLogic: IGameLogic;
   room: IRoom;
 
+  private isLoaded: boolean;
+  private _onAfterLoad: () => void;
+
   constructor() {
     super({...GAME_CONFIG, ...{scene: [GameScene]}});
+    this.isLoaded = false;
   }
 
   newGame(room: IRoom, currentUserId: string) {
@@ -46,6 +51,12 @@ export class Game extends Phaser.Game implements IGame {
 
   initGameLogic(scene: IGameScene) {
     this.gameLogic = new GameLogic(scene);
+
+    this.isLoaded = false;
+    if (typeof this._onAfterLoad === 'function') {
+      this._onAfterLoad();
+    }
+
     this.gameLogic.onEndTurn((turns: ITurn[]) => {
       // this.socketService.turnEnd(turns, this.room.id, isWin);
     });
@@ -53,5 +64,18 @@ export class Game extends Phaser.Game implements IGame {
     this.gameLogic.onError((error) => {
       console.log('onError', error);
     });
+  }
+
+  afterLoad(fn: () => void) {
+    if (typeof fn !== 'function') {
+      return;
+    }
+
+    if (this.isLoaded) {
+      fn();
+      return;
+    }
+
+    this._onAfterLoad = fn;
   }
 }

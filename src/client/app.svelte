@@ -8,13 +8,14 @@
   import Modal from './components/common/modal.svelte';
 
   import { EPageState } from './models';
-  import { socketService, usersService, routerService, playersService } from './services';
+  import { playersService, routerService, socketService, usersService } from './services';
   import { SocketEvents } from '../models';
   import { mockAllData } from './mock-data';
 
   (<any>window).mockAllData = mockAllData
 
   let currentState = routerService.currentState$;
+  let room;
 
   usersService.getMe().then(() => {
     socketService.connect();
@@ -31,6 +32,8 @@
 
     socketService.socket.on(SocketEvents.GameStart, (data) => {
       console.log('GameStart', data);
+      room = data;
+      routerService.goTo(EPageState.Game);
     });
   });
 </script>
@@ -49,7 +52,7 @@
       {:else if $currentState === EPageState.Profile}
         <Profile/>
       {:else if $currentState === EPageState.Game}
-        <Game/>
+        <Game room={room}/>
       {:else if $currentState === EPageState.FindGame}
         <FindGame/>
       {/if}
