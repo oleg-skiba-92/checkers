@@ -58,6 +58,7 @@ export class App implements IServer {
     this.app.use('/style.css', express.static(join(process.cwd(), 'dist/style.css')));
     this.app.use('/global.css', express.static(join(process.cwd(), 'dist/global.css')));
     this.app.use('/bundle.js', express.static(join(process.cwd(), 'dist/bundle.js')));
+    this.app.use('/vendor.js', express.static(join(process.cwd(), 'dist/vendor.js')));
 
     this.app.use(sessionService.sessionMiddleware);
     authService.config(this);
