@@ -1,14 +1,17 @@
 import { IPlayer, ITurn } from '../../../models';
 import { IUserEntity } from '../user/user.model';
+import { ICheckerCollection } from '../checker/checker.model';
 
 export interface IRoomInfo {
   id: string;
   players: IPlayer[];
+  checkers: string;
 }
 
 
 export interface IRoomEntity {
   id: string;
+  checkers: ICheckerCollection;
 
   readonly info: IRoomInfo;
 

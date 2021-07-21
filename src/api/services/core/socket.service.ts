@@ -1,6 +1,6 @@
 import * as io from 'socket.io';
 
-import { EColor, IPlayer, ITurn, SocketEvents } from '../../../models';
+import { EColor, INextTurns, IPlayer, ITurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
 import { Logger } from '../../libs';
 import { ISuggest } from '../../features/suggest/suggest.model';
@@ -92,8 +92,8 @@ export class SocketService implements IInitializedService {
 
 
 
-  startGame(room: IRoomInfo): void {
-    this.io.to(room.id).emit(SocketEvents.GameStart, room)
+  startGame(room: IRoomInfo, nextTurns: INextTurns): void {
+    this.io.to(room.id).emit(SocketEvents.GameStart, room, nextTurns)
   }
 
   joinToRooms(socketIds: string[], roomId: string): void {

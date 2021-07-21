@@ -1,4 +1,4 @@
-import { ITurn } from '../../../models';
+import { EColor, ITurn } from '../../../models';
 import { socketService } from '../../services/core';
 import { IUserEntity, IUsersCollection } from '../user/user.model';
 import { IRoomsCollection } from '../room/room.model';
@@ -7,6 +7,7 @@ import { UsersCollection } from '../user/users.collection';
 import { RoomsCollection } from '../room/rooms.collection';
 import { SuggestCollection } from '../suggest/suggest.collection';
 import { IAuthData } from '../auth/auth.model';
+import { checkerLogic } from '../checker/checker.logic';
 
 class GameController {
   private users: IUsersCollection;
@@ -57,8 +58,10 @@ class GameController {
     let room = this.rooms.createRoom([fromUser, user]);
     room.newGame();
 
+    let nextTurns = checkerLogic.getNextTurns(room.checkers, EColor.White)
+
     socketService.joinToRooms([fromUser.socketId, user.socketId], room.id);
-    socketService.startGame(room.info);
+    socketService.startGame(room.info, nextTurns);
 
     this.updateAllLists();
   }

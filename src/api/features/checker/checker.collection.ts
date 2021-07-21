@@ -29,8 +29,26 @@ export class CheckerCollection implements ICheckerCollection {
     return this.blacks.map(checker => checker.position);
   }
 
+  get asString(): string {
+    return [
+      this.whites.map(checker => checker.boardPosition).join(','),
+      this.blacks.map(checker => checker.boardPosition).join(',')
+    ].join(';');
+  }
+
   constructor() {
     this.reset();
+  }
+
+  getByColor(color: EColor): ICheckerEntity[] {
+    switch (color) {
+      case EColor.White:
+        return this.whites;
+      case EColor.Black:
+        return this.blacks;
+      default:
+        return [];
+    }
   }
 
   hasChecker(position: string, excludes: string[] = [], color?: EColor): boolean {

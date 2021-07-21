@@ -1,5 +1,5 @@
 import { Board, CHECKER_DIRECTIONS, IBoard, ICheckerCollection, ICheckerEntity, ICheckerLogic } from './checker.model';
-import { EDirections, ITurn } from '../../../models';
+import { EColor, EDirections, INextTurns, ITurn } from '../../../models';
 
 export class CheckerLogic implements ICheckerLogic {
   private board: IBoard;
@@ -8,39 +8,56 @@ export class CheckerLogic implements ICheckerLogic {
     this.board = new Board();
   }
 
-  calculateTurns(checkers: ICheckerCollection, checker: ICheckerEntity) {
+  getNextTurns(checkers: ICheckerCollection, color: EColor): INextTurns {
+    return {
+      color,
+      beats: this.calculate(checkers, color, 'beats'),
+      turns: this.calculate(checkers, color, 'turns')
+    };
+  }
+
+  private calculate(checkers: ICheckerCollection, color: EColor, type: 'turns' | 'beats'): ITurn[][] {
+    return checkers.getByColor(color).map((checker) => {
+      return (type === 'turns' ? this.calculateTurns(checkers, checker) : this.calculateBeats(checkers, checker))
+        .filter((turns) => turns.length)
+        .map(this.addFirstTurn(checker));
+    })
+      .reduce(this.joinTurns, []);
+  }
+
+  private calculateTurns(checkers: ICheckerCollection, checker: ICheckerEntity): ITurn[][] {
     return checker.directions
       .map((direction) => this.calculateTurn(checkers, checker, direction))
-      .reduce((acc, cur) => [...acc, ...cur], []);
+      .reduce(this.joinTurns, []);
   }
 
-  calculateBeats(checkers: ICheckerCollection, checker: ICheckerEntity, previousTurns: ITurn[] = []) {
+  private calculateBeats(checkers: ICheckerCollection, checker: ICheckerEntity, previousTurns: ITurn[] = []): ITurn[][] {
     return CHECKER_DIRECTIONS.ALL
       .map((direction) => this.calculateBeat(checkers, checker, direction, previousTurns))
-      .reduce((acc, cur) => [...acc, ...cur], []);
+      .reduce(this.joinTurns, []);
   }
 
-  private calculateTurn(checkers: ICheckerCollection, checker: ICheckerEntity, direction: EDirections): ITurn[] {
+  private calculateTurn(checkers: ICheckerCollection, checker: ICheckerEntity, direction: EDirections): ITurn[][] {
     let positions = this.board.getDirectionCells(checker.position, direction);
 
-    let arr: ITurn[] = [];
+    let turns: ITurn[][] = [];
     let stopIdx = checker.isQueen ? positions.length : 1;
 
     if (!positions.length) {
-      return arr;
+      return turns;
     }
 
     let idx = 0;
 
     while (idx < stopIdx && !checkers.hasChecker(positions[idx])) {
-      arr.push({
+      turns.push([{
         turnPosition: positions[idx],
         direction
-      });
+      }]);
       idx++;
     }
 
-    return arr;
+    return turns;
   }
 
   private calculateBeat(checkers: ICheckerCollection, checker: ICheckerEntity, direction: EDirections, previousTurns: ITurn[]) {
@@ -102,6 +119,18 @@ export class CheckerLogic implements ICheckerLogic {
     }
   }
 
+  // mapping for adding first turn (selected checker)
+  private addFirstTurn(checker: ICheckerEntity) {
+    return (turns :ITurn[]) => [{
+      turnPosition: checker.position,
+      beatPosition: null,
+      direction: null
+    }, ...turns]
+  }
+
+  private joinTurns(acc: ITurn[][], curr: ITurn[][]): ITurn[][] {
+    return [...acc, ...curr];
+  }
 }
 
 export const checkerLogic = new CheckerLogic();
