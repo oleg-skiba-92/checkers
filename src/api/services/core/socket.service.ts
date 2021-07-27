@@ -1,6 +1,6 @@
 import * as io from 'socket.io';
 
-import { EColor, INextTurns, IPlayer, ITurn, SocketEvents } from '../../../models';
+import { INextTurns, IPlayer, IUserTurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
 import { Logger } from '../../libs';
 import { ISuggest } from '../../features/suggest/suggest.model';
@@ -13,7 +13,7 @@ import { UserCtrl } from '../../features/user/user.controller';
 
 export class SocketService implements IInitializedService {
   private io: io.Server;
-  private log = new Logger('SOCKET')
+  private log = new Logger('SOCKET');
 
   constructor() {}
 
@@ -29,15 +29,15 @@ export class SocketService implements IInitializedService {
     this.io.on('connection', (socket: ISocket) => {
       this.log.info('Connect');
 
-      let auth: IAuthData = socket.request.session && socket.request.session.auth
+      let auth: IAuthData = socket.request.session && socket.request.session.auth;
 
       if (!auth) {
-        this.log.error('unauthorised user')
+        this.log.error('unauthorised user');
         socket.disconnect(true);
-        return
+        return;
       }
 
-      socket.join('general')
+      socket.join('general');
 
       let socketUser = GameCtrl.userConnected(auth, socket.id);
 
@@ -49,23 +49,23 @@ export class SocketService implements IInitializedService {
       socket.on(SocketEvents.AgreeSuggest, (userId) => {
         this.log.info('AgreeSuggest', userId);
         GameCtrl.agreeSuggest(socketUser, userId);
-      })
+      });
 
       socket.on(SocketEvents.DisagreeSuggest, (userId) => {
-        this.log.info('DisagreeSuggest', userId)
+        this.log.info('DisagreeSuggest', userId);
         GameCtrl.disagreeSuggest(socketUser, userId);
-      })
+      });
 
-      socket.on(SocketEvents.TurnEnd, (roomId, turns, isWin) => {
-        this.log.info('TurnEnd', {roomId, turns, isWin})
-        GameCtrl.turnEnd(socketUser, roomId, turns, isWin);
-      })
+      socket.on(SocketEvents.TurnEnd, (roomId, turns) => {
+        this.log.info('TurnEnd', {roomId, turns});
+        GameCtrl.turnEnd(socketUser, roomId, turns);
+      });
 
       socket.on(SocketEvents.Disconnect, (reason) => {
         this.log.info('Disconnect', reason);
         GameCtrl.userDisconnected(socketUser);
-        UserCtrl.userDisconnected(auth)
-      })
+        UserCtrl.userDisconnected(auth);
+      });
     });
 
     return true;
@@ -90,20 +90,18 @@ export class SocketService implements IInitializedService {
     this.io.in('general').emit(SocketEvents.RoomList, rooms);
   }
 
-
-
   startGame(room: IRoomInfo, nextTurns: INextTurns): void {
-    this.io.to(room.id).emit(SocketEvents.GameStart, room, nextTurns)
+    this.io.to(room.id).emit(SocketEvents.GameStart, room, nextTurns);
   }
 
   joinToRooms(socketIds: string[], roomId: string): void {
     socketIds.forEach((socketId) => {
       this.io.sockets.sockets.get(socketId).join(roomId);
-    })
+    });
   }
 
-  endTurn(roomId: string, turns: ITurn[], userId: string, color: EColor): void {
-    this.io.to(roomId).emit(SocketEvents.TurnEnd, turns, userId, color)
+  endTurn(roomId: string, userTurn: IUserTurn, nextTurns: INextTurns): void {
+    this.io.to(roomId).emit(SocketEvents.TurnEnd, userTurn, nextTurns);
   }
 
   endGame(roomId: string, player: IPlayer): void {
@@ -119,4 +117,4 @@ export class SocketService implements IInitializedService {
   }
 }
 
-export const socketService = new SocketService()
+export const socketService = new SocketService();

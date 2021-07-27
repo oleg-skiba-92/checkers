@@ -8,6 +8,7 @@ import { RoomsCollection } from '../room/rooms.collection';
 import { SuggestCollection } from '../suggest/suggest.collection';
 import { IAuthData } from '../auth/auth.model';
 import { checkerLogic } from '../checker/checker.logic';
+import { OPPONENT_COLOR } from '../checker/checker.model';
 
 class GameController {
   private users: IUsersCollection;
@@ -34,6 +35,7 @@ class GameController {
       room.endGame();
       socketService.userLeftRoom(user.roomId, user.playerData);
       socketService.leveAllFromRoom(user.roomId);
+      // TODO: remove room if all users disconnected
     }
 
     this.suggests.removeAllWith([user.id]);
@@ -58,7 +60,7 @@ class GameController {
     let room = this.rooms.createRoom([fromUser, user]);
     room.newGame();
 
-    let nextTurns = checkerLogic.getNextTurns(room.checkers, EColor.White)
+    let nextTurns = checkerLogic.getNextTurns(room.checkers, EColor.White);
 
     socketService.joinToRooms([fromUser.socketId, user.socketId], room.id);
     socketService.startGame(room.info, nextTurns);
@@ -75,19 +77,22 @@ class GameController {
     }
   }
 
-  turnEnd(fromUser: IUserEntity, roomId: string, turns: ITurn[], isWin: boolean) {
+  turnEnd(fromUser: IUserEntity, roomId: string, turns: ITurn[]) {
     let room = this.rooms.getById(roomId);
+    if (!room) {
+      return;
+    }
 
-    if (room) {
-      room.endTurn(turns)
-      socketService.endTurn(roomId, turns, fromUser.id, fromUser.color);
-      if (isWin) {
-        room.endGame();
-        socketService.endGame(roomId, fromUser.playerData);
-        socketService.leveAllFromRoom(roomId);
-        socketService.updateFreePlayerList(this.users.freePlayers);
-        this.rooms.remove(roomId);
-      }
+    room.endTurn(turns);
+    let nextTurns = checkerLogic.getNextTurns(room.checkers, OPPONENT_COLOR[fromUser.color]);
+
+    socketService.endTurn(roomId, {userId: fromUser.id, turns, roomId}, nextTurns);
+    if ([...nextTurns.turns, ...nextTurns.beats].length === 0) {
+      room.endGame();
+      socketService.endGame(roomId, fromUser.playerData);
+      socketService.leveAllFromRoom(roomId);
+      socketService.updateFreePlayerList(this.users.freePlayers);
+      this.rooms.remove(roomId);
     }
   }
 

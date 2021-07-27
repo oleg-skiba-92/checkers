@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import { Socket } from 'socket.io-client/build/socket';
-import { EColor, ITurn, SocketEvents } from '../../models';
+import { ITurn, SocketEvents } from '../../models';
 import { BASE_SERVER_URL } from '../environment';
 
 export class SocketService {
@@ -38,8 +38,8 @@ export class SocketService {
     this.socket.emit(SocketEvents.DisagreeSuggest, userId);
   }
 
-  turnEnd(turns: ITurn[], roomId: string, isWin: boolean) {
-    this.socket.emit(SocketEvents.TurnEnd, roomId, turns, isWin);
+  turnEnd(turns: ITurn[], roomId: string) {
+    this.socket.emit(SocketEvents.TurnEnd, roomId, turns);
   }
 
   gameEnd(roomId: string) {

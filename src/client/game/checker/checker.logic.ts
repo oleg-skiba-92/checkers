@@ -22,8 +22,8 @@ export class Checker extends CheckerView implements IChecker {
     this.boardPosition = boardPosition;
     this.move(this.scene.boardPositionToPosition(boardPosition));
 
-    if (this.color === EColor.White && boardPosition[1] === '8'
-      || this.color === EColor.Black && boardPosition[1] === '1') {
+    if (this.color === EColor.White && boardPosition[1] === '7'
+      || this.color === EColor.Black && boardPosition[1] === '0') {
       this.setAsQueen();
 
       // TODO: setAsQueen after animation end

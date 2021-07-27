@@ -17,6 +17,11 @@ export const CHECKER_DIRECTIONS = {
   ALL: [EDirections.LeftDown, EDirections.RightDown, EDirections.LeftUp, EDirections.RightUp],
 };
 
+export const OPPONENT_COLOR = {
+  [EColor.White]: EColor.Black,
+  [EColor.Black]: EColor.White,
+}
+
 export interface ICheckerEntity {
   readonly isQueen: boolean;
   readonly position: string;
@@ -46,6 +51,10 @@ export interface ICheckerCollection {
   getByPosition(position: string): ICheckerEntity;
 
   reset(): void;
+
+  moveChecker(from: string, to: string): void;
+
+  deleteChecker(position: string): void;
 }
 
 export interface ICheckerLogic {

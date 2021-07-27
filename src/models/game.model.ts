@@ -36,4 +36,10 @@ export interface INextTurns {
   turns: ITurn[][];
 }
 
+export interface IUserTurn {
+  userId: string;
+  roomId: string;
+  turns: ITurn[];
+}
+
 //#endregion interfaces

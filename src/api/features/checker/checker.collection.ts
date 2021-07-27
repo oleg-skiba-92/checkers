@@ -31,8 +31,8 @@ export class CheckerCollection implements ICheckerCollection {
 
   get asString(): string {
     return [
-      this.whites.map(checker => checker.boardPosition).join(','),
-      this.blacks.map(checker => checker.boardPosition).join(',')
+      this.whitePositions.join(','),
+      this.blackPositions.join(',')
     ].join(';');
   }
 
@@ -73,6 +73,17 @@ export class CheckerCollection implements ICheckerCollection {
       ...WHITE_POSITIONS.map(p => new CheckerEntity(EColor.White, p)),
       ...BLACK_POSITIONS.map(p => new CheckerEntity(EColor.Black, p))
     ];
+  }
+
+  moveChecker(from: string, to: string): void {
+    this.getByPosition(from).setPosition(to);
+  }
+
+  deleteChecker(position: string): void {
+    let idx = this.checkers.findIndex((checker) => checker.position === position);
+    if (idx !== -1) {
+      this.checkers.splice(idx, 1);
+    }
   }
 
   private normalisePosition(position: string): string {
