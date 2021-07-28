@@ -24,10 +24,13 @@ export class SessionService implements IInitializedService {
     this.sessionMiddleware = session({
       secret: process.env.SESSION_SECRET,
       store: this.redisStore,
-      resave: false,
-      saveUninitialized: false,
+      resave: true,
+      saveUninitialized: true,
+        proxy: true,
       cookie: {
-        secure: false,
+        httpOnly: false,
+        secure: true,
+        sameSite: 'none',
         maxAge: 86400000
       }
     })
