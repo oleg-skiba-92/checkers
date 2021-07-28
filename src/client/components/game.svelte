@@ -3,10 +3,9 @@
 
   import { Game } from '../game/game';
   import type { IClientGame } from '../game/game';
-  import { usersService } from '../services';
+  import { gameService, usersService } from '../services';
   import type { IRoom, ITurn } from '../../models';
   import { EGameError } from '../../models';
-  import { socketService } from '../services/core';
 
   export let room: IRoom;
   export let nextTurns;//: Writable<INextTurns>;
@@ -16,7 +15,7 @@
     console.log('game.svelte showError', error, EGameError[error]);
   };
   let endTurn = (turn: ITurn[]) => {
-    socketService.turnEnd(turn, room.id);
+    gameService.turnEnd(turn, room.id)
   };
 
   let game: IClientGame;

@@ -1,7 +1,6 @@
 <script lang="ts">
   import List from './common/list.svelte';
-  import { playersService } from '../services';
-  import { socketService } from '../services/core';
+  import { gameService, playersService } from '../services';
 
   let players = playersService.freePlayers$;
   let myInvites = playersService.myInvites$;
@@ -9,7 +8,7 @@
   $: inviteIds = $myInvites.map((invite) => invite.id);
 
   const invite = (id: string) => {
-    socketService.sendInvite(id);
+    gameService.sendInvite(id);
   };
 
   const cancelInvite = (id: string) => {

@@ -12,3 +12,6 @@ export const enum EAPIEndpoints {
 }
 
 //#endregion enums
+
+export type TSimpleCallback = () => void;
+export type TSimpleDataCallback<T> = (data: T) => void;

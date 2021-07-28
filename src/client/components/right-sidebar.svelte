@@ -1,15 +1,14 @@
 <script lang="ts">
   import List from './common/list.svelte';
-  import { playersService } from '../services';
-  import { socketService } from '../services/core';
+  import { gameService, playersService } from '../services';
 
   let invites = playersService.invitesToMe$;
 
   const agree = (id: string) => {
-    socketService.agreeInvite(id);
+    gameService.agreeInvite(id);
   };
   const disagree = (id: string) => {
-    socketService.disagreeInvite(id);
+    gameService.disagreeInvite(id);
   };
 </script>
 

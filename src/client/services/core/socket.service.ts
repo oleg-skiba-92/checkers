@@ -1,10 +1,10 @@
 import { io } from 'socket.io-client';
 import { Socket } from 'socket.io-client/build/socket';
-import { ITurn, SocketEvents } from '../../../models';
+import { SocketEvents } from '../../../models';
 import { BASE_SERVER_URL } from '../../environment';
 
 export class SocketService {
-  public socket: Socket;
+  private socket: Socket;
 
   private get baseUrl(): string {
     return BASE_SERVER_URL;
@@ -20,30 +20,17 @@ export class SocketService {
       console.log('connect');
     });
 
-
     this.socket.on('disconnect', (...args) => {
       console.log('disconnect');
     });
   }
 
-  sendInvite(userId: string) {
-    this.socket.emit(SocketEvents.Invite, userId);
+  emit(event: SocketEvents, ...args) {
+    this.socket.emit(event, ...args);
   }
 
-  agreeInvite(userId: string) {
-    this.socket.emit(SocketEvents.AgreeInvite, userId);
-  }
-
-  disagreeInvite(userId: string) {
-    this.socket.emit(SocketEvents.DisagreeInvite, userId);
-  }
-
-  turnEnd(turns: ITurn[], roomId: string) {
-    this.socket.emit(SocketEvents.TurnEnd, roomId, turns);
-  }
-
-  gameEnd(roomId: string) {
-    this.socket.emit(SocketEvents.GameEnd, roomId);
+  subscribe(event: SocketEvents, fn: (...args) => void) {
+    this.socket.on(event, fn);
   }
 }
 

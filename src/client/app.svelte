@@ -9,46 +9,46 @@
   import FindGame from './components/find-game.svelte';
   import Modal from './components/common/modal.svelte';
 
-  import { playersService, usersService } from './services';
+  import { gameService, playersService, usersService } from './services';
   import { EPageState } from './models';
   import { routerService, socketService } from './services/core';
-  import { SocketEvents } from '../models';
+  import type { INextTurns, IUserTurn } from '../models';
   import { mockAllData } from './mock-data';
 
   (<any>window).mockAllData = mockAllData;
 
   let currentState = routerService.currentState$;
   let room;
-  let nextTurns = writable(null);
-  let turns = writable(null);
+  let nextTurns = writable<INextTurns>(null);
+  let turns = writable<IUserTurn>(null);
 
   usersService.getMe().then(() => {
     socketService.connect();
 
-    socketService.socket.on(SocketEvents.FreePlayerList, (data) => {
-      console.log('socket.on FreePlayerList', data);
+    gameService.onFreePlayerListUpdated((data) => {
+      console.log('gameService FreePlayerList', data);
       playersService.updateFreePlayerList(data);
-    });
+    })
 
-    socketService.socket.on(SocketEvents.InviteList, (data) => {
-      console.log('socket.on InviteList', data);
+    gameService.onInviteListUpdated((data) => {
+      console.log('gameService InviteList', data);
       playersService.updateInvitesList(data);
-    });
+    })
 
-    socketService.socket.on(SocketEvents.GameStart, (roomData, nextTurn) => {
-      console.log('socket.on GameStart roomData', roomData);
-      console.log('socket.on GameStart nextTurn', nextTurn);
+    gameService.onGameStart((roomData, nextTurn) => {
+      console.log('gameService GameStart roomData', roomData);
+      console.log('gameService GameStart nextTurn', nextTurn);
       room = roomData;
       nextTurns.set(nextTurn);
       routerService.goTo(EPageState.Game);
-    });
+    })
 
-    socketService.socket.on(SocketEvents.TurnEnd, (userTurn, nextTurn) => {
-      console.log('socket.on TurnEnd userTurn', userTurn);
-      console.log('socket.on TurnEnd nextTurn', nextTurn);
+    gameService.onTurnEnd((userTurn, nextTurn) => {
+      console.log('gameService TurnEnd userTurn', userTurn);
+      console.log('gameService TurnEnd nextTurn', nextTurn);
       turns.set(userTurn);
       nextTurns.set(nextTurn);
-    });
+    })
   });
 </script>
 
