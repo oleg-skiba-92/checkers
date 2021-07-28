@@ -1,11 +1,11 @@
 export enum SocketEvents {
-  SuggestList = 'list:suggest:update',
+  InviteList = 'list:invite:update',
   FreePlayerList = 'list:freePlayer:update',
   RoomList = 'list:room:update',
 
-  Suggest = 'suggestGame',
-  AgreeSuggest = 'suggestGame:agree',
-  DisagreeSuggest = 'suggestGame:disagree',
+  Invite = 'inviteGame',
+  AgreeInvite = 'inviteGame:agree',
+  DisagreeInvite = 'inviteGame:disagree',
   TurnEnd = 'game:turn',
   GameStart = 'game:start',
   GameEnd = 'game:End',

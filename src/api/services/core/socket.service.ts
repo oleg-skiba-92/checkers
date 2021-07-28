@@ -3,7 +3,7 @@ import * as io from 'socket.io';
 import { INextTurns, IPlayer, IUserTurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
 import { Logger } from '../../libs';
-import { ISuggest } from '../../features/suggest/suggest.model';
+import { IInvite } from '../../features/invite/invite.model';
 import { IRoomInfo } from '../../features/room/room.model';
 import { GameCtrl } from '../../features/game/game.controller';
 import { IInitializedService } from '../../models/app.model';
@@ -41,19 +41,19 @@ export class SocketService implements IInitializedService {
 
       let socketUser = GameCtrl.userConnected(auth, socket.id);
 
-      socket.on(SocketEvents.Suggest, (userId) => {
-        this.log.info('Suggest', userId);
-        GameCtrl.newSuggest(socketUser, userId);
+      socket.on(SocketEvents.Invite, (userId) => {
+        this.log.info('Invite', userId);
+        GameCtrl.newInvite(socketUser, userId);
       });
 
-      socket.on(SocketEvents.AgreeSuggest, (userId) => {
-        this.log.info('AgreeSuggest', userId);
-        GameCtrl.agreeSuggest(socketUser, userId);
+      socket.on(SocketEvents.AgreeInvite, (userId) => {
+        this.log.info('AgreeInvite', userId);
+        GameCtrl.agreeInvite(socketUser, userId);
       });
 
-      socket.on(SocketEvents.DisagreeSuggest, (userId) => {
-        this.log.info('DisagreeSuggest', userId);
-        GameCtrl.disagreeSuggest(socketUser, userId);
+      socket.on(SocketEvents.DisagreeInvite, (userId) => {
+        this.log.info('DisagreeInvite', userId);
+        GameCtrl.disagreeInvite(socketUser, userId);
       });
 
       socket.on(SocketEvents.TurnEnd, (roomId, turns) => {
@@ -78,8 +78,8 @@ export class SocketService implements IInitializedService {
     });
   }
 
-  updateSuggestList(suggests: ISuggest[]): void {
-    this.io.to('general').emit(SocketEvents.SuggestList, suggests);
+  updateInviteList(invites: IInvite[]): void {
+    this.io.to('general').emit(SocketEvents.InviteList, invites);
   }
 
   updateFreePlayerList(freePlayers: IPlayer[]): void {

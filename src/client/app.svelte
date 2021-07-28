@@ -29,8 +29,8 @@
       playersService.updateFreePlayerList(data);
     });
 
-    socketService.socket.on(SocketEvents.SuggestList, (data) => {
-      console.log('socket.on SuggestList', data);
+    socketService.socket.on(SocketEvents.InviteList, (data) => {
+      console.log('socket.on InviteList', data);
       playersService.updateInvitesList(data);
     });
 

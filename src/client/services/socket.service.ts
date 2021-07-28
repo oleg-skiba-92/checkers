@@ -26,16 +26,16 @@ export class SocketService {
     });
   }
 
-  sendSuggest(userId: string) {
-    this.socket.emit(SocketEvents.Suggest, userId);
+  sendInvite(userId: string) {
+    this.socket.emit(SocketEvents.Invite, userId);
   }
 
-  agreeSuggest(userId: string) {
-    this.socket.emit(SocketEvents.AgreeSuggest, userId);
+  agreeInvite(userId: string) {
+    this.socket.emit(SocketEvents.AgreeInvite, userId);
   }
 
-  disagreeSuggest(userId: string) {
-    this.socket.emit(SocketEvents.DisagreeSuggest, userId);
+  disagreeInvite(userId: string) {
+    this.socket.emit(SocketEvents.DisagreeInvite, userId);
   }
 
   turnEnd(turns: ITurn[], roomId: string) {

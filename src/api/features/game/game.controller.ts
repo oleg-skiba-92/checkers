@@ -2,10 +2,10 @@ import { EColor, ITurn } from '../../../models';
 import { socketService } from '../../services/core';
 import { IUserEntity, IUsersCollection } from '../user/user.model';
 import { IRoomsCollection } from '../room/room.model';
-import { ISuggestCollection } from '../suggest/suggest.model';
+import { IInviteCollection } from '../invite/invite.model';
 import { UsersCollection } from '../user/users.collection';
 import { RoomsCollection } from '../room/rooms.collection';
-import { SuggestCollection } from '../suggest/suggest.collection';
+import { InviteCollection } from '../invite/invite.collection';
 import { IAuthData } from '../auth/auth.model';
 import { checkerLogic } from '../checker/checker.logic';
 import { OPPONENT_COLOR } from '../checker/checker.model';
@@ -13,12 +13,12 @@ import { OPPONENT_COLOR } from '../checker/checker.model';
 class GameController {
   private users: IUsersCollection;
   private rooms: IRoomsCollection;
-  private suggests: ISuggestCollection;
+  private invites: IInviteCollection;
 
   constructor() {
     this.users = new UsersCollection();
     this.rooms = new RoomsCollection();
-    this.suggests = new SuggestCollection();
+    this.invites = new InviteCollection();
   }
 
   userConnected(authData: IAuthData, socketId: string): IUserEntity {
@@ -38,24 +38,24 @@ class GameController {
       // TODO: remove room if all users disconnected
     }
 
-    this.suggests.removeAllWith([user.id]);
+    this.invites.removeAllWith([user.id]);
     this.users.remove(user.id);
     this.updateAllLists();
   }
 
-  newSuggest(fromUser: IUserEntity, toUserId: string): void {
+  newInvite(fromUser: IUserEntity, toUserId: string): void {
     let user = this.users.getById(toUserId);
 
     if (user) {
-      this.suggests.add(fromUser, user);
-      socketService.updateSuggestList(this.suggests.list);
+      this.invites.add(fromUser, user);
+      socketService.updateInviteList(this.invites.list);
     }
   }
 
-  agreeSuggest(fromUser: IUserEntity, toUserId: string) {
+  agreeInvite(fromUser: IUserEntity, toUserId: string) {
     let user = this.users.getById(toUserId);
 
-    this.suggests.removeAllWith([fromUser.id, toUserId]);
+    this.invites.removeAllWith([fromUser.id, toUserId]);
 
     let room = this.rooms.createRoom([fromUser, user]);
     room.newGame();
@@ -68,12 +68,12 @@ class GameController {
     this.updateAllLists();
   }
 
-  disagreeSuggest(fromUser: IUserEntity, toUserId: string) {
+  disagreeInvite(fromUser: IUserEntity, toUserId: string) {
     let user = this.users.getById(toUserId);
 
     if (user) {
-      this.suggests.remove(user, fromUser);
-      socketService.updateSuggestList(this.suggests.list);
+      this.invites.remove(user, fromUser);
+      socketService.updateInviteList(this.invites.list);
     }
   }
 
@@ -97,7 +97,7 @@ class GameController {
   }
 
   private updateAllLists() {
-    socketService.updateSuggestList(this.suggests.list);
+    socketService.updateInviteList(this.invites.list);
     socketService.updateFreePlayerList(this.users.freePlayers);
     socketService.updateRoomList(this.rooms.list);
   }
