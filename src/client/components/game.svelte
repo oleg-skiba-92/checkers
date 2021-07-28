@@ -3,9 +3,10 @@
 
   import { Game } from '../game/game';
   import type { IClientGame } from '../game/game';
-  import { socketService, usersService } from '../services';
+  import { usersService } from '../services';
   import type { IRoom, ITurn } from '../../models';
   import { EGameError } from '../../models';
+  import { socketService } from '../services/core';
 
   export let room: IRoom;
   export let nextTurns;//: Writable<INextTurns>;

@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import { EPageState } from '../models';
+import { EPageState } from '../../models';
 import { Writable } from 'svelte/types/runtime/store';
 
 class RouterService {

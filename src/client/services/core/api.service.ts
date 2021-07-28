@@ -1,5 +1,5 @@
-import { EAPIEndpoints, IUserInfo } from '../../models';
-import { BASE_SERVER_URL } from '../environment';
+import { EAPIEndpoints, IUserInfo } from '../../../models';
+import { BASE_SERVER_URL } from '../../environment';
 
 export class ApiService {
   private get baseUrl(): string {

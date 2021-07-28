@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { modalService } from '../../services/modal.service';
+  import { modalService } from '../../services/core';
 
   let activeModal = modalService.activeModal$;
 

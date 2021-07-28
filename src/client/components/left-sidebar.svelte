@@ -1,7 +1,7 @@
 <script type="ts">
   import Login from './login.svelte';
-  import { usersService, routerService } from '../services';
-  import { modalService } from '../services/modal.service';
+  import { usersService } from '../services';
+  import { modalService, routerService } from '../services/core';
   import { EPageState } from './../models';
 
   let me = usersService.me$;

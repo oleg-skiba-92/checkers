@@ -9,8 +9,9 @@
   import FindGame from './components/find-game.svelte';
   import Modal from './components/common/modal.svelte';
 
+  import { playersService, usersService } from './services';
   import { EPageState } from './models';
-  import { playersService, routerService, socketService, usersService } from './services';
+  import { routerService, socketService } from './services/core';
   import { SocketEvents } from '../models';
   import { mockAllData } from './mock-data';
 

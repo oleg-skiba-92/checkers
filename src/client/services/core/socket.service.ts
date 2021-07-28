@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { Socket } from 'socket.io-client/build/socket';
-import { ITurn, SocketEvents } from '../../models';
-import { BASE_SERVER_URL } from '../environment';
+import { ITurn, SocketEvents } from '../../../models';
+import { BASE_SERVER_URL } from '../../environment';
 
 export class SocketService {
   public socket: Socket;

@@ -1,6 +1,7 @@
 <script lang="ts">
   import List from './common/list.svelte';
-  import { playersService, socketService } from '../services';
+  import { playersService } from '../services';
+  import { socketService } from '../services/core';
 
   let invites = playersService.invitesToMe$;
 
