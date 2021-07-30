@@ -5,6 +5,11 @@ export const enum EApiErrorCode {
   InvalidData = 'INVALID_DATA',
   NotFound = 'NOT_FOUND',
   Unknown = 'UNKNOWN',
+
+  NoToken = 'NO_TOKEN',
+  TokenExpired = 'TOKEN_EXPIRED',
+  InvalidToken = 'INVALID_TOKEN',
+  Unauthorized = 'UNAUTHORISED',
 }
 
 export const enum EApiResponseType {

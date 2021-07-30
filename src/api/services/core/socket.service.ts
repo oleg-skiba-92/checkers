@@ -10,6 +10,8 @@ import { IInitializedService } from '../../models/app.model';
 import { ISocket } from '../../models/socket.model';
 import { IAuthData } from '../../features/auth/auth.model';
 import { UserCtrl } from '../../features/user/user.controller';
+import { EApiErrorCode } from '../../common/response/api-response.model';
+import { authService } from '../../features/auth/auth.service';
 
 export class SocketService implements IInitializedService {
   private io: io.Server;
@@ -29,13 +31,7 @@ export class SocketService implements IInitializedService {
     this.io.on('connection', (socket: ISocket) => {
       this.log.info('Connect');
 
-      let auth: IAuthData = socket.request.session && socket.request.session.auth;
-
-      if (!auth) {
-        this.log.error('unauthorised user');
-        socket.disconnect(true);
-        return;
-      }
+      let auth: IAuthData = socket.authData;
 
       socket.join('general');
 
@@ -71,10 +67,25 @@ export class SocketService implements IInitializedService {
     return true;
   }
 
-  // TODO interfaces
-  config(sessionMiddleware) {
+  config() {
     this.io.use((socket: ISocket, next: any) => {
-      sessionMiddleware(socket.request, (<any>socket.request).res, next);
+      if (!socket.handshake || !socket.handshake.auth || !socket.handshake.auth.token) {
+        socket.emit(SocketEvents.Error, {error: EApiErrorCode.NoToken, message: 'No token'});
+        socket.disconnect(true);
+        return;
+      }
+
+      let data = authService.verifyToken(socket.handshake.auth.token);
+
+      if (!data.valid) {
+        socket.emit(SocketEvents.Error, data.payload);
+        socket.disconnect(true);
+
+        return;
+      }
+
+      socket.authData = <IAuthData>data.payload;
+      next();
     });
   }
 

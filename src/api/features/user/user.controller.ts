@@ -31,10 +31,10 @@ class UserController extends BaseController {
   async getMe(data, req: IRequest): Promise<IApiResponse> {
     let user: IUserInfo;
 
-    if (!!req.isAuthorised) {
+    if (!!req.isLoggedIn) {
       user = await this.getAuthorisedData(req.authData.userId);
     } else {
-      user = await this.getUnauthorisedData(req.authData.userId, req.sessionID);
+      user = await this.getUnauthorisedData(req.authData.userId);
     }
 
     return ResponseService.successJson(user);
@@ -44,7 +44,7 @@ class UserController extends BaseController {
     return userData.toUserInfo(await userData.getById(userId));
   }
 
-  private async getUnauthorisedData(userId: string, sessionId: string): Promise<IUserInfo> {
+  private async getUnauthorisedData(userId: string): Promise<IUserInfo> {
     return guestData.toUserInfo(await guestData.getById(userId));
   }
 }

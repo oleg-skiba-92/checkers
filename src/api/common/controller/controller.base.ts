@@ -17,6 +17,10 @@ export abstract class BaseController implements IBaseCtrl {
     return [];
   }
 
+  get basePath(): EAPIEndpoints {
+    return EAPIEndpoints.Api;
+  }
+
   init(server: IServer) {
     this.log = new Logger(this.constructor.name.replace('Controller', 'Ctrl'));
 
@@ -39,7 +43,7 @@ export abstract class BaseController implements IBaseCtrl {
     if (isFullPath) {
       return path;
     }
-    return '/' + [EAPIEndpoints.Api, this.prefix, path].join('/');
+    return '/' + [this.basePath, this.prefix, path].join('/').replace('//', '/');
   }
 
   private logRequestMiddleware() {

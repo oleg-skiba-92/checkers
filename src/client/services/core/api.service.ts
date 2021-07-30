@@ -1,42 +1,43 @@
-import { EAPIEndpoints, IUserInfo } from '../../../models';
+import { EAPIEndpoints } from '../../../models';
 import { BASE_SERVER_URL } from '../../environment';
+import { usersService } from '../users.service';
+
+const JSON_HEADERS = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json'
+}
 
 export class ApiService {
   private get baseUrl(): string {
     return BASE_SERVER_URL;
   }
 
-  private get authUrl(): string {
-    return `${this.baseUrl}${EAPIEndpoints.Auth}`;
+  private get authorizationHeader(): {[key: string]: string} {
+    if(usersService.token.data) {
+      return {'Authorization': `Barer ${usersService.token.data}`}
+    }
+
+    return {}
   }
 
   private buildUrl(urlParts: EAPIEndpoints[]): string {
-    return [this.baseUrl, EAPIEndpoints.Api, ...urlParts].join('/');
+    return [this.baseUrl, ...urlParts].join('/');
   }
 
   get<T>(urlParts: EAPIEndpoints[]): Promise<T> {
-    return fetch(this.buildUrl(urlParts), {
-      credentials: 'include'
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          // TODO handling error;
-          throw new Error(response.statusText);
-        }
-      });
+    return this.request(urlParts, 'GET');
   }
 
   post<T, R>(urlParts: EAPIEndpoints[], data: T): Promise<R> {
+    return this.request(urlParts, 'POST', data);
+  }
+
+  private request<T, R>(urlParts: EAPIEndpoints[], method: 'GET' | 'POST', data: T = null): Promise<R> {
     return fetch(this.buildUrl(urlParts), {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
+      method: method,
+      headers: {...JSON_HEADERS, ...this.authorizationHeader},
       mode: "cors",
-      body: JSON.stringify(data),
+      body: data === null ? null : JSON.stringify(data),
       credentials: 'include'
     })
       .then((response) => {
@@ -47,26 +48,6 @@ export class ApiService {
           throw new Error(response.statusText);
         }
       });
-  }
-
-  login(data: { email: string, password: string }) {
-    return fetch(`${this.authUrl}/${EAPIEndpoints.Login}`, {
-      method: 'POST', headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }, body: JSON.stringify(data)
-    })
-      .then((response) => response.json());
-  }
-
-  registration(data: { email: string, password: string, userName: string }) {
-    return fetch(`${this.authUrl}/${EAPIEndpoints.Registration}`, {
-      method: 'POST', headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }, body: JSON.stringify(data)
-    })
-      .then((response) => response.json());
   }
 }
 

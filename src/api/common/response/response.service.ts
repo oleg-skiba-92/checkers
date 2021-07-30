@@ -5,6 +5,8 @@ const ERROR_MESSAGES = {
   INVALID_DATA: 'Bad request',
   NOT_FOUND: 'Не найдено',
   UNKNOWN: 'Что то пошло не так',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  INVALID_TOKEN: 'INVALID_TOKEN',
 };
 
 export class ResponseService {
@@ -49,6 +51,22 @@ export class ResponseService {
     return new ApiResponse({
       status: 400,
       error: {code: EApiErrorCode.InvalidData, message},
+      data
+    });
+  }
+
+  public static unauthorized(data: TApiResponseData = null, message: string = ERROR_MESSAGES.UNAUTHORIZED): IApiResponse {
+    return new ApiResponse({
+      status: 401,
+      error: {code: EApiErrorCode.Unauthorized, message},
+      data
+    });
+  }
+
+  public static invalidToken(data: TApiResponseData = null, message: string = ERROR_MESSAGES.INVALID_TOKEN): IApiResponse {
+    return new ApiResponse({
+      status: 401,
+      error: {code: EApiErrorCode.InvalidToken, message},
       data
     });
   }

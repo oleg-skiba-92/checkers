@@ -23,6 +23,7 @@ export interface IBaseCtrl {
   log: ILogger;
   routes: IControllerRoute[];
   prefix: EAPIEndpoints;
+  basePath: EAPIEndpoints;
   middlewares: TMiddleware[]
 
   init(server: IServer): void;

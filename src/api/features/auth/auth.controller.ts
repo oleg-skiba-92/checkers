@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { IRegistrationRequest, IUserInfo } from '../../../models';
 import { authService } from './auth.service';
 import { userData } from '../user/user.data';
+import { guestData } from '../guest/guest.data';
 import { EAuthMethod, IGoogleUserInfo } from './auth.model';
 import { IUserTable } from '../user/user.model';
 import { BaseController } from '../../common/controller/controller.base';
@@ -20,11 +21,16 @@ class AuthController extends BaseController {
       {path: `/${this.prefix}/${EAPIEndpoints.GoogleCallback}`, isFullPath: true, method: 'get', handler: this.googleCallback},
       {path: EAPIEndpoints.Registration, method: 'post', handler: this.registration},
       {path: EAPIEndpoints.Login, method: 'post', handler: this.login},
+      {path: EAPIEndpoints.LoginAsGuest, method: 'post', handler: this.loginAsGuest},
       {path: EAPIEndpoints.Logout, method: 'get', handler: this.logout},
     ];
   }
 
   get prefix(): EAPIEndpoints {
+    return null;
+  }
+
+  get basePath(): EAPIEndpoints {
     return EAPIEndpoints.Auth;
   }
 
@@ -99,6 +105,17 @@ class AuthController extends BaseController {
   private async logout(data, req: IRequest): Promise<IApiResponse> {
     authService.logout(req);
     return ResponseService.redirect('/login');
+  }
+
+  private async loginAsGuest(data, req: IRequest): Promise<IApiResponse> {
+    let guest = guestData.toUserInfo(await guestData.create({
+      id: uuidv4(),
+      user_name: 'Guest'
+    }));
+
+    let token = authService.login(guest, EAuthMethod.Guest, req);
+
+    return ResponseService.successJson({user: guest, token});
   }
 
   private async loginWithGoggle(data: IGoogleUserInfo): Promise<IUserInfo> {

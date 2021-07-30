@@ -8,6 +8,7 @@ export const enum EAPIEndpoints {
   GoogleCallback = 'google/callback',
   Registration = 'registration',
   Login = 'login',
+  LoginAsGuest = 'login-as-guest',
   Logout = 'logout',
 }
 

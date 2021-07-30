@@ -4,25 +4,30 @@ import { SocketEvents } from '../../../models';
 import { BASE_SERVER_URL } from '../../environment';
 
 export class SocketService {
-  private socket: Socket;
+  public socket: Socket;
 
   private get baseUrl(): string {
     return BASE_SERVER_URL;
   }
 
-  connect() {
+  connect(token: string) {
     if (this.socket) {
       this.socket.disconnect();
     }
 
-    this.socket = io(this.baseUrl, {withCredentials: true});
-    this.socket.on('connect', () => {
-      console.log('connect');
-    });
+    this.socket = io(this.baseUrl, {auth: {token: token}});
 
-    this.socket.on('disconnect', (...args) => {
-      console.log('disconnect');
-    });
+    this.socket
+      .on('connect', () => {
+        console.log('connect');
+      })
+      .on('disconnect', (...args) => {
+        console.log('disconnect');
+      })
+      .on(SocketEvents.Error, (error) => {
+        // TODO handling error;
+        console.log('SocketEvents.Error', error);
+      });
   }
 
   emit(event: SocketEvents, ...args) {

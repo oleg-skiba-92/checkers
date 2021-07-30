@@ -1,14 +1,15 @@
+import * as jwt from 'jsonwebtoken';
+
 const {google} = require('googleapis');
 import { OAuth2Client } from 'google-auth-library';
-import { NextFunction } from 'express-serve-static-core';
-import * as jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
+
+import { EApiErrorCode } from '../../common/response/api-response.model';
 
 import { ILogger, Logger } from '../../libs';
 import { IUserInfo } from '../../../models';
-import { EAuthMethod, IAuthService, IGoogleUserInfo } from './auth.model';
-import { IRequest, IResponse, IServer, TMiddleware } from '../../models/app.model';
-import { guestData } from '../guest/guest.data';
+import { EAuthMethod, IAuthData, IAuthService, IGoogleUserInfo, IParsedToken } from './auth.model';
+import { IRequest, IResponse, IServer } from '../../models/app.model';
+import { ResponseService } from '../../common/response/response.service';
 
 export class AuthService implements IAuthService {
   private log: ILogger = new Logger('AUTH');
@@ -27,43 +28,49 @@ export class AuthService implements IAuthService {
   }
 
   config(server: IServer) {
-    server.app.use(async (req: IRequest, res: IResponse, next) => {
-      if (!req.session) {
-        this.log.error('session not found');
+    // NOTE: checking if the token is existing and has a correct format
+    server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
+      let header = req.header('Authorization');
+
+      if (!header) {
+        let apiResponse = ResponseService.unauthorized();
+        apiResponse.send(res);
 
         return;
       }
 
-      if (!req.session.auth) {
-        let guest = await guestData.create({
-          id: uuidv4(),
-          user_name: 'Guest'
-        });
+      let barerTokenMatch = header.match(/^Barer\s([0-9a-zA-Z]*\.[0-9a-zA-Z]*\.[0-9a-zA-Z-_]*)$/);
 
-        this.login(guestData.toUserInfo(guest), EAuthMethod.Guest, req);
+      if (!barerTokenMatch || !barerTokenMatch[1]) {
+        let apiResponse = ResponseService.invalidToken();
+        apiResponse.send(res);
+
+        return;
       }
 
-      req.authData = (req.session && req.session.auth) || null;
-      req.isAuthorised = req.authData.loginMethod !== EAuthMethod.Guest;
+      req.token = barerTokenMatch[1];
 
       next();
     });
-  }
 
-  isAuthorised(redirectPath: string): TMiddleware {
-    return async (req: IRequest, res: IResponse, next: NextFunction) => {
-      if (!req.session || !req.session.auth) {
-        if (!req.session) {
-          this.log.error(`session`);
-        } else {
-          this.log.error(`auth`,);
-        }
+    // NOTE: verify token
+    server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
+      let data = authService.verifyToken(req.token);
 
-        return res.redirect(redirectPath);
+      if (!data.valid) {
+        let apiResponse = ResponseService.unauthorized(data.payload);
+        apiResponse.send(res);
+
+        return;
       }
 
-      return next();
-    };
+      req.authData = <IAuthData>data.payload;
+      req.isLoggedIn = req.authData.loginMethod !== EAuthMethod.Guest;
+
+      next();
+    });
+
+    // TODO check existing token in redis;
   }
 
   googleAuthUrl(): string {
@@ -73,17 +80,26 @@ export class AuthService implements IAuthService {
     });
   }
 
-  login(user: IUserInfo, loginMethod: EAuthMethod, req: IRequest) {
-    req.session['auth'] = {
+  login(user: IUserInfo, loginMethod: EAuthMethod, req: IRequest): string {
+    let authData = {
       userId: user.id,
       userName: user.userName,
       loginMethod,
     };
-    this.log.success(`login`, req.session['auth']);
+
+    const token = this.generateJWTToken(authData);
+
+    this.log.success(`login`, authData);
+
+    // TODO save token to redis
+
+    return token;
   }
 
   logout(req: IRequest) {
-    req.session['auth'] = null;
+
+    // TODO remove token from redis
+
     this.log.success(`logout`);
   }
 
@@ -93,6 +109,26 @@ export class AuthService implements IAuthService {
       return await this.getGoggleClientInfo(token);
     } catch (e) {
       throw new Error(e);
+    }
+  }
+
+  generateJWTToken(data) {
+    return jwt.sign({data}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRED});
+  }
+
+  verifyToken(token: string): IParsedToken {
+    try {
+      let decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      return {valid: true, payload: decoded.data};
+    } catch (e) {
+      if (e.name == 'TokenExpiredError') {
+        this.log.error('token expired');
+        return {valid: false, payload: {code: EApiErrorCode.TokenExpired, message: 'Token expired'}};
+      }
+
+      this.log.error('token error', e);
+      return {valid: false, payload: {code: EApiErrorCode.InvalidToken, message: 'Invalid token'}};
     }
   }
 
@@ -121,9 +157,6 @@ export class AuthService implements IAuthService {
     return tokens.access_token;
   }
 
-  private generateJWTToken(data) {
-    return jwt.sign({data}, process.env.JWT_SECRET, {expiresIn: '1d'});
-  }
 }
 
 export const authService = new AuthService();

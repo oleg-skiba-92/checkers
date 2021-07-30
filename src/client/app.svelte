@@ -22,18 +22,18 @@
   let nextTurns = writable<INextTurns>(null);
   let turns = writable<IUserTurn>(null);
 
-  usersService.getMe().then(() => {
-    socketService.connect();
+  const initSocket = (token: string) => {
+    socketService.connect(token);
 
     gameService.onFreePlayerListUpdated((data) => {
       console.log('gameService FreePlayerList', data);
       playersService.updateFreePlayerList(data);
-    })
+    });
 
     gameService.onInviteListUpdated((data) => {
       console.log('gameService InviteList', data);
       playersService.updateInvitesList(data);
-    })
+    });
 
     gameService.onGameStart((roomData, nextTurn) => {
       console.log('gameService GameStart roomData', roomData);
@@ -41,15 +41,30 @@
       room = roomData;
       nextTurns.set(nextTurn);
       routerService.goTo(EPageState.Game);
-    })
+    });
 
     gameService.onTurnEnd((userTurn, nextTurn) => {
       console.log('gameService TurnEnd userTurn', userTurn);
       console.log('gameService TurnEnd nextTurn', nextTurn);
       turns.set(userTurn);
       nextTurns.set(nextTurn);
-    })
-  });
+    });
+  };
+
+  if (!usersService.token.data) {
+    //TODO login
+    usersService.loginAsGuest().then((data) => {
+      usersService.token.data = data.token;
+      initSocket(data.token);
+    });
+  } else {
+    usersService.getMe().then((data: any) => {
+      console.log('getMe().then', data);
+      initSocket(usersService.token.data);
+    });
+  }
+
+
 </script>
 
 <!--------------------------------HTML CODE-------------------------------->

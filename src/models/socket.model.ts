@@ -11,4 +11,6 @@ export enum SocketEvents {
   GameEnd = 'game:End',
   Disconnect = 'disconnect',
   UserLeftRoom = 'userLeftRoom',
+
+  Error = 'error',
 }

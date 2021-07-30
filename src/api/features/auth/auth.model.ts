@@ -1,7 +1,6 @@
-import { ILoginRequest, IRegistrationRequest, IUserInfo } from '../../../models';
-import { IBaseCtrl } from '../../common/controller/controller.model';
-import { IApiResponse } from '../../common/response/api-response.model';
-import { IInitializedService, IRequest, TMiddleware } from '../../models/app.model';
+import { IUserInfo } from '../../../models';
+import { IApiResponseError } from '../../common/response/api-response.model';
+import { IInitializedService, IRequest } from '../../models/app.model';
 
 export enum EAuthMethod {
   Google,
@@ -22,14 +21,17 @@ export interface IAuthData {
   loginMethod: EAuthMethod;
 }
 
+export interface IParsedToken {
+  valid: boolean;
+  payload: IAuthData | IApiResponseError
+}
+
 export interface IAuthService extends IInitializedService {
   googleAuthUrl(): string;
 
   authenticateGoogle(code: string): Promise<IGoogleUserInfo>;
 
-  isAuthorised(redirectPath: string): TMiddleware;
-
-  login(user: IUserInfo, loginMethod: EAuthMethod, req: IRequest): void;
+  login(user: IUserInfo, loginMethod: EAuthMethod, req: IRequest): string;
 
   logout(req: IRequest): void;
 }

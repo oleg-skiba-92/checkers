@@ -1,8 +1,7 @@
 import * as io from 'socket.io';
-import { IncomingMessage } from 'http';
 
-import { ISession } from './app.model';
+import { IAuthData } from '../features/auth/auth.model';
 
 export interface ISocket extends io.Socket {
-  request: IncomingMessage & {session: ISession};
+  authData?: IAuthData;
 }

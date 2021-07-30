@@ -9,6 +9,11 @@ export interface IUserInfo {
   dateCreated?: string;
 }
 
+export interface IUserInfoWithToken {
+  user: IUserInfo;
+  token: string;
+}
+
 export interface IRegistrationRequest {
   userName: string;
   password: string;

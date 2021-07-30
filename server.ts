@@ -5,7 +5,7 @@ import * as http from 'http';
 import * as bodyParser from 'body-parser';
 
 import { ILogger, Logger } from './src/api/libs';
-import { sessionService, socketService, dataService } from './src/api/services/core';
+import { socketService, dataService } from './src/api/services/core';
 import { IServer } from './src/api/models/app.model';
 import { authService } from './src/api/features/auth/auth.service';
 import { AuthCtrl } from './src/api/features/auth/auth.controller';
@@ -44,7 +44,7 @@ export class App implements IServer {
   private config() {
     this.app.use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin ? req.headers.origin : '*');
-      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-auth-token");
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-auth-token');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       next();
@@ -53,27 +53,25 @@ export class App implements IServer {
     this.app.use(bodyParser.urlencoded({extended: true}));
     this.app.use(bodyParser.json());
 
+    // TODO: WTF?
     this.app.use('/assets', express.static(join(process.cwd(), 'dist/assets')));
     this.app.use('/favicon.png', express.static(join(process.cwd(), 'dist/favicon.png')));
     this.app.use('/style.css', express.static(join(process.cwd(), 'dist/style.css')));
     this.app.use('/global.css', express.static(join(process.cwd(), 'dist/global.css')));
     this.app.use('/bundle.js', express.static(join(process.cwd(), 'dist/bundle.js')));
+    this.app.use('/bundle.js.map', express.static(join(process.cwd(), 'dist/bundle.js.map')));
     this.app.use('/vendor.js', express.static(join(process.cwd(), 'dist/vendor.js')));
 
-    this.app.use(sessionService.sessionMiddleware);
     authService.config(this);
-    socketService.config(sessionService.sessionMiddleware);
+    socketService.config();
   }
 
   private route() {
-    this.app.get('/',  (req, res) => {
+    this.app.get('/', (req, res) => {
       res.sendFile(__dirname + '/dist/index.html');
     });
-    // this.app.get('/', authService.isAuthorised('/login'), (req, res) => {
-    //   res.sendFile(__dirname + '/dist/index.html');
-    // });
 
-    AuthCtrl.init(this)
+    AuthCtrl.init(this);
     UserCtrl.init(this);
   }
 
@@ -81,7 +79,6 @@ export class App implements IServer {
     const initialisedServices = await Promise.all([
       dataService.initialise(),
       authService.initialise(),
-      sessionService.initialise(this),
       socketService.initialise(this)
     ]);
 
