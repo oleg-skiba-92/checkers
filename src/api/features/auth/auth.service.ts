@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import * as redis from 'redis';
 
 const {google} = require('googleapis');
 import { OAuth2Client } from 'google-auth-library';
@@ -14,6 +15,7 @@ import { ResponseService } from '../../common/response/response.service';
 export class AuthService implements IAuthService {
   private log: ILogger = new Logger('AUTH');
   private googleClient: OAuth2Client;
+  private redisClient: redis.RedisClient;
 
   constructor() {}
 
@@ -28,11 +30,19 @@ export class AuthService implements IAuthService {
   }
 
   config(server: IServer) {
+    this.redisClient = redis.createClient({
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD
+    });
+
     // NOTE: checking if the token is existing and has a correct format
     server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
       let header = req.header('Authorization');
 
       if (!header) {
+        this.log.error('No Authorization header');
+
         let apiResponse = ResponseService.unauthorized();
         apiResponse.send(res);
 
@@ -42,6 +52,8 @@ export class AuthService implements IAuthService {
       let barerTokenMatch = header.match(/^Barer\s([0-9a-zA-Z]*\.[0-9a-zA-Z]*\.[0-9a-zA-Z-_]*)$/);
 
       if (!barerTokenMatch || !barerTokenMatch[1]) {
+        this.log.error('Token format invalid');
+
         let apiResponse = ResponseService.invalidToken();
         apiResponse.send(res);
 
@@ -55,7 +67,7 @@ export class AuthService implements IAuthService {
 
     // NOTE: verify token
     server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
-      let data = authService.verifyToken(req.token);
+      let data = await this.verifyToken(req.token);
 
       if (!data.valid) {
         let apiResponse = ResponseService.unauthorized(data.payload);
@@ -69,8 +81,6 @@ export class AuthService implements IAuthService {
 
       next();
     });
-
-    // TODO check existing token in redis;
   }
 
   googleAuthUrl(): string {
@@ -80,7 +90,7 @@ export class AuthService implements IAuthService {
     });
   }
 
-  login(user: IUserInfo, loginMethod: EAuthMethod, req: IRequest): string {
+  login(user: IUserInfo, loginMethod: EAuthMethod): string {
     let authData = {
       userId: user.id,
       userName: user.userName,
@@ -89,17 +99,15 @@ export class AuthService implements IAuthService {
 
     const token = this.generateJWTToken(authData);
 
-    this.log.success(`login`, authData);
+    this.redisClient.set(user.id, token);
 
-    // TODO save token to redis
+    this.log.success(`login`, authData);
 
     return token;
   }
 
-  logout(req: IRequest) {
-
-    // TODO remove token from redis
-
+  logout(userId: string) {
+    this.redisClient.del(userId);
     this.log.success(`logout`);
   }
 
@@ -116,9 +124,22 @@ export class AuthService implements IAuthService {
     return jwt.sign({data}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRED});
   }
 
-  verifyToken(token: string): IParsedToken {
+  async verifyToken(token: string): Promise<IParsedToken> {
     try {
       let decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      const realToken = await new Promise((resolve) => {
+        this.redisClient.get((<IAuthData>decoded.data).userId, (err, data) => {
+          resolve(data);
+        });
+      });
+
+      if (!realToken || realToken !== token) {
+        this.log.error(`Tokens mismatch ${!!realToken}`);
+        this.logout((<IAuthData>decoded.data).userId);
+
+        return {valid: false, payload: {code: EApiErrorCode.InvalidToken, message: 'Tokens mismatch'}};
+      }
 
       return {valid: true, payload: decoded.data};
     } catch (e) {
@@ -127,7 +148,7 @@ export class AuthService implements IAuthService {
         return {valid: false, payload: {code: EApiErrorCode.TokenExpired, message: 'Token expired'}};
       }
 
-      this.log.error('token error', e);
+      this.log.error('jwt.verify error', e);
       return {valid: false, payload: {code: EApiErrorCode.InvalidToken, message: 'Invalid token'}};
     }
   }

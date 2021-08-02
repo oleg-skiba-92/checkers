@@ -68,14 +68,14 @@ export class SocketService implements IInitializedService {
   }
 
   config() {
-    this.io.use((socket: ISocket, next: any) => {
+    this.io.use(async (socket: ISocket, next: any) => {
       if (!socket.handshake || !socket.handshake.auth || !socket.handshake.auth.token) {
         socket.emit(SocketEvents.Error, {error: EApiErrorCode.NoToken, message: 'No token'});
         socket.disconnect(true);
         return;
       }
 
-      let data = authService.verifyToken(socket.handshake.auth.token);
+      let data = await authService.verifyToken(socket.handshake.auth.token);
 
       if (!data.valid) {
         socket.emit(SocketEvents.Error, data.payload);

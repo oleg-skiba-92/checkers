@@ -31,7 +31,7 @@ export interface IAuthService extends IInitializedService {
 
   authenticateGoogle(code: string): Promise<IGoogleUserInfo>;
 
-  login(user: IUserInfo, loginMethod: EAuthMethod, req: IRequest): string;
+  login(user: IUserInfo, loginMethod: EAuthMethod): string;
 
-  logout(req: IRequest): void;
+  logout(userId: string): void;
 }

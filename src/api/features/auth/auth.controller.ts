@@ -43,7 +43,7 @@ class AuthController extends BaseController {
       let authUser: IGoogleUserInfo = await authService.authenticateGoogle(data.code);
       let user: IUserInfo = await this.loginWithGoggle(authUser);
 
-      authService.login(user, EAuthMethod.Google, req);
+      authService.login(user, EAuthMethod.Google);
 
       return ResponseService.redirect('/');
     } catch (e) {
@@ -77,7 +77,7 @@ class AuthController extends BaseController {
     }
 
     let userInfo = userData.toUserInfo(user);
-    authService.login(userInfo, EAuthMethod.Password, req);
+    authService.login(userInfo, EAuthMethod.Password);
 
     return ResponseService.successJson(userInfo);
   }
@@ -97,13 +97,13 @@ class AuthController extends BaseController {
     }
 
     let userInfo = userData.toUserInfo(user);
-    authService.login(userInfo, EAuthMethod.Password, req);
+    authService.login(userInfo, EAuthMethod.Password);
 
     return ResponseService.successJson(userInfo);
   }
 
-  private async logout(data, req: IRequest): Promise<IApiResponse> {
-    authService.logout(req);
+  private async logout(data: {userId: string}, req: IRequest): Promise<IApiResponse> {
+    authService.logout(data.userId);
     return ResponseService.redirect('/login');
   }
 
@@ -113,7 +113,7 @@ class AuthController extends BaseController {
       user_name: 'Guest'
     }));
 
-    let token = authService.login(guest, EAuthMethod.Guest, req);
+    let token = authService.login(guest, EAuthMethod.Guest);
 
     return ResponseService.successJson({user: guest, token});
   }
