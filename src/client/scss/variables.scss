@@ -55,6 +55,7 @@ $board-size:                          540px;
 $img-icon-size:                       40px;
 $img-icon-margin-left:                1rem;
 $img-icon-margin-right:               1.5rem;
+$notify-icon-size:                    3rem;
 //#endregion icons
 
 $item-padding:                        5px;
@@ -71,6 +72,7 @@ $min-width-title-info-wrapper:        50px;
 
 //#region z-indexes
 $modal-z-index:                       99;
+$notify-z-index:                      100;
 //#endregion z-indexes
 
 //#region modal

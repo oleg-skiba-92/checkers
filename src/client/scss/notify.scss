@@ -1,0 +1,39 @@
+@import "./variables";
+
+.fco-notify {
+  position: absolute;
+  z-index: $notify-z-index;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+
+  margin: 2rem;
+  padding: 1.5rem;
+  width: 30rem;
+
+  cursor: pointer;
+  box-shadow: 2px 4px 8px 5px $color-dark_02;
+
+  &--error{
+    background: $color-red_01;
+  }
+
+  &__icon {
+    display: flex;
+    margin-right: 1rem;
+
+    img {
+      width: $notify-icon-size;
+      height: $notify-icon-size;
+    }
+  }
+
+  &__body {
+    color: $font-color-light;
+  }
+
+  &__title {
+    font-weight: bold;
+  }
+}
