@@ -23,6 +23,11 @@ class GameController {
 
   userConnected(authData: IAuthData, socketId: string): IUserEntity {
     let user = this.users.create(authData.userId, authData.userName, socketId);
+
+    if(user.inGame) {
+      socketService.joinToRooms([socketId], user.roomId);
+    }
+
     socketService.updateFreePlayerList(this.users.freePlayers);
 
     return user;

@@ -54,7 +54,6 @@
   if (!usersService.token.data) {
     //TODO login
     usersService.loginAsGuest().then((data) => {
-      usersService.token.data = data.token;
       initSocket(data.token);
     });
   } else {

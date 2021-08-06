@@ -23,6 +23,7 @@ class AuthController extends BaseController {
       {path: EAPIEndpoints.Login, method: 'post', handler: this.login},
       {path: EAPIEndpoints.LoginAsGuest, method: 'post', handler: this.loginAsGuest},
       {path: EAPIEndpoints.Logout, method: 'get', handler: this.logout},
+      {path: EAPIEndpoints.RefreshToken, method: 'post', handler: this.refreshToken},
     ];
   }
 
@@ -116,6 +117,14 @@ class AuthController extends BaseController {
     let token = authService.login(guest, EAuthMethod.Guest);
 
     return ResponseService.successJson({user: guest, token});
+  }
+
+  private async refreshToken(data: {token: string}, req: IRequest): Promise<IApiResponse> {
+    try {
+      return ResponseService.successJson({token: authService.refreshToken(data.token)});
+    } catch (e) {
+      return ResponseService.unauthorized();
+    }
   }
 
   private async loginWithGoggle(data: IGoogleUserInfo): Promise<IUserInfo> {

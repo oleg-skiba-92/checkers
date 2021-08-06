@@ -1,6 +1,6 @@
 import * as io from 'socket.io';
 
-import { INextTurns, IPlayer, IUserTurn, SocketEvents } from '../../../models';
+import { EApiErrorCode, INextTurns, IPlayer, IUserTurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
 import { Logger } from '../../libs';
 import { IInvite } from '../../features/invite/invite.model';
@@ -10,7 +10,6 @@ import { IInitializedService } from '../../models/app.model';
 import { ISocket } from '../../models/socket.model';
 import { IAuthData } from '../../features/auth/auth.model';
 import { UserCtrl } from '../../features/user/user.controller';
-import { EApiErrorCode } from '../../common/response/api-response.model';
 import { authService } from '../../features/auth/auth.service';
 
 export class SocketService implements IInitializedService {

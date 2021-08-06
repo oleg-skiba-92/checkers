@@ -1,16 +1,5 @@
 import { IResponse } from '../../models/app.model';
-
-//#region enums
-export const enum EApiErrorCode {
-  InvalidData = 'INVALID_DATA',
-  NotFound = 'NOT_FOUND',
-  Unknown = 'UNKNOWN',
-
-  NoToken = 'NO_TOKEN',
-  TokenExpired = 'TOKEN_EXPIRED',
-  InvalidToken = 'INVALID_TOKEN',
-  Unauthorized = 'UNAUTHORISED',
-}
+import { EApiErrorCode } from '../../../models';
 
 export const enum EApiResponseType {
   JSON,

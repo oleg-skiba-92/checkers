@@ -25,6 +25,10 @@ export interface ILoginRequest {
   email: string;
 }
 
+export interface IToken {
+  token: string;
+}
+
 export interface IPlayer {
   id: string;
   userName: string;

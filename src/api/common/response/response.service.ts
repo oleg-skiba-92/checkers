@@ -1,5 +1,6 @@
-import { EApiErrorCode, EApiResponseType, IApiResponse, TApiResponseData } from './api-response.model';
+import { EApiResponseType, IApiResponse, TApiResponseData } from './api-response.model';
 import { ApiResponse } from './api-response.logic';
+import { EApiErrorCode } from '../../../models';
 
 const ERROR_MESSAGES = {
   INVALID_DATA: 'Bad request',

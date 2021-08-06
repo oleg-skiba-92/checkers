@@ -4,10 +4,8 @@ import * as redis from 'redis';
 const {google} = require('googleapis');
 import { OAuth2Client } from 'google-auth-library';
 
-import { EApiErrorCode } from '../../common/response/api-response.model';
-
 import { ILogger, Logger } from '../../libs';
-import { IUserInfo } from '../../../models';
+import { EApiErrorCode, IUserInfo } from '../../../models';
 import { EAuthMethod, IAuthData, IAuthService, IGoogleUserInfo, IParsedToken } from './auth.model';
 import { IRequest, IResponse, IServer } from '../../models/app.model';
 import { ResponseService } from '../../common/response/response.service';
@@ -120,7 +118,7 @@ export class AuthService implements IAuthService {
     }
   }
 
-  generateJWTToken(data) {
+  generateJWTToken<T>(data: T): string {
     return jwt.sign({data}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRED});
   }
 
@@ -151,6 +149,21 @@ export class AuthService implements IAuthService {
       this.log.error('jwt.verify error', e);
       return {valid: false, payload: {code: EApiErrorCode.InvalidToken, message: 'Invalid token'}};
     }
+  }
+
+  refreshToken(token: string) {
+    let decoded = jwt.decode(token);
+
+    if (decoded === null) {
+      throw new Error('Invalid Decode token');
+    }
+
+    let newToken = this.generateJWTToken(decoded.data);
+    this.redisClient.set(decoded.data.userId, newToken);
+
+    this.log.success(`refreshToken`, decoded.data);
+
+    return newToken;
   }
 
   private async getGoggleClientInfo(accessToken: string): Promise<IGoogleUserInfo> {
