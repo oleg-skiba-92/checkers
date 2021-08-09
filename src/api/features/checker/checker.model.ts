@@ -1,10 +1,11 @@
+import { EColor, EDirections, INextTurns } from '../../../models';
+
 // const WHITE_POSITIONS = ['a1', 'c1', 'e1', 'g1', 'b2', 'd2', 'f2', 'h2', 'a3', 'c3', 'e3', 'g3'];
 // const BLACK_POSITIONS = ['b6', 'd6', 'f6', 'h6', 'a7', 'c7', 'e7', 'g7', 'b8', 'd8', 'f8', 'h8'];
 export const WHITE_POSITIONS = ['00', '20', '40', '60', '11', '31', '51', '71', '02', '22', '42', '62'];
 export const BLACK_POSITIONS = ['15', '35', '55', '75', '06', '26', '46', '66', '17', '37', '57', '77'];
-import { EColor, EDirections, ITurn } from '../../../models';
 
-// export const WHITE_POSITIONS = ['22', '42'];
+// export const WHITE_POSITIONS = ['22', '42', '60', '31'];
 // export const BLACK_POSITIONS = ['33', '35', '15', '11', '53', '55'];
 
 export const LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -15,6 +16,11 @@ export const CHECKER_DIRECTIONS = {
   [EColor.Black]: [EDirections.LeftDown, EDirections.RightDown],
   ALL: [EDirections.LeftDown, EDirections.RightDown, EDirections.LeftUp, EDirections.RightUp],
 };
+
+export const OPPONENT_COLOR = {
+  [EColor.White]: EColor.Black,
+  [EColor.Black]: EColor.White,
+}
 
 export interface ICheckerEntity {
   readonly isQueen: boolean;
@@ -36,18 +42,23 @@ export interface ICheckerCollection {
   readonly allPositions: string[];
   readonly whitePositions: string[];
   readonly blackPositions: string[];
+  readonly asString: string;
+
+  getByColor(color: EColor): ICheckerEntity[];
 
   hasChecker(position: string, excludes?: string[], color?: EColor): boolean;
 
   getByPosition(position: string): ICheckerEntity;
 
   reset(): void;
+
+  moveChecker(from: string, to: string): void;
+
+  deleteChecker(position: string): void;
 }
 
 export interface ICheckerLogic {
-  calculateTurns(checkers: ICheckerCollection, checker: ICheckerEntity): ITurn[];
-
-  calculateBeats(checkers: ICheckerCollection, checker: ICheckerEntity, previousTurns?: ITurn[]): ITurn[][];
+  getNextTurns(checkers: ICheckerCollection, color: EColor): INextTurns;
 }
 
 export interface IBoard {

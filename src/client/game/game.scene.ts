@@ -1,29 +1,32 @@
 import { IGame } from './game';
 import { IGameScene, IPoint } from './views.model';
+import { EColor } from '../../models';
 
-export const LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-export const NUMBERS = ['8', '7', '6', '5', '4', '3', '2', '1'];
+export const CELLS = ['0', '1', '2', '3', '4', '5', '6', '7'];
 
 export class GameScene extends Phaser.Scene implements IGameScene {
   boardMargin: number = 30;
   cellSize: number = 60;
-  isRevers = false;
 
   game: IGame;
 
+  get isRevers(): boolean {
+    return this.game.userColor !== null ? this.game.userColor === EColor.Black : false;
+  }
+
   get letters(): string[] {
     if (this.isRevers) {
-      return [...LETTERS].reverse();
+      return [...CELLS].reverse();
     } else {
-      return [...LETTERS]
+      return [...CELLS];
     }
   }
 
   get numbers(): string[] {
     if (this.isRevers) {
-      return [...NUMBERS].reverse();
+      return [...CELLS];
     } else {
-      return [...NUMBERS]
+      return [...CELLS].reverse();
     }
   }
 
@@ -32,7 +35,6 @@ export class GameScene extends Phaser.Scene implements IGameScene {
 
     this.boardMargin = 30;
     this.cellSize = 60;
-    this.isRevers = false;
   }
 
   public preload(): void {
@@ -52,6 +54,6 @@ export class GameScene extends Phaser.Scene implements IGameScene {
     return {
       x: this.letters.indexOf(boardPosition[0]) * this.cellSize + this.boardMargin,
       y: this.numbers.indexOf(boardPosition[1]) * this.cellSize + this.boardMargin
-    }
+    };
   }
 }

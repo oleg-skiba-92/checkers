@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { writable } from 'svelte/store';
+
   import LeftSideBar from './components/left-sidebar.svelte';
   import Game from './components/game.svelte';
   import Home from './components/home.svelte';
@@ -7,34 +9,46 @@
   import FindGame from './components/find-game.svelte';
   import Modal from './components/common/modal.svelte';
 
+  import { gameService, playersService, usersService } from './services';
   import { EPageState } from './models';
-  import { playersService, routerService, socketService, usersService } from './services';
-  import { SocketEvents } from '../models';
+  import { routerService, socketService } from './services/core';
+  import type { INextTurns, IUserTurn } from '../models';
   import { mockAllData } from './mock-data';
 
-  (<any>window).mockAllData = mockAllData
+  (<any>window).mockAllData = mockAllData;
 
   let currentState = routerService.currentState$;
   let room;
+  let nextTurns = writable<INextTurns>(null);
+  let turns = writable<IUserTurn>(null);
 
   usersService.getMe().then(() => {
     socketService.connect();
 
-    socketService.socket.on(SocketEvents.FreePlayerList, (data) => {
-      console.log('FreePlayerList', data);
-      playersService.updateFreePlayerList(data)
-    });
+    gameService.onFreePlayerListUpdated((data) => {
+      console.log('gameService FreePlayerList', data);
+      playersService.updateFreePlayerList(data);
+    })
 
-    socketService.socket.on(SocketEvents.SuggestList, (data) => {
-      console.log('SuggestList', data);
-      playersService.updateInvitesList(data)
-    });
+    gameService.onInviteListUpdated((data) => {
+      console.log('gameService InviteList', data);
+      playersService.updateInvitesList(data);
+    })
 
-    socketService.socket.on(SocketEvents.GameStart, (data) => {
-      console.log('GameStart', data);
-      room = data;
+    gameService.onGameStart((roomData, nextTurn) => {
+      console.log('gameService GameStart roomData', roomData);
+      console.log('gameService GameStart nextTurn', nextTurn);
+      room = roomData;
+      nextTurns.set(nextTurn);
       routerService.goTo(EPageState.Game);
-    });
+    })
+
+    gameService.onTurnEnd((userTurn, nextTurn) => {
+      console.log('gameService TurnEnd userTurn', userTurn);
+      console.log('gameService TurnEnd nextTurn', nextTurn);
+      turns.set(userTurn);
+      nextTurns.set(nextTurn);
+    })
   });
 </script>
 
@@ -52,7 +66,7 @@
       {:else if $currentState === EPageState.Profile}
         <Profile/>
       {:else if $currentState === EPageState.Game}
-        <Game room={room}/>
+        <Game room={room} nextTurns="{nextTurns}" turns="{turns}"/>
       {:else if $currentState === EPageState.FindGame}
         <FindGame/>
       {/if}

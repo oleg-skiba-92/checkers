@@ -1,22 +1,24 @@
-import { ITurn } from '../../../models';
+import { EColor, ITurn } from '../../../models';
 import { socketService } from '../../services/core';
 import { IUserEntity, IUsersCollection } from '../user/user.model';
 import { IRoomsCollection } from '../room/room.model';
-import { ISuggestCollection } from '../suggest/suggest.model';
+import { IInviteCollection } from '../invite/invite.model';
 import { UsersCollection } from '../user/users.collection';
 import { RoomsCollection } from '../room/rooms.collection';
-import { SuggestCollection } from '../suggest/suggest.collection';
+import { InviteCollection } from '../invite/invite.collection';
 import { IAuthData } from '../auth/auth.model';
+import { checkerLogic } from '../checker/checker.logic';
+import { OPPONENT_COLOR } from '../checker/checker.model';
 
 class GameController {
   private users: IUsersCollection;
   private rooms: IRoomsCollection;
-  private suggests: ISuggestCollection;
+  private invites: IInviteCollection;
 
   constructor() {
     this.users = new UsersCollection();
     this.rooms = new RoomsCollection();
-    this.suggests = new SuggestCollection();
+    this.invites = new InviteCollection();
   }
 
   userConnected(authData: IAuthData, socketId: string): IUserEntity {
@@ -33,63 +35,69 @@ class GameController {
       room.endGame();
       socketService.userLeftRoom(user.roomId, user.playerData);
       socketService.leveAllFromRoom(user.roomId);
+      // TODO: remove room if all users disconnected
     }
 
-    this.suggests.removeAllWith([user.id]);
+    this.invites.removeAllWith([user.id]);
     this.users.remove(user.id);
     this.updateAllLists();
   }
 
-  newSuggest(fromUser: IUserEntity, toUserId: string): void {
+  newInvite(fromUser: IUserEntity, toUserId: string): void {
     let user = this.users.getById(toUserId);
 
     if (user) {
-      this.suggests.add(fromUser, user);
-      socketService.updateSuggestList(this.suggests.list);
+      this.invites.add(fromUser, user);
+      socketService.updateInviteList(this.invites.list);
     }
   }
 
-  agreeSuggest(fromUser: IUserEntity, toUserId: string) {
+  agreeInvite(fromUser: IUserEntity, toUserId: string) {
     let user = this.users.getById(toUserId);
 
-    this.suggests.removeAllWith([fromUser.id, toUserId]);
+    this.invites.removeAllWith([fromUser.id, toUserId]);
 
     let room = this.rooms.createRoom([fromUser, user]);
     room.newGame();
 
+    let nextTurns = checkerLogic.getNextTurns(room.checkers, EColor.White);
+
     socketService.joinToRooms([fromUser.socketId, user.socketId], room.id);
-    socketService.startGame(room.info);
+    socketService.startGame(room.info, nextTurns);
 
     this.updateAllLists();
   }
 
-  disagreeSuggest(fromUser: IUserEntity, toUserId: string) {
+  disagreeInvite(fromUser: IUserEntity, toUserId: string) {
     let user = this.users.getById(toUserId);
 
     if (user) {
-      this.suggests.remove(user, fromUser);
-      socketService.updateSuggestList(this.suggests.list);
+      this.invites.remove(user, fromUser);
+      socketService.updateInviteList(this.invites.list);
     }
   }
 
-  turnEnd(fromUser: IUserEntity, roomId: string, turns: ITurn[], isWin: boolean) {
+  turnEnd(fromUser: IUserEntity, roomId: string, turns: ITurn[]) {
     let room = this.rooms.getById(roomId);
+    if (!room) {
+      return;
+    }
 
-    if (room) {
-      room.endTurn(turns)
-      socketService.endTurn(roomId, turns, fromUser.id, fromUser.color);
-      if (isWin) {
-        room.endGame();
-        socketService.endGame(roomId, fromUser.playerData);
-        socketService.leveAllFromRoom(roomId);
-        socketService.updateFreePlayerList(this.users.freePlayers);
-        this.rooms.remove(roomId);
-      }
+    room.endTurn(turns);
+    let nextTurns = checkerLogic.getNextTurns(room.checkers, OPPONENT_COLOR[fromUser.color]);
+
+    socketService.endTurn(roomId, {userId: fromUser.id, turns, roomId}, nextTurns);
+    if ([...nextTurns.turns, ...nextTurns.beats].length === 0) {
+      room.endGame();
+      socketService.endGame(roomId, fromUser.playerData);
+      socketService.leveAllFromRoom(roomId);
+      socketService.updateFreePlayerList(this.users.freePlayers);
+      this.rooms.remove(roomId);
     }
   }
 
   private updateAllLists() {
-    socketService.updateSuggestList(this.suggests.list);
+    socketService.updateInviteList(this.invites.list);
     socketService.updateFreePlayerList(this.users.freePlayers);
     socketService.updateRoomList(this.rooms.list);
   }

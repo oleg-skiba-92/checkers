@@ -1,4 +1,4 @@
-import { apiService } from './api.service';
+import { apiService } from './core';
 import { EAPIEndpoints, ILoginRequest, IRegistrationRequest, IUserInfo } from '../../models';
 import { get, Writable, writable } from 'svelte/store';
 

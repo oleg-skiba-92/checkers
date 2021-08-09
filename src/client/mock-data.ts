@@ -18,7 +18,7 @@ export const mFreePlayers = [
   {id: '444', userName: 'Test User 4', picture: 'assets/avatar.png', rating: 1234},
   {id: '555', userName: 'Test User 4', picture: 'assets/avatar.png', rating: 1234},
 ]
-export const mSuggests = [
+export const mInvites = [
   {
     from: {id: '222', userName: 'Test User 2', picture: 'assets/avatar.png', rating: 1234},
     to: {id: '111', userName: 'Test User 1', picture: 'assets/avatar.png', rating: 1234}
@@ -40,5 +40,5 @@ export const mSuggests = [
 export const mockAllData = () => {
   usersService.me$.set(mUser)
   playersService.updateFreePlayerList(mFreePlayers)
-  playersService.updateInvitesList(mSuggests)
+  playersService.updateInvitesList(mInvites)
 }

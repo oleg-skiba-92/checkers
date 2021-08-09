@@ -24,7 +24,7 @@ export class CheckerEntity implements ICheckerEntity {
   }
 
   get position(): string {
-    return this._color;
+    return this._position;
   }
 
   get boardPosition(): string {

@@ -1,23 +1,23 @@
 <script lang="ts">
   import List from './common/list.svelte';
-  import { playersService, socketService } from '../services';
+  import { gameService, playersService } from '../services';
 
-  let suggests = playersService.invitesToMe$;
+  let invites = playersService.invitesToMe$;
 
   const agree = (id: string) => {
-    socketService.agreeSuggest(id);
+    gameService.agreeInvite(id);
   };
   const disagree = (id: string) => {
-    socketService.disagreeSuggest(id);
+    gameService.disagreeInvite(id);
   };
 </script>
 
 <!--------------------------------HTML CODE-------------------------------->
 
 <div class="fco-right-sidebar">
-  {#if $suggests.length}
+  {#if $invites.length}
     <List
-        list={$suggests}
+        list={$invites}
         title={'Players want to play with you'}
         let:id
     >

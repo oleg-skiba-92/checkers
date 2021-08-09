@@ -1,14 +1,14 @@
 <script lang="ts">
   import List from './common/list.svelte';
-  import { playersService, socketService } from '../services';
+  import { gameService, playersService } from '../services';
 
   let players = playersService.freePlayers$;
   let myInvites = playersService.myInvites$;
 
-  $: inviteIds = $myInvites.map((suggest) => suggest.id);
+  $: inviteIds = $myInvites.map((invite) => invite.id);
 
-  const suggest = (id: string) => {
-    socketService.sendSuggest(id);
+  const invite = (id: string) => {
+    gameService.sendInvite(id);
   };
 
   const cancelInvite = (id: string) => {
@@ -30,7 +30,7 @@
         <button
             type="button"
             class="fco-btn fco-btn--orange"
-            on:click={() => suggest(id)}
+            on:click={() => invite(id)}
         >Play</button>
       {:else}
         <button

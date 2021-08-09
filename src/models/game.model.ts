@@ -30,4 +30,16 @@ export interface ITurn {
   direction: EDirections
 }
 
+export interface INextTurns {
+  color: EColor;
+  beats: ITurn[][];
+  turns: ITurn[][];
+}
+
+export interface IUserTurn {
+  userId: string;
+  roomId: string;
+  turns: ITurn[];
+}
+
 //#endregion interfaces

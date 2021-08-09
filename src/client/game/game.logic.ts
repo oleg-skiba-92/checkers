@@ -1,20 +1,13 @@
 import { BoardLogic } from './board/board.logic';
 import { Checker } from './checker/checker.logic';
-import { EColor, EGameError, ITurn } from '../../models';
-import { EVENTS, IGameScene, TSimpleDataCallback } from './views.model';
+import { EColor, EGameError, INextTurns, ITurn } from '../../models';
+import { EVENTS, IGameScene } from './views.model';
 import { IBoardLogic } from './board/board.model';
 import { IChecker } from './checker/checker.model';
 import { ICell } from './cell/cell.model';
 
-const WHITE_POSITIONS = ['a1', 'c1', 'e1', 'g1', 'b2', 'd2', 'f2', 'h2', 'a3', 'c3', 'e3', 'g3'];
-const BLACK_POSITIONS = ['b6', 'd6', 'f6', 'h6', 'a7', 'c7', 'e7', 'g7', 'b8', 'd8', 'f8', 'h8'];
-
 export interface IGameLogic {
-  onEndTurn(cb: (turns: ITurn[]) => void): void;
-
-  onError(cb: TSimpleDataCallback<EGameError>): void;
-
-  newGame(playerColor: EColor): void;
+  newGame(checkers: string): void;
 
   outsideTurn(turns: ITurn[]);
 }
@@ -23,25 +16,14 @@ export class GameLogic implements IGameLogic {
   board: IBoardLogic;
 
   checkers: IChecker[];
-
-  currentTurnColor: EColor;
-  playerColor: EColor;
   history: string[];
 
-  possibleTurns: ITurn[];
   currentTurns: ITurn[];
-
-  _endTurnCb: (turns: ITurn[]) => void;
-  _showErrorCb: TSimpleDataCallback<EGameError>;
 
   private _activeCell: string;
 
-  get activeChecker(): IChecker {
-    return this.checkers.find(checker => checker.boardPosition === this.activeCell)
-  }
-
   get activeCell(): string {
-    return this._activeCell
+    return this._activeCell;
   }
 
   set activeCell(value: string) {
@@ -53,130 +35,82 @@ export class GameLogic implements IGameLogic {
       this.board.highlightAsActive(value);
     }
 
-    if (!value) {
-      this.possibleTurns = [];
-    }
-
     this._activeCell = value;
+  }
+
+  get nextTurns(): INextTurns {
+    return this.scene.game.nextTurns;
+  }
+
+  get possibleTurns(): ITurn[][] {
+    let turns = this.nextTurns.beats.length ? this.nextTurns.beats : this.nextTurns.turns;
+
+    return this.currentTurns.reduce((acc, curr, idx) => {
+      return acc.filter(turn => turn[idx].turnPosition === curr.turnPosition);
+    }, turns);
+  }
+
+  get currentTurnColor(): EColor {
+    return this.nextTurns.color;
+  }
+
+  get playerColor(): EColor {
+    return this.scene.game.userColor;
   }
 
   constructor(public scene: IGameScene) {
     this.board = new BoardLogic(scene);
-
-    this._endTurnCb = () => {}
-    this._showErrorCb = () => {}
 
     this.board.on(EVENTS.EMPTY_CELL_CLICKED, (cell: ICell) => {
       this.emptyCellClick(cell.boardPosition);
     });
   }
 
-  onEndTurn(cb: (turns: ITurn[]) => void) {
-    if (typeof cb === 'function') {
-      this._endTurnCb = cb
-    } else {
-      this._endTurnCb = () => {}
-    }
-  }
-
-  onError(cb: TSimpleDataCallback<EGameError>) {
-    if (typeof cb === 'function') {
-      this._showErrorCb = cb
-    } else {
-      this._showErrorCb = () => {}
-    }
-  }
-
-  newGame(playerColor: EColor) {
+  newGame(checkers: string) {
     this._activeCell = null;
-    this.currentTurnColor = EColor.White;
-    this.playerColor = playerColor;
     this.history = [];
-    this.possibleTurns = [];
-    this.currentTurns = null;
-
-    this.scene.isRevers = this.playerColor === EColor.Black;
+    this.currentTurns = [];
 
     this.board.initBoardView();
 
-    // TODO from room info
     this.checkers = [
-      ...BLACK_POSITIONS.map((boardPosition) => {
-        const checker = new Checker(this.scene, EColor.Black, boardPosition);
-        this.board.addChecker(checker);
-        return checker;
-      }),
-      ...WHITE_POSITIONS.map((boardPosition) => {
-        const checker = new Checker(this.scene, EColor.White, boardPosition);
-        this.board.addChecker(checker);
-        return checker;
-      })
-    ]
-
-    this.checkers.forEach((checker) => {
-      checker.onClick<IChecker>((c) => {
-        this.checkerClick(c)
-      })
-    })
+      ...checkers.split(';')[1].split(',').map((boardPosition) => this.createChecker(EColor.Black, boardPosition)),
+      ...checkers.split(';')[0].split(',').map((boardPosition) => this.createChecker(EColor.White, boardPosition))
+    ];
   }
 
   checkerClick(checker: IChecker) {
-    if (this.playerColor !== this.currentTurnColor) {
-      this._showErrorCb(EGameError.OpponentTurn);
-      return;
-    }
-    if (checker.color !== this.playerColor) {
-      this._showErrorCb(EGameError.NotYourChecker);
-      return;
-    }
-
-    if (this.currentTurns !== null) {
-      this._showErrorCb(EGameError.NeedEndTurn);
-      return;
-    }
-
-    /* old logic
-    let turns = this.checkers.filter((c) => c.color === this.currentTurnColor)
-      .reduce((a, c) => {return [...a, {pos: c.boardPosition, turns: [...c.possibleTurns]}]}, <{pos: string, turns: ITurn[]}[]>[]);
-
-    let beats = turns.filter(t => t.turns.filter(t2 => !!t2.beatPosition).length)
-
-    if(beats.length && beats.findIndex(t => t.pos === checker.boardPosition) === -1) {
-      this._showErrorCb(EGameError.BeatMandatory);
-      return;
-    }
-
     if (this.activeCell === checker.boardPosition) {
-      this._showErrorCb(null);
+      this.clearError();
+      this.currentTurns = [];
       this.activeCell = null;
       return;
     }
-     */
 
-
-    this.possibleTurns = [];
-    console.log('this.possibleTurns', this.possibleTurns);
-
-    if (this.possibleTurns.length) {
-      this.activeCell = checker.boardPosition;
-      this._showErrorCb(null);
-    } else {
-      this._showErrorCb(EGameError.CannotPossibleTurns);
+    const err = this.validateChecker(checker);
+    if (err !== null) {
+      this.showError(err);
+      return;
     }
+
+    this.activeCell = checker.boardPosition;
+    this.currentTurns = [{turnPosition: checker.boardPosition, direction: null}];
+    this.clearError();
   }
 
   emptyCellClick(boardPosition: string) {
     if (!this.activeCell) {
-      this._showErrorCb(null);
+      this.clearError();
       return;
     }
 
-    let idx = this.possibleTurns.findIndex((p) => p.turnPosition === boardPosition)
+    let idx = this.possibleTurns.findIndex(turn => turn[this.currentTurns.length] && turn[this.currentTurns.length].turnPosition === boardPosition);
+
     if (idx !== -1) {
-      this._showErrorCb(null);
-      this.turn(this.activeCell, this.possibleTurns[idx]);
+      this.clearError();
+      this.turn(this.activeCell, this.possibleTurns[idx][this.currentTurns.length]);
     } else {
-      this._showErrorCb(EGameError.CannotTurnHere);
+      this.showError(EGameError.CannotTurnHere);
     }
   }
 
@@ -184,16 +118,14 @@ export class GameLogic implements IGameLogic {
     this.board.highlightOff([activePosition]);
     this.board.moveChecker(activePosition, turn.turnPosition);
 
-    this.currentTurns = this.currentTurns || [{turnPosition: activePosition, direction: null}];
     this.currentTurns.push(turn);
 
     if (turn.beatPosition) {
       this.activeCell = turn.turnPosition;
-      let beatenChecker = this.checkers.find((checker) => checker.boardPosition === turn.beatPosition)
+      let beatenChecker = this.checkers.find((checker) => checker.boardPosition === turn.beatPosition);
       beatenChecker.markAsBeaten();
 
-      this.possibleTurns = [];
-      if (this.possibleTurns.length) {
+      if (this.possibleTurns.length > 1 || (this.possibleTurns.length === 1 && (this.possibleTurns[0].length !== this.currentTurns.length))) {
         return;
       }
     }
@@ -205,14 +137,13 @@ export class GameLogic implements IGameLogic {
     this.removeBeatenCheckers();
     this.activeCell = null;
     this.addHistory(this.currentTurns);
-    this._endTurnCb(this.currentTurns);
-    this.changeCurrentColor();
-    this.currentTurns = null;
+    this.scene.game.endTurn(this.currentTurns);
+    this.currentTurns = [];
   }
 
   outsideTurn(turns: ITurn[]) {
     // TODO validate checkers (may history)
-    this._showErrorCb(null);
+    this.clearError();
     for (let i = 1; i < turns.length; i++) {
       this.board.moveChecker(turns[i - 1].turnPosition, turns[i].turnPosition);
 
@@ -221,7 +152,6 @@ export class GameLogic implements IGameLogic {
       }
     }
 
-    this.changeCurrentColor();
     this.addHistory(turns);
   }
 
@@ -233,11 +163,11 @@ export class GameLogic implements IGameLogic {
 
   addHistory(turns: ITurn[]) {
     if (this.history.length) {
-      let previousHistory = this.history[this.history.length - 1]
-      this.board.highlightOff(previousHistory.split(previousHistory[2]))
+      let previousHistory = this.history[this.history.length - 1];
+      this.board.highlightOff(previousHistory.split(previousHistory[2]));
     }
 
-    let divider = !!turns[turns.length - 1].beatPosition ? ':' : '-'
+    let divider = !!turns[turns.length - 1].beatPosition ? ':' : '-';
     let positions = turns.map(t => t.turnPosition);
 
     this.history.push(positions.join(divider));
@@ -253,8 +183,45 @@ export class GameLogic implements IGameLogic {
     this.checkers.splice(removeIdx, 1);
   }
 
-  private changeCurrentColor() {
-    this.currentTurnColor = this.currentTurnColor === EColor.White ? EColor.Black : EColor.White;
+  private createChecker(color: EColor, boardPosition: string): IChecker {
+    const checker = new Checker(this.scene, color, boardPosition);
+    this.board.addChecker(checker);
+
+    checker.onClick<IChecker>((c) => {
+      this.checkerClick(c);
+    });
+
+    return checker;
   }
 
+  private showError(error: EGameError): void {
+    this.scene.game.showError(error);
+  }
+
+  private clearError(): void {
+    this.scene.game.showError(null);
+  }
+
+  private validateChecker(checker: IChecker): EGameError {
+    if (this.playerColor !== this.currentTurnColor) {
+      return EGameError.OpponentTurn;
+    }
+    if (checker.color !== this.playerColor) {
+      return EGameError.NotYourChecker;
+    }
+
+    if (this.currentTurns.length > 1) {
+      return EGameError.NeedEndTurn;
+    }
+
+    if (this.nextTurns.beats.length && this.nextTurns.beats.findIndex((turn) => turn[0].turnPosition === checker.boardPosition) === -1) {
+      return EGameError.BeatMandatory;
+    }
+
+    if ((this.nextTurns.beats.length ? this.nextTurns.beats : this.nextTurns.turns).findIndex((turn) => turn[0].turnPosition === checker.boardPosition) === -1) {
+      return EGameError.CannotPossibleTurns;
+    }
+
+    return null;
+  }
 }

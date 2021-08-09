@@ -1,7 +1,7 @@
 import { IPlayer } from '../../../models';
 
-export interface ISuggestCollection {
-  list: ISuggest[];
+export interface IInviteCollection {
+  list: IInvite[];
 
   has(from: IPlayer, to: IPlayer): boolean;
 
@@ -11,10 +11,10 @@ export interface ISuggestCollection {
 
   removeAllWith(userIds: string[]): void;
 
-  getTo(to: string): ISuggest[];
+  getTo(to: string): IInvite[];
 }
 
-export interface ISuggest {
+export interface IInvite {
   from: IPlayer;
   to: IPlayer;
 }
