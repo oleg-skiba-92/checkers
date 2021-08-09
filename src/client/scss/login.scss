@@ -1,1 +1,52 @@
 @import "./variables";
+
+.fco-login {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  font-family: $font-family;
+  padding: 15px 0 15px 0;
+
+  &__title {
+    text-align: center;
+    margin: 0;
+  }
+
+  &__input-wrapper {
+    width: $input-wrapper-width;
+    margin: 10px auto;
+  }
+
+  &__input-wrapper:nth-child(2) {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  &__input-item {
+    width: $input-wrapper-width;
+    height: $input-wrapper-height;
+  }
+
+  &__button-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    & button {
+      margin-top: 10px;
+    }
+  }
+
+  &__horizontal-line-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 15px auto;
+    margin-bottom: 0;
+    width: $horizontal-line-wrapper-width;
+  }
+
+  &__horizontal-line {
+    border-bottom: $horizontal-line-border-thickness solid $font-color-light;
+    width: $horizontal-line-width;
+  }
+}
