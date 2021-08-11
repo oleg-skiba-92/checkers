@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Input from './common/input.svelte';
+
 </script>
 
 <!--------------------------------HTML CODE-------------------------------->
@@ -7,19 +9,11 @@
   
   <h2 class="fco-login__title">Login</h2>
   <form class="fco-login-form" action="https://echo.htmlacademy.ru" method="POST">
-    <div class="fco-login__input-wrapper">
-      <label class="fco-login-label" for="user-login">Email</label>
-      <br>
-      <input class="fco-login__input-item fco-login-input-item--email" type="text" id="user-login" name="login" placeholder="mail@example.com">
-    </div>
-
-    <div class="fco-login__input-wrapper">
-      <label class="fco-login-label" for="user-password">Password</label>
-      <br>
-      <input class="fco-login__input-item fco-login-input-item--password" type="password" id="user-password" name="password" placeholder="******">
-    </div>
-
-    <!-- Button play -->
+    <Input labelText="Login" inputType="email" inputName="login" inputId="user-login" inputPlaceholder="example@mail.com"/>
+  
+    <Input labelText="Password" inputType="password"  inputName="password" inputId="user-password" inputPlaceholder="******"/>
+    
+    <!-- Button login Registration -->
     <div class="fco-login__button-wrapper">
       <button class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width">Login</button>
       <button class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width">Registration</button>

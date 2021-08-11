@@ -12,21 +12,6 @@
     margin: 0;
   }
 
-  &__input-wrapper {
-    width: $input-wrapper-width;
-    margin: 10px auto;
-  }
-
-  &__input-wrapper:nth-child(2) {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
-  &__input-item {
-    width: $input-wrapper-width;
-    height: $input-wrapper-height;
-  }
-
   &__button-wrapper {
     display: flex;
     flex-direction: column;
