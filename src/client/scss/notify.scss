@@ -1,10 +1,13 @@
 @import "./variables";
 
-.fco-notify {
+.fco-notify-wrapper {
   position: absolute;
   z-index: $notify-z-index;
   top: 0;
   right: 0;
+}
+
+.fco-notify {
   display: flex;
   align-items: center;
 
@@ -17,6 +20,14 @@
 
   &--error{
     background: $color-red_01;
+  }
+
+  &--warning{
+    background: $color-orange_01;
+  }
+
+  &--success{
+    background: $color-green_02;
   }
 
   &__icon {

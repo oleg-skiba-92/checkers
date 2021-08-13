@@ -8,6 +8,7 @@
   import RightSideBar from './components/right-sidebar.svelte';
   import FindGame from './components/find-game.svelte';
   import Modal from './components/common/modal.svelte';
+  import Notify from './components/common/notify.svelte';
 
   import { gameService, playersService, usersService } from './services';
   import { EPageState } from './models';
@@ -62,8 +63,6 @@
       initSocket(usersService.token.data);
     });
   }
-
-
 </script>
 
 <!--------------------------------HTML CODE-------------------------------->
@@ -93,3 +92,4 @@
 </main>
 
 <Modal/>
+<Notify/>
