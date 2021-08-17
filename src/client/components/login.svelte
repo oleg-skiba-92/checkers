@@ -1,27 +1,30 @@
 <script lang="ts">
+  import Input from './common/input.svelte';
+
 </script>
 
 <!--------------------------------HTML CODE-------------------------------->
 
 <div class="fco-login">
+  
   <h2 class="fco-login__title">Login</h2>
-    <form class="fco-login-form" action="https://echo.htmlacademy.ru" method="POST">
-      <p>
-        <label class="fco-login-label" for="fco-user-login">Email</label>
-        <input class="fco-login-email" type="text" id="user-login" name="login" placeholder="mail@example.com">
-      </p>
-      <p>
-        <label class="fco-login-label" for="fco-user-password">Password</label>
-        <input class="fco-login-password" type="password" id="user-password" name="password" placeholder="******">
-      </p>
+  <form class="fco-login-form" action="https://echo.htmlacademy.ru" method="POST">
+    <Input labelText="Login" inputType="email" inputName="login" inputId="user-login" inputPlaceholder="example@mail.com"/>
+  
+    <Input labelText="Password" inputType="password"  inputName="password" inputId="user-password" inputPlaceholder="******"/>
+    
+    <!-- Button login Registration -->
+    <div class="fco-login__button-wrapper">
+      <button class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width">Login</button>
+      <button class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width">Registration</button>
+    </div>
+  </form>
 
-      <!-- Button play -->
-      <div class="fco-login-button-wrapper">
-        <button class="fco-btn fco-btn--orange fco-btn--align-center">Login</button>
-        <button class="fco-btn fco-btn--green fco-btn--align-center">Registration</button>
-      </div>
+  <div class="fco-login__horizontal-line-wrapper">
+    <div class="fco-login__horizontal-line"></div>
+      or connect with 
+    <div class="fco-login__horizontal-line"></div>
+  </div>
+  <button class="fco-btn fco-btn--align-center fco-btn--login fco-btn--width">g+ Google</button>
 
-      <p> --- or connect with ---</p>
-      <button class="fco-btn fco-btn--align-center">g+ Google</button>
-    </form>
 </div>
