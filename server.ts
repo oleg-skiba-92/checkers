@@ -44,7 +44,7 @@ export class App implements IServer {
   private config() {
     this.app.use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin ? req.headers.origin : '*');
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-auth-token');
+      res.header('Access-Control-Allow-Headers', 'Origin, Authorization, X-Requested-With, Content-Type, Accept, x-auth-token');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       next();
