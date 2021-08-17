@@ -44,6 +44,11 @@ export class AuthService implements IAuthService {
 
     // NOTE: checking if the token is existing and has a correct format
     server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
+      //TODO another way?
+      if(req.method === 'OPTIONS') {
+        return next();
+      }
+
       let header = req.header('Authorization');
 
       if (!header) {
@@ -73,6 +78,10 @@ export class AuthService implements IAuthService {
 
     // NOTE: verify token
     server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
+      if(req.method === 'OPTIONS') {
+        return next();
+      }
+
       let data = await this.verifyToken(req.token);
 
       if (data.error !== null) {
