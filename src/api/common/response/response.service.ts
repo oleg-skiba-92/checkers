@@ -30,44 +30,44 @@ export class ResponseService {
     });
   }
 
-  static unknownError(data: TApiResponseData = null, message: string = ERROR_MESSAGES.UNKNOWN): IApiResponse {
+  static unknownError(data: TApiResponseData = null): IApiResponse {
     return new ApiResponse({
       status: 520,
-      error: {code: EApiErrorCode.Unknown, message},
+      error: EApiErrorCode.Unknown,
       data,
     });
 
   }
 
-  public static notFound(data: TApiResponseData = null, message: string = ERROR_MESSAGES.NOT_FOUND): IApiResponse {
+  public static notFound(data: TApiResponseData = null): IApiResponse {
     return new ApiResponse({
       status: 404,
-      error: {code: EApiErrorCode.NotFound, message},
+      error: EApiErrorCode.NotFound,
       data
     });
 
   }
 
-  public static badRequest(data: TApiResponseData = null, message: string = ERROR_MESSAGES.INVALID_DATA): IApiResponse {
+  public static badRequest(data: TApiResponseData = null, error: EApiErrorCode = EApiErrorCode.InvalidData): IApiResponse {
     return new ApiResponse({
       status: 400,
-      error: {code: EApiErrorCode.InvalidData, message},
+      error,
       data
     });
   }
 
-  public static unauthorized(data: TApiResponseData = null, message: string = ERROR_MESSAGES.UNAUTHORIZED): IApiResponse {
+  public static unauthorized(data: TApiResponseData = null, error: EApiErrorCode = EApiErrorCode.Unauthorized): IApiResponse {
     return new ApiResponse({
       status: 401,
-      error: {code: EApiErrorCode.Unauthorized, message},
+      error,
       data
     });
   }
 
-  public static invalidToken(data: TApiResponseData = null, message: string = ERROR_MESSAGES.INVALID_TOKEN): IApiResponse {
+  static validationError(data: TApiResponseData = null) {
     return new ApiResponse({
-      status: 401,
-      error: {code: EApiErrorCode.InvalidToken, message},
+      status: 400,
+      error: EApiErrorCode.ValidationError,
       data
     });
   }

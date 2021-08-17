@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt-nodejs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { IRegistrationRequest, IUserInfo } from '../../../models';
+import { EApiErrorCode, EApiValidationError, IRegistrationRequest, IUserInfo } from '../../../models';
 import { authService } from './auth.service';
 import { userData } from '../user/user.data';
 import { guestData } from '../guest/guest.data';
@@ -54,14 +54,28 @@ class AuthController extends BaseController {
   }
 
   private async registration(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse> {
-    if (!data.email || !data.password || !data.password) {
-      return ResponseService.badRequest('ALL_FIELDS_REQUIRED', `Всі поля повинні бути заповнені`);
+    if (!data.email || !data.password || !data.userName) {
+      let errors = [];
+
+      if(!data.email) {
+        errors.push({field: 'email', error: EApiValidationError.Required})
+      }
+
+      if(!data.password) {
+        errors.push({field: 'password', error: EApiValidationError.Required})
+      }
+
+      if(!data.userName) {
+        errors.push({field: 'userName', error: EApiValidationError.Required})
+      }
+
+      return ResponseService.validationError(errors);
     }
 
     let user = await userData.getByEmail(data.email);
 
     if (user && user.password) {
-      return ResponseService.badRequest('USER_EXIST', `Юзер з таким емейлом вже існує`);
+      return ResponseService.validationError([{field: 'email', error: EApiValidationError.UserExist}]);
     }
 
     let pass = bcrypt.hashSync(req.body.password);
@@ -78,29 +92,39 @@ class AuthController extends BaseController {
     }
 
     let userInfo = userData.toUserInfo(user);
-    authService.login(userInfo, EAuthMethod.Password);
+    let token = authService.login(userInfo, EAuthMethod.Password);
 
-    return ResponseService.successJson(userInfo);
+    return ResponseService.successJson({user: userInfo, token});
   }
 
   private async login(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse> {
     if (!data.email || !data.password) {
-      return ResponseService.badRequest('ALL_FIELDS_REQUIRED', `Всі поля повинні бути заповнені`);
+      let errors = [];
+
+      if(!data.email) {
+        errors.push({field: 'email', error: EApiValidationError.Required})
+      }
+
+      if(!data.password) {
+        errors.push({field: 'password', error: EApiValidationError.Required})
+      }
+
+      return ResponseService.validationError(errors);
     }
 
     let user = await userData.getByEmail(req.body.email);
     if (!user) {
-      return ResponseService.badRequest('USER_DOES_NOT_EXIST', `Юзера з таким емейлом не існує`);
+      return ResponseService.validationError([{field: 'email', error: EApiValidationError.UserNotFound}]);
     }
 
     if (!user.password || !bcrypt.compareSync(req.body.password, user.password)) {
-      return ResponseService.badRequest('INVALID_PASSWORD', `Пароль не вірний`);
+      return ResponseService.validationError([{field: 'password', error: EApiValidationError.PasswordIncorrect}]);
     }
 
     let userInfo = userData.toUserInfo(user);
-    authService.login(userInfo, EAuthMethod.Password);
+    let token = authService.login(userInfo, EAuthMethod.Password);
 
-    return ResponseService.successJson(userInfo);
+    return ResponseService.successJson({user: userInfo, token});
   }
 
   private async logout(data: {userId: string}, req: IRequest): Promise<IApiResponse> {
@@ -120,6 +144,8 @@ class AuthController extends BaseController {
   }
 
   private async refreshToken(data: {token: string}, req: IRequest): Promise<IApiResponse> {
+    // return ResponseService.unauthorized();
+
     try {
       return ResponseService.successJson({token: authService.refreshToken(data.token)});
     } catch (e) {

@@ -1,13 +1,13 @@
 import {
   EApiResponseType,
   IApiResponse,
-  IApiResponseError,
   IApiResponseHeader,
   IApiResponsesOptions,
   TApiResponseData
 } from './api-response.model';
 import { Logger } from '../../libs';
 import { IResponse } from '../../models/app.model';
+import { EApiErrorCode } from '../../../models';
 
 const log = new Logger('res');
 
@@ -15,7 +15,7 @@ export class ApiResponse implements IApiResponse {
   private status: number;
   private headers: IApiResponseHeader[];
   private type: EApiResponseType;
-  private error: IApiResponseError;
+  private error: EApiErrorCode;
 
   public data: TApiResponseData;
 
@@ -44,7 +44,7 @@ export class ApiResponse implements IApiResponse {
         res.json(this.data);
         break;
       case EApiResponseType.ERROR:
-        res.json({...this.error, error: this.data});
+        res.json({error: this.error, payload: this.data});
         break;
       default:
         res.send(this.data);

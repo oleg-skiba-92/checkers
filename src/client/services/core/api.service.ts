@@ -1,10 +1,21 @@
-import { EAPIEndpoints, EApiErrorCode } from '../../../models';
+import { EAPIEndpoints, EApiErrorCode, IApiError } from '../../../models';
 import { BASE_SERVER_URL } from '../../environment';
 import { usersService } from '../users.service';
+import { notifyService } from './notify.service';
 
 const JSON_HEADERS = {
   'Accept': 'application/json',
   'Content-Type': 'application/json'
+};
+
+const ERROR_MESSAGES = {
+  [EApiErrorCode.NotFound]: 'Not Found',
+  [EApiErrorCode.NoToken]: 'User is unauthorised',
+  [EApiErrorCode.ParseToken]: 'User is unauthorised',
+  [EApiErrorCode.InvalidToken]: 'User is unauthorised',
+  [EApiErrorCode.Unauthorized]: 'User is unauthorised',
+  [EApiErrorCode.InvalidData]: 'Invalid Data',
+  [EApiErrorCode.Unknown]: 'Unknown error',
 };
 
 // TODO important Circular dependency
@@ -45,42 +56,61 @@ export class ApiService {
       body: data === null ? null : JSON.stringify(data),
       credentials: 'include'
     })
-      .then((response: Response) => {
+      .then(async (response: Response) => {
         if (response.ok) {
           return response.json();
         } else {
-          // NOTE: if refresh token is failed or server has some error trigger invalid token error
+          let errorData: IApiError = await response.json();
+
+          //#region token error
+          // NOTE: if refresh token is failed or server has some error trigger Unauthorized error
           if (urlParts[urlParts.length - 1] === EAPIEndpoints.RefreshToken) {
-            // TODO: show error
-            return Promise.reject({code: EApiErrorCode.InvalidToken, message: 'InvalidToken'});
+            return Promise.reject(errorData);
           }
 
           if (response.status === 401) {
-            // TODO: show error
-            return this.handleUnauthorisedError(response, () => this.request(urlParts, method, data));
+            try {
+              return await this.handleUnauthorisedError(errorData, () => this.request(urlParts, method, data));
+            } catch (e) {
+              errorData = e;
+            }
           }
-
+          //#endregion
 
           if (response.status === 404) {
-            return Promise.reject({code: EApiErrorCode.NotFound, message: 'Not found'});
+            errorData = {error: EApiErrorCode.NotFound};
           }
 
-          // TODO handling error;
-          return Promise.reject(response.json());
+          //#region show error
+          if ([
+            EApiErrorCode.ValidationError
+          ].indexOf(errorData.error) === -1) {
+            notifyService.error(ERROR_MESSAGES[errorData.error]);
+          }
+          //#endregion
+
+          return Promise.reject(errorData);
         }
       });
   }
 
-  private handleUnauthorisedError<R>(response: Response, request: () => Promise<R>): Promise<R> {
-    return response.json().then((responseError) => {
-      // TODO wtf?
-      if (responseError.error && responseError.error.code === EApiErrorCode.TokenExpired) {
-        return usersService.refreshTokenProcess().then((res) => request());
-      }
+  private handleUnauthorisedError<R>(responseError: IApiError, request: () => Promise<R>): Promise<R> {
+    if (responseError.error && responseError.error === EApiErrorCode.TokenExpired) {
+      return usersService.refreshTokenProcess()
+        .then((res: any) => {
+          if (res.error) {
+            return Promise.reject();
+          }
 
-      // TODO: show error
-      return Promise.reject(responseError);
-    });
+          return request();
+        })
+        // NOTE: if refresh token is failed or server has some error trigger Unauthorized error
+        .catch((e) => Promise.reject({error: EApiErrorCode.Unauthorized}));
+    }
+
+    usersService.token.remove();
+
+    return Promise.reject(responseError);
   }
 }
 

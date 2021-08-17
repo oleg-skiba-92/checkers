@@ -20,17 +20,12 @@ export interface IApiResponseHeader {
   value: string;
 }
 
-export interface IApiResponseError {
-  code: EApiErrorCode;  // TODO: error
-  message: string;
-}
-
 export interface IApiResponsesOptions {
   status?: number;
   headers?: IApiResponseHeader[];
   data?: TApiResponseData;
   type?: EApiResponseType;
-  error?: IApiResponseError;
+  error?: EApiErrorCode;
 }
 
 export interface IApiResponse {

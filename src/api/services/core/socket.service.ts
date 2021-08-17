@@ -76,8 +76,8 @@ export class SocketService implements IInitializedService {
 
       let data = await authService.verifyToken(socket.handshake.auth.token);
 
-      if (!data.valid) {
-        socket.emit(SocketEvents.Error, data.payload);
+      if (data.error !== null) {
+        socket.emit(SocketEvents.Error, data);
         socket.disconnect(true);
 
         return;

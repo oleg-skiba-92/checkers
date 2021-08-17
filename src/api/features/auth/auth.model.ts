@@ -1,6 +1,5 @@
-import { IUserInfo } from '../../../models';
-import { IApiResponseError } from '../../common/response/api-response.model';
-import { IInitializedService, IRequest } from '../../models/app.model';
+import { EApiErrorCode, IUserInfo } from '../../../models';
+import { IInitializedService } from '../../models/app.model';
 
 export enum EAuthMethod {
   Google,
@@ -22,8 +21,8 @@ export interface IAuthData {
 }
 
 export interface IParsedToken {
-  valid: boolean;
-  payload: IAuthData | IApiResponseError
+  error: EApiErrorCode;
+  payload: IAuthData;
 }
 
 export interface IAuthService extends IInitializedService {

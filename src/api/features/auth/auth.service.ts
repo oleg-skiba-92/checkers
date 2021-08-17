@@ -41,7 +41,7 @@ export class AuthService implements IAuthService {
       if (!header) {
         this.log.error('No Authorization header');
 
-        let apiResponse = ResponseService.unauthorized();
+        let apiResponse = ResponseService.unauthorized(null, EApiErrorCode.NoToken);
         apiResponse.send(res);
 
         return;
@@ -52,7 +52,7 @@ export class AuthService implements IAuthService {
       if (!barerTokenMatch || !barerTokenMatch[1]) {
         this.log.error('Token format invalid');
 
-        let apiResponse = ResponseService.invalidToken();
+        let apiResponse = ResponseService.unauthorized(null, EApiErrorCode.ParseToken);
         apiResponse.send(res);
 
         return;
@@ -67,8 +67,8 @@ export class AuthService implements IAuthService {
     server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
       let data = await this.verifyToken(req.token);
 
-      if (!data.valid) {
-        let apiResponse = ResponseService.unauthorized(data.payload);
+      if (data.error !== null) {
+        let apiResponse = ResponseService.unauthorized(null, data.error);
         apiResponse.send(res);
 
         return;
@@ -136,18 +136,18 @@ export class AuthService implements IAuthService {
         this.log.error(`Tokens mismatch ${!!realToken}`);
         this.logout((<IAuthData>decoded.data).userId);
 
-        return {valid: false, payload: {code: EApiErrorCode.InvalidToken, message: 'Tokens mismatch'}};
+        return {error: EApiErrorCode.InvalidToken, payload: null};
       }
 
-      return {valid: true, payload: decoded.data};
+      return {error: null, payload: decoded.data};
     } catch (e) {
       if (e.name == 'TokenExpiredError') {
         this.log.error('token expired');
-        return {valid: false, payload: {code: EApiErrorCode.TokenExpired, message: 'Token expired'}};
+        return {error: EApiErrorCode.TokenExpired, payload: null};
       }
 
       this.log.error('jwt.verify error', e);
-      return {valid: false, payload: {code: EApiErrorCode.InvalidToken, message: 'Invalid token'}};
+      return {error: EApiErrorCode.InvalidToken, payload: null};
     }
   }
 
