@@ -97,7 +97,10 @@ export class AuthService implements IAuthService {
 
     const token = this.generateJWTToken(authData);
 
-    this.redisClient.set(user.id, token);
+    this.redisClient.set(user.id, token, (err) => {
+      this.log.error('login', err);
+      this.log.error(err);
+    });
 
     this.log.success(`login`, authData);
 
