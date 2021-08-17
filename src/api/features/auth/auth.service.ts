@@ -31,7 +31,15 @@ export class AuthService implements IAuthService {
     this.redisClient = redis.createClient({
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
-      password: process.env.REDIS_PASSWORD
+      password: process.env.REDIS_PASSWORD,
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    this.redisClient.on("error", (err) => {
+      // The set and get are aggregated in here
+      this.log.error(err, err);
     });
 
     // NOTE: checking if the token is existing and has a correct format
