@@ -1,4 +1,4 @@
-import { IPlayer } from '../../../models';
+import { IInvite, IPlayer } from '../../../models';
 
 export interface IInviteCollection {
   list: IInvite[];
@@ -14,7 +14,3 @@ export interface IInviteCollection {
   getTo(to: string): IInvite[];
 }
 
-export interface IInvite {
-  from: IPlayer;
-  to: IPlayer;
-}

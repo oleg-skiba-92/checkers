@@ -1,5 +1,5 @@
-import { IInvite, IInviteCollection } from './invite.model';
-import { IPlayer } from '../../../models';
+import { IInviteCollection } from './invite.model';
+import { IInvite, IPlayer } from '../../../models';
 
 export class InviteCollection implements IInviteCollection {
   private _invites: IInvite[];

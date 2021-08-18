@@ -1,14 +1,7 @@
-import { EColor } from './game.model';
+import { IPlayer } from './user.model';
 
-export interface IRoom {
+export interface IRoomInfo {
   id: string;
-  isPlaying: boolean;
-  players: IRoomPlayer[];
+  players: IPlayer[];
   checkers: string;
-}
-
-export interface IRoomPlayer {
-  id: string;
-  userName: string;
-  color: EColor;
 }

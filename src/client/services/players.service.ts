@@ -1,7 +1,6 @@
 import { writable } from 'svelte/store';
 import { Writable } from 'svelte/types/runtime/store';
-import { IInvite } from '../../api/features/invite/invite.model';
-import { IPlayer } from '../../models';
+import { IInvite, IPlayer } from '../../models';
 import { usersService } from './users.service';
 
 class PlayersService {

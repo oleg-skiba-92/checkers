@@ -1,10 +1,10 @@
 import 'phaser';
 
-import { EColor, EGameError, INextTurns, IRoom, IUserTurn } from '../../models';
-import { ITurn } from '../../models';
-import { IGameScene, TSimpleDataCallback } from './views.model';
+import { EColor, EGameError, INextTurns, IRoomInfo, IUserTurn } from '../../models';
+import { ITurn, TSimpleDataCallback } from '../../models';
 import { GameLogic, IGameLogic } from './game.logic';
 import { GameScene } from './game.scene';
+import { IGameScene } from './game.model';
 
 const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
   width: 540,
@@ -34,7 +34,7 @@ export interface IGame extends Phaser.Game {
 export interface IClientGame {
   afterLoad(fn: () => void): void;
 
-  newGame(room: IRoom): void;
+  newGame(room: IRoomInfo): void;
 
   onError(fn: TSimpleDataCallback<EGameError>): void;
 
@@ -53,7 +53,7 @@ export class Game extends Phaser.Game implements IGame, IClientGame {
   }
 
   private gameLogic: IGameLogic;
-  private room: IRoom;
+  private room: IRoomInfo;
   private userId: string;
   private isLoaded: boolean;
   private _onAfterLoad: () => void;
@@ -69,7 +69,7 @@ export class Game extends Phaser.Game implements IGame, IClientGame {
     this._onEndTurn = () => {};
   }
 
-  newGame(room: IRoom) {
+  newGame(room: IRoomInfo) {
     this.room = room;
     this.gameLogic.newGame(room.checkers);
   }

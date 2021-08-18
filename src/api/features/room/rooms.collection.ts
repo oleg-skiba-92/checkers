@@ -1,6 +1,7 @@
-import { IRoomEntity, IRoomInfo, IRoomsCollection } from './room.model';
+import { IRoomEntity, IRoomsCollection } from './room.model';
 import { IUserEntity } from '../user/user.model';
 import { RoomEntity } from './room.entity';
+import { IRoomInfo } from '../../../models';
 
 export class RoomsCollection implements IRoomsCollection {
   private _rooms: IRoomEntity[];

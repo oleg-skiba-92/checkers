@@ -1,6 +1,6 @@
 import { IGame } from './game';
-import { IGameScene, IPoint } from './views.model';
 import { EColor } from '../../models';
+import { IGameScene, IPoint } from './game.model';
 
 export const CELLS = ['0', '1', '2', '3', '4', '5', '6', '7'];
 

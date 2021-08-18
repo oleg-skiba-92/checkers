@@ -1,4 +1,4 @@
-import { INextTurns, IPlayer, IRoom, ITurn, IUserTurn, SocketEvents, TSimpleDataCallback } from '../../models';
+import { IInvite, INextTurns, IPlayer, IRoomInfo, ITurn, IUserTurn, SocketEvents, TSimpleDataCallback } from '../../models';
 import { socketService } from './core';
 
 export class GameService {
@@ -18,17 +18,15 @@ export class GameService {
     socketService.emit(SocketEvents.TurnEnd, roomId, turns);
   }
 
-  //TODO move TSimpleDataCallback to common
   onFreePlayerListUpdated(fn: TSimpleDataCallback<IPlayer[]>) {
     socketService.subscribe(SocketEvents.FreePlayerList, fn);
   }
 
-  //TODO move IInvite to common
-  onInviteListUpdated(fn: TSimpleDataCallback<[]>) {
+  onInviteListUpdated(fn: TSimpleDataCallback<IInvite[]>) {
     socketService.subscribe(SocketEvents.InviteList, fn);
   }
 
-  onGameStart(fn: (roomInfo: IRoom, nextTurns: INextTurns) => void) {
+  onGameStart(fn: (roomInfo: IRoomInfo, nextTurns: INextTurns) => void) {
     socketService.subscribe(SocketEvents.GameStart, fn);
   }
 

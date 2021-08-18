@@ -2,7 +2,7 @@ import { EColor } from '../../../models';
 import { CellView } from './cell.view';
 import { ECellState, ICell } from './cell.model';
 import { IChecker } from '../checker/checker.model';
-import { IGameScene } from '../views.model';
+import { IGameScene } from '../game.model';
 
 export class Cell extends CellView implements ICell {
   color: EColor;

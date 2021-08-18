@@ -4,10 +4,10 @@
   import { Game } from '../game/game';
   import type { IClientGame } from '../game/game';
   import { gameService, usersService } from '../services';
-  import type { IRoom, ITurn } from '../../models';
+  import type { IRoomInfo, ITurn } from '../../models';
   import { EGameError } from '../../models';
 
-  export let room: IRoom;
+  export let room: IRoomInfo;
   export let nextTurns;//: Writable<INextTurns>;
   export let turns;//: Writable<INextTurns>;
 

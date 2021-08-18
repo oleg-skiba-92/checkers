@@ -1,16 +1,8 @@
-//#region enums
 import { IGame } from './game';
 
 export enum EVENTS {
   EMPTY_CELL_CLICKED = 'EMPTY_CELL_CLICKED'
 }
-
-//#endregion enums
-
-//#region types
-export type TSimpleCallback = () => void;
-export type TSimpleDataCallback<T> = (data: T) => void;
-//#endregion types
 
 //#region interfaces
 export interface ISize {
@@ -23,7 +15,6 @@ export interface IPoint {
   y: number;
 }
 
-//#endregion interfaces
 export interface IGameScene extends Phaser.Scene {
   readonly isRevers: boolean;
   boardMargin: number;
@@ -35,3 +26,4 @@ export interface IGameScene extends Phaser.Scene {
 
   boardPositionToPosition(boardPosition: string): IPoint;
 }
+//#endregion interfaces
