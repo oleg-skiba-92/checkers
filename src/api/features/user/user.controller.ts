@@ -4,8 +4,7 @@ import { IApiResponse } from '../../common/response/api-response.model';
 import { IRequest } from '../../models/app.model';
 import { BaseController } from '../../common/controller/controller.base';
 import { ResponseService } from '../../common/response/response.service';
-import { IUserInfo } from '../../../models';
-import { EAPIEndpoints } from '../../../models/api.model';
+import { IUserInfo, EAPIEndpoints } from '../../../models';
 import { guestData } from '../guest/guest.data';
 import { EAuthMethod, IAuthData } from '../auth/auth.model';
 

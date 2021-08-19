@@ -1,6 +1,6 @@
-import { IGameScene, IPoint, TSimpleDataCallback } from '../views.model';
-import { EColor } from '../../../models'
+import { EColor, TSimpleDataCallback } from '../../../models'
 import { ICellView } from './cell.model';
+import { IGameScene, IPoint } from '../game.model';
 
 export class CellView extends Phaser.GameObjects.Container implements ICellView {
   scene: IGameScene;

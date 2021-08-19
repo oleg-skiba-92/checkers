@@ -1,5 +1,5 @@
 import { IBoardView } from './board.model';
-import { IGameScene } from '../views.model';
+import { IGameScene } from '../game.model';
 
 const LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8'];

@@ -1,5 +1,5 @@
-import { IGameScene, TSimpleDataCallback } from '../views.model';
-import { EColor, ITurn } from '../../../models';
+import { EColor, TSimpleDataCallback } from '../../../models';
+import { IGameScene } from '../game.model';
 
 export interface ICheckerView extends Phaser.GameObjects.Container {
   scene: IGameScene;

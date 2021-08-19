@@ -1,9 +1,9 @@
 import { Cell } from '../cell/cell.logic';
 import { BoardView } from './board.view';
 import { IBoardLogic } from './board.model';
-import { EVENTS, IGameScene } from '../views.model';
 import { ICell } from '../cell/cell.model';
 import { IChecker } from '../checker/checker.model';
+import { EVENTS, IGameScene } from '../game.model';
 
 export class BoardLogic extends BoardView implements IBoardLogic {
   cells: { [key: string]: ICell }

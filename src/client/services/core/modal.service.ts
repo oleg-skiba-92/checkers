@@ -1,18 +1,21 @@
 import { writable, get } from 'svelte/store';
+import { SvelteComponent } from 'svelte';
+import { Writable } from 'svelte/types/runtime/store';
+
+import { IActiveModal } from '../../models';
 
 class ModalService {
-  activeModal$;
+  activeModal$: Writable<IActiveModal>;
 
-  // todo interface
-  get activeModal(): any {
-    return get<any>(this.activeModal$);
+  get activeModal(): IActiveModal {
+    return get<IActiveModal>(this.activeModal$);
   }
 
   constructor() {
     this.activeModal$ = writable(null);
   }
 
-  openModal(component) {
+  openModal(component: SvelteComponent) {
     this.activeModal$.set({
       component
     });

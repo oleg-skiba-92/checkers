@@ -1,6 +1,6 @@
-import { EColor, ITurn } from '../../../models';
+import { EColor, IRoomInfo, ITurn } from '../../../models';
 import { v4 as uuidv4 } from 'uuid';
-import { IRoomEntity, IRoomInfo } from './room.model';
+import { IRoomEntity} from './room.model';
 import { IUserEntity } from '../user/user.model';
 import { ICheckerCollection } from '../checker/checker.model';
 import { CheckerCollection } from '../checker/checker.collection';

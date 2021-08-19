@@ -1,10 +1,10 @@
 import { BoardLogic } from './board/board.logic';
 import { Checker } from './checker/checker.logic';
 import { EColor, EGameError, INextTurns, ITurn } from '../../models';
-import { EVENTS, IGameScene } from './views.model';
 import { IBoardLogic } from './board/board.model';
 import { IChecker } from './checker/checker.model';
 import { ICell } from './cell/cell.model';
+import { EVENTS, IGameScene } from './game.model';
 
 export interface IGameLogic {
   newGame(checkers: string): void;

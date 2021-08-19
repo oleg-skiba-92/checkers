@@ -13,12 +13,6 @@ export const enum EAPIEndpoints {
   RefreshToken = 'token',
 }
 
-//#endregion enums
-
-export type TSimpleCallback = () => void;
-export type TSimpleDataCallback<T> = (data: T) => void;
-
-//#region enums
 export const enum EApiErrorCode {
   InvalidData = 'INVALID_DATA',
   NotFound = 'NOT_FOUND',
@@ -40,6 +34,12 @@ export const enum EApiValidationError {
   PasswordIncorrect = 'PASSWORD_INCORRECT',
   InvalidPassword = 'INVALID_PASSWORD',
 }
+
+
+//#endregion enums
+
+export type TSimpleCallback = () => void;
+export type TSimpleDataCallback<T> = (data: T) => void;
 
 export interface IApiError {
   error: EApiErrorCode,

@@ -1,10 +1,8 @@
 import * as io from 'socket.io';
 
-import { EApiErrorCode, INextTurns, IPlayer, IUserTurn, SocketEvents } from '../../../models';
+import { EApiErrorCode, IInvite, INextTurns, IPlayer, IRoomInfo, IUserTurn, SocketEvents } from '../../../models';
 import { App } from '../../../../server';
 import { Logger } from '../../libs';
-import { IInvite } from '../../features/invite/invite.model';
-import { IRoomInfo } from '../../features/room/room.model';
 import { GameCtrl } from '../../features/game/game.controller';
 import { IInitializedService } from '../../models/app.model';
 import { ISocket } from '../../models/socket.model';
