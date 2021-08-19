@@ -15,5 +15,10 @@
     width: $input-wrapper-width;
     height: $input-wrapper-height;
   }
+}
 
+.fco-label {
+  &--error-message {
+    color: red;
+  }
 }
