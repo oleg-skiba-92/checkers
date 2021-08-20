@@ -1,19 +1,21 @@
-import { apiService } from './core';
+import { apiService, storageService } from './core';
 import { EAPIEndpoints, ILoginRequest, IRegistrationRequest, IToken, IUserInfo, IUserInfoWithToken } from '../../models';
 import { get, Writable, writable } from 'svelte/store';
-import { StorageModel } from '../models';
+import { IStorageModel } from '../models';
 
 export class UsersService {
   me$: Writable<IUserInfo>;
-  token: StorageModel;
 
   get me(): IUserInfo {
     return get(this.me$);
   }
 
+  private get token(): IStorageModel<string> {
+    return storageService.token;
+  }
+
   constructor() {
     this.me$ = writable(null);
-    this.token = new StorageModel('token', false, 'local');
   }
 
   getMe(): Promise<IUserInfo> {
@@ -56,7 +58,7 @@ export class UsersService {
       .then((res) => {
         this.token.data = res.token;
         return res;
-      })
+      });
   }
 }
 

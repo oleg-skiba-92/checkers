@@ -12,7 +12,7 @@
 
   import { gameService, playersService, usersService } from './services';
   import { EPageState } from './models';
-  import { routerService, socketService } from './services/core';
+  import { routerService, socketService, storageService } from './services/core';
   import type { INextTurns, IUserTurn } from '../models';
   import { mockAllData } from './mock-data';
 
@@ -52,7 +52,7 @@
     });
   };
 
-  if (!usersService.token.data) {
+  if (!storageService.token.data) {
     //TODO login
     usersService.loginAsGuest().then((data) => {
       initSocket(data.token);
@@ -60,7 +60,7 @@
   } else {
     usersService.getMe().then((data: any) => {
       console.log('getMe().then', data);
-      initSocket(usersService.token.data);
+      initSocket(storageService.token.data);
     });
   }
 </script>
