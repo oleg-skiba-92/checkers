@@ -17,6 +17,7 @@ export const enum EApiErrorCode {
   InvalidData = 'INVALID_DATA',
   NotFound = 'NOT_FOUND',
   Unknown = 'UNKNOWN',
+  SERVER_ERROR = 'SERVER_ERROR',
 
   NoToken = 'NO_TOKEN',
   ParseToken = 'PARSE_TOKEN',

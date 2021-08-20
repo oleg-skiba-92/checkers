@@ -1,4 +1,10 @@
-export class StorageModel {
+export interface IStorageModel<T> {
+  data: T;
+
+  remove();
+}
+
+export class StorageModel<T> implements IStorageModel<T>{
   protected _key: string;
   protected _storage: Storage;
   protected _storageType: string;
