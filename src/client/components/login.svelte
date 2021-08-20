@@ -1,28 +1,36 @@
 <script lang="ts">
 
   import Input from './common/input.svelte';
-  //import {EApiValidationError} from '../../models' // Бред
+  import {EApiValidationError, EApiErrorCode} from '../../models' // Бред
   import { usersService } from '../services';
   
   let inputValue = {
     password: '',
     email: '',
   };
+
+  let loginErrorMessage;
+
+  let qqq ={
+    [EApiValidationError.Required]: 'qwertyui'
+  }
   
-  /*// Якийсь бред
-  async function catchLoginError() {
-		const loginDate = await fetch(EApiValidationError);
-		
-		if (EApiValidationError) {
-			return "";
-		} else {
-			throw new Error('Error message!!!');
-		}
-	}
-*/
    // при натисненні на кнопку login відправляються дані
-   const loginToGame = () => {
-    usersService.login(inputValue);
+   const loginToGame = async() => {
+    try {
+      let date = await usersService.login(inputValue);
+      loginErrorMessage = "";
+      //usersService.login(inputValue);
+    }
+    catch (err) {
+      if(err && err.error === EApiErrorCode.ValidationError){
+          (err.payload || []).forEach(errorData => {
+            loginErrorMessage = errorData.error;
+            console.log('field:', errorData.field, 'err:', qqq[errorData.error]);
+          });
+      }
+      console.log("!!! Error name:", err);
+    }
   }
   //let promise = loginToGame();
   
@@ -46,8 +54,8 @@
     {/await}
     -->
 
-    <Input bind:inputValue={inputValue.email} labelText="Login" errorMessage="" inputType="text" inputName="login" inputId="user-login" inputPlaceholder="example@mail.com"/>
-
+    <Input bind:inputValue={inputValue.email} labelText="Login" errorMessage={loginErrorMessage} inputType="text" inputName="login" inputId="user-login" inputPlaceholder="example@mail.com"/>
+  
     <Input bind:inputValue={inputValue.password} labelText="Password" inputType="password" inputName="password" inputId="user-password" inputPlaceholder="******"/>
     
     <!-- Button login Registration -->
