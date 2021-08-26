@@ -1,6 +1,8 @@
 @import "./variables";
 
-.fco-login {
+//fco-modal-form
+.fco-login,
+.fco-registration {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;

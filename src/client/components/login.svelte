@@ -3,36 +3,50 @@
   import Input from './common/input.svelte';
   import {EApiValidationError, EApiErrorCode} from '../../models' // Бред
   import { usersService } from '../services';
+  import { modalService } from '../services/core';
+
+  import Registration from './registration.svelte';
+
+  let openRegistration = () => {
+    modalService.openModal(Registration);
+  };
   
   let inputValue = {
     password: '',
     email: '',
   };
 
-  let loginErrorMessage;
+  let loginErrorMessage = {
+    password: '',
+    email: '',
+  }
 
-  let qqq ={
-    [EApiValidationError.Required]: 'qwertyui'
+
+  let loginErrorAnswer = {
+    [EApiValidationError.Required]: 'This fild is required',
+    [EApiValidationError.UserNotFound]: 'User Not Found',
+    [EApiValidationError.UserExist]: 'User Exist',
+    [EApiValidationError.PasswordIncorrect]: 'Password Incorrect',
+    [EApiValidationError.InvalidPassword]: 'Invalid password'
   }
   
    // при натисненні на кнопку login відправляються дані
    const loginToGame = async() => {
+    loginErrorMessage = {
+      password: '',
+      email: '',
+    }
     try {
       let date = await usersService.login(inputValue);
-      loginErrorMessage = "";
-      //usersService.login(inputValue);
     }
     catch (err) {
-      if(err && err.error === EApiErrorCode.ValidationError){
+      if (err && err.error === EApiErrorCode.ValidationError) {
           (err.payload || []).forEach(errorData => {
-            loginErrorMessage = errorData.error;
-            console.log('field:', errorData.field, 'err:', qqq[errorData.error]);
+            loginErrorMessage[errorData.field] = loginErrorAnswer[errorData.error];
           });
       }
-      console.log("!!! Error name:", err);
     }
   }
-  //let promise = loginToGame();
   
 </script>
 
@@ -42,26 +56,41 @@
   
   <h2 class="fco-login__title">Login</h2>
   <form class="fco-login-form">
-    
-    <!-- 
-      ще одна тупость
-    {#await promise}
-    <p>хз шо це...</p>
-    {:then 'Error Message!!!'}
-    <Input bind:inputValue={inputValue.email} labelText="Login" errorMessage="" inputType="text" inputName="login" inputId="user-login" inputPlaceholder="example@mail.com"/>
-    {:catch error}
-    <Input bind:inputValue={inputValue.email} labelText="Login" errorMessage="123" inputType="text" inputName="login" inputId="user-login" inputPlaceholder="example@mail.com"/>
-    {/await}
-    -->
 
-    <Input bind:inputValue={inputValue.email} labelText="Login" errorMessage={loginErrorMessage} inputType="text" inputName="login" inputId="user-login" inputPlaceholder="example@mail.com"/>
+    <Input
+      bind:inputValue={inputValue.email}
+      labelText="Login"
+      errorMessage={loginErrorMessage.email} 
+      inputType="text" inputName="login" 
+      inputId="user-login" 
+      inputPlaceholder="example@mail.com"
+    />
   
-    <Input bind:inputValue={inputValue.password} labelText="Password" inputType="password" inputName="password" inputId="user-password" inputPlaceholder="******"/>
+    <Input 
+      bind:inputValue={inputValue.password}
+      labelText="Password"
+      errorMessage={loginErrorMessage.password}
+      inputType="password"
+      inputName="password"
+      inputId="user-password"
+      inputPlaceholder="******"
+    />
     
     <!-- Button login Registration -->
     <div class="fco-login__button-wrapper">
-      <button type="button" class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width" on:click={()=> loginToGame()}>Login</button>
-      <button class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width">Registration</button>
+      <button 
+        type="button"
+        class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width"
+        on:click={()=> loginToGame()}
+        >Login
+      </button>
+
+      <button 
+        class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width"
+        on:click={openRegistration}
+        >Registration
+      </button>
+
     </div>
   </form>
 
