@@ -49,6 +49,10 @@ export class AuthService implements IAuthService {
         return next();
       }
 
+      if(/^\/postman.*/.test(req.url)) {
+        return next();
+      }
+
       let header = req.header('Authorization');
 
       if (!header) {
@@ -79,6 +83,10 @@ export class AuthService implements IAuthService {
     // NOTE: verify token
     server.app.use('/api', async (req: IRequest, res: IResponse, next) => {
       if(req.method === 'OPTIONS') {
+        return next();
+      }
+
+      if(/^\/postman.*/.test(req.url)) {
         return next();
       }
 
