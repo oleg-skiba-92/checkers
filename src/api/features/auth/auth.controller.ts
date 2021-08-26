@@ -1,12 +1,12 @@
 import * as bcrypt from 'bcrypt-nodejs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { EApiErrorCode, EApiValidationError, IRegistrationRequest, IUserInfo } from '../../../models';
+import { EApiValidationError, IRegistrationRequest, IUserInfo } from '../../../models';
 import { authService } from './auth.service';
 import { userData } from '../user/user.data';
 import { guestData } from '../guest/guest.data';
-import { EAuthMethod, IGoogleUserInfo } from './auth.model';
-import { IUserTable } from '../user/user.model';
+import { authData } from './auth.data';
+import { EAuthMethod, IAuthTable, IGoogleUserInfo } from './auth.model';
 import { BaseController } from '../../common/controller/controller.base';
 import { IControllerRoute } from '../../common/controller/controller.model';
 import { IApiResponse } from '../../common/response/api-response.model';
@@ -14,7 +14,7 @@ import { ResponseService } from '../../common/response/response.service';
 import { IRequest } from '../../models/app.model';
 import { EAPIEndpoints } from '../../../models/api.model';
 
-class AuthController extends BaseController {
+export class AuthController extends BaseController {
   get routes(): IControllerRoute[] {
     return [
       {path: `/${this.prefix}/${EAPIEndpoints.Google}`, isFullPath: true, method: 'get', handler: this.getGoogleAuthUrl},
@@ -39,7 +39,7 @@ class AuthController extends BaseController {
     return ResponseService.redirect(authService.googleAuthUrl());
   }
 
-  private async googleCallback(data: { code: string }, req: IRequest): Promise<IApiResponse> {
+  async googleCallback(data: { code: string }, req: IRequest): Promise<IApiResponse> {
     try {
       let authUser: IGoogleUserInfo = await authService.authenticateGoogle(data.code);
       let user: IUserInfo = await this.loginWithGoggle(authUser);
@@ -53,81 +53,76 @@ class AuthController extends BaseController {
     }
   }
 
-  private async registration(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse> {
+  async registration(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse> {
     if (!data.email || !data.password || !data.userName) {
       let errors = [];
 
-      if(!data.email) {
-        errors.push({field: 'email', error: EApiValidationError.Required})
+      if (!data.email) {
+        errors.push({field: 'email', error: EApiValidationError.Required});
       }
 
-      if(!data.password) {
-        errors.push({field: 'password', error: EApiValidationError.Required})
+      if (!data.password) {
+        errors.push({field: 'password', error: EApiValidationError.Required});
       }
 
-      if(!data.userName) {
-        errors.push({field: 'userName', error: EApiValidationError.Required})
+      if (!data.userName) {
+        errors.push({field: 'userName', error: EApiValidationError.Required});
       }
 
       return ResponseService.validationError(errors);
     }
 
-    let user = await userData.getByEmail(data.email);
+    let auth = await authData.getByEmail(data.email);
 
-    if (user && user.password) {
+    if (auth && auth.password) {
       return ResponseService.validationError([{field: 'email', error: EApiValidationError.UserExist}]);
     }
 
     let pass = bcrypt.hashSync(req.body.password);
 
-    if (user) {
-      await userData.updatePassword(user.id, pass);
+    if (auth) {
+      await authData.updatePassword(auth.user_id, pass);
     } else {
-      user = await userData.createUser({
-        id: uuidv4(),
-        user_name: data.userName,
-        email: data.email,
-        password: pass
-      });
+      auth = await this.createUserProcess(data.userName, data.email, pass, null, false)
     }
 
-    let userInfo = userData.toUserInfo(user);
+    let userInfo = userData.toUserInfo(await userData.getById(auth.user_id));
     let token = authService.login(userInfo, EAuthMethod.Password);
 
     return ResponseService.successJson({user: userInfo, token});
   }
 
-  private async login(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse> {
+  async login(data: IRegistrationRequest, req: IRequest): Promise<IApiResponse> {
     if (!data.email || !data.password) {
       let errors = [];
 
-      if(!data.email) {
-        errors.push({field: 'email', error: EApiValidationError.Required})
+      if (!data.email) {
+        errors.push({field: 'email', error: EApiValidationError.Required});
       }
 
-      if(!data.password) {
-        errors.push({field: 'password', error: EApiValidationError.Required})
+      if (!data.password) {
+        errors.push({field: 'password', error: EApiValidationError.Required});
       }
 
       return ResponseService.validationError(errors);
     }
 
-    let user = await userData.getByEmail(req.body.email);
-    if (!user) {
+    let auth = await authData.getByEmail(req.body.email);
+    if (!auth) {
       return ResponseService.validationError([{field: 'email', error: EApiValidationError.UserNotFound}]);
     }
 
-    if (!user.password || !bcrypt.compareSync(req.body.password, user.password)) {
+    if (!auth.password || !bcrypt.compareSync(req.body.password, auth.password)) {
       return ResponseService.validationError([{field: 'password', error: EApiValidationError.PasswordIncorrect}]);
     }
 
-    let userInfo = userData.toUserInfo(user);
+    let userInfo = userData.toUserInfo(await userData.getById(auth.user_id));
     let token = authService.login(userInfo, EAuthMethod.Password);
 
     return ResponseService.successJson({user: userInfo, token});
   }
 
-  private async logout(data: {userId: string}, req: IRequest): Promise<IApiResponse> {
+  async logout(data: { userId: string }, req: IRequest): Promise<IApiResponse> {
     authService.logout(data.userId);
     return ResponseService.redirect('/login');
   }
@@ -143,7 +138,7 @@ class AuthController extends BaseController {
     return ResponseService.successJson({user: guest, token});
   }
 
-  private async refreshToken(data: {token: string}, req: IRequest): Promise<IApiResponse> {
+  private async refreshToken(data: { token: string }, req: IRequest): Promise<IApiResponse> {
     // return ResponseService.unauthorized();
 
     try {
@@ -153,28 +148,51 @@ class AuthController extends BaseController {
     }
   }
 
+  /**@deprecated*/
   private async loginWithGoggle(data: IGoogleUserInfo): Promise<IUserInfo> {
-    let tableUser: IUserTable = await userData.getByGoogleId(data.id);
+    // let tableUser: IUserTable = await userData.getByGoogleId(data.id);
+    //
+    // if (!tableUser && !!data.email) {
+    //   tableUser = await userData.getByEmail(data.email);
+    // }
+    //
+    // if (!tableUser) {
+    //   tableUser = await userData.createUser({
+    //     id: uuidv4(),
+    //     user_name: data.name,
+    //     google_id: data.id,
+    //     email: data.email
+    //   });
+    // }
+    //
+    // if (tableUser && tableUser.google_id !== data.id) {
+    //   tableUser.google_id = data.id;
+    //   await userData.updateGoogleId(tableUser.id, tableUser.google_id);
+    // }
+    //
+    // return userData.toUserInfo(tableUser);
+    return <any>{}
+  }
 
-    if (!tableUser && !!data.email) {
-      tableUser = await userData.getByEmail(data.email);
-    }
+  private async createUserProcess(userName: string, email: string, password: string, googleId: string, isGuest: boolean = false): Promise<IAuthTable> {
+    const id = uuidv4();
+    let auth = await authData.create({
+      user_id: id,
+      email: email || null,
+      password: password || null,
+      google_id: googleId || null
+    });
 
-    if (!tableUser) {
-      tableUser = await userData.createUser({
-        id: uuidv4(),
-        user_name: data.name,
-        google_id: data.id,
-        email: data.email
-      });
-    }
+    let user = await userData.createUser({
+      id,
+      is_guest: isGuest,
+      user_name: userName,
+      picture: null
+    });
 
-    if (tableUser && tableUser.google_id !== data.id) {
-      tableUser.google_id = data.id;
-      await userData.updateGoogleId(tableUser.id, tableUser.google_id);
-    }
+    // TODO rating
 
-    return userData.toUserInfo(tableUser);
+    return auth;
   }
 }
 

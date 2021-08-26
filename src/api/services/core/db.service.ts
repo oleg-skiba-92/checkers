@@ -1,12 +1,12 @@
 import { Client } from 'pg';
 import { ILogger, Logger } from '../../libs';
 import { IDataService, IDataTable } from '../../models/db.model';
-import { USER_DATA_TABLE } from '../../features/user/user.model';
-import { GUEST_DATA_TABLE } from '../../features/guest/guest.model';
+import { USER_TABLE } from '../../features/user/user.model';
+import { AUTH_TABLE } from '../../features/auth/auth.model';
 
 const TABLES: IDataTable[] = [
-  {...USER_DATA_TABLE},
-  {...GUEST_DATA_TABLE},
+  {...USER_TABLE},
+  {...AUTH_TABLE},
 ];
 
 class DataService implements IDataService {
@@ -21,9 +21,9 @@ class DataService implements IDataService {
         user: process.env.DB_USER,
         database: process.env.DB_NAME,
         password: process.env.DB_PASSWORD,
-        ssl: {
-          rejectUnauthorized: false
-        }
+        // ssl: {
+        //   rejectUnauthorized: false
+        // }
       });
       await this.client.connect();
     } catch (e) {
