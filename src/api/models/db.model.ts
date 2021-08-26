@@ -2,8 +2,12 @@
 import { IInitializedService } from './app.model';
 
 export enum EDataEntity {
+  Auth = 'auth',
   Users = 'users',
-  Guests = 'guests',
+  GameHistory = 'game_history',
+  HistoryPlayers = 'history_players',
+  Rating = 'rating',
+  GuestCount = 'guest_count',
 }
 
 //#endregion enums
@@ -20,6 +24,8 @@ export interface IDataTable {
 }
 
 export interface IDataService extends IInitializedService {
+  reinitDB(oldTables?: IDataTable[]): Promise<void>;
+
   getObject<T>(entity: string, key: string, value: string | number): Promise<T>;
 
   createObject<T>(entity: string, data: T): Promise<T>;

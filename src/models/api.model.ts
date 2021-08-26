@@ -11,6 +11,7 @@ export const enum EAPIEndpoints {
   LoginAsGuest = 'login-as-guest',
   Logout = 'logout',
   RefreshToken = 'token',
+  Postman = 'postman',
 }
 
 export const enum EApiErrorCode {

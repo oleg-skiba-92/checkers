@@ -42,6 +42,11 @@ class DataService implements IDataService {
     return true;
   }
 
+  async reinitDB(oldTables: IDataTable[] = []) {
+    await this.dropTables([...oldTables, ...TABLES]);
+    await this.initialiseTables(TABLES);
+  }
+
   getObject<T>(entity: string, key: string, value: string | number): Promise<T> {
     const query = `SELECT * FROM ${entity} WHERE ${key} = $1`;
 

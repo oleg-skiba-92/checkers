@@ -10,6 +10,7 @@ import { IServer } from './src/api/models/app.model';
 import { authService } from './src/api/features/auth/auth.service';
 import { AuthCtrl } from './src/api/features/auth/auth.controller';
 import { UserCtrl } from './src/api/features/user/user.controller';
+import { PostmanCtrl } from './src/api/features/postman/postman.controller';
 
 const DEFAULT_PORT = 3000;
 
@@ -73,6 +74,7 @@ export class App implements IServer {
 
     AuthCtrl.init(this);
     UserCtrl.init(this);
+    PostmanCtrl.init(this);
   }
 
   private async initServices() {
