@@ -1,5 +1,4 @@
-import { EDataEntity } from '../../models/db.model';
-
+import { EDataEntity } from '../../../models/db.model';
 
 export enum EGuestsColumns {
   Count = 'count',

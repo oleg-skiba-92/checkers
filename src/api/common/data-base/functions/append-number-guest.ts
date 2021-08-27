@@ -1,6 +1,5 @@
 import { EDataEntity, EDBFunctions } from '../../../models/db.model';
-import { EGuestsColumns } from '../../../features/guest/guest.model';
-import { EUsersColumns } from '../../../features/user/user.model';
+import { EGuestsColumns, EUsersColumns } from '../tabels';
 
 export const APPEND_NUMBER_GUEST = `
 CREATE OR REPLACE FUNCTION ${EDBFunctions.AppendNumberGuest}()

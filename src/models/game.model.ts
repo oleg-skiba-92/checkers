@@ -1,7 +1,14 @@
 //#region enums
 export enum EColor {
-  White = 'white',
-  Black = 'black'
+  White = 0,
+  Black = 1
+}
+
+export enum EGameEnds {
+  WinWhite,
+  WinBlack,
+  Draw,
+  NotEnded
 }
 
 export enum EDirections {

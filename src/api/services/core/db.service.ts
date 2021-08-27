@@ -1,16 +1,8 @@
 import { Client } from 'pg';
 import { ILogger, Logger } from '../../libs';
 import { IDataService, IDataTable } from '../../models/db.model';
-import { USER_TABLE } from '../../features/user/user.model';
-import { AUTH_TABLE } from '../../features/auth/auth.model';
-import { GUEST_COUNT_TABLE } from '../../features/guest/guest.model';
 import { DB_FUNCTIONS } from '../../common/data-base/functions';
-
-const TABLES: IDataTable[] = [
-  {...USER_TABLE},
-  {...AUTH_TABLE},
-  {...GUEST_COUNT_TABLE},
-];
+import { DB_TABLES } from '../../common/data-base/tabels';
 
 class DataService implements IDataService {
   private client: Client;
@@ -35,10 +27,10 @@ class DataService implements IDataService {
     }
 
     try {
-      // await this.dropTables(TABLES);
-      await this.initialiseTables(TABLES);
+      // await this.dropTables(DB_TABLES);
+      await this.initialiseTables(DB_TABLES);
       await this.initialiseFunctions(DB_FUNCTIONS);
-      await this.initialiseTriggers(TABLES);
+      await this.initialiseTriggers(DB_TABLES);
     } catch (e) {
       this.log.error(`Data tables initialise error: ${e.message}`, e.stack);
       return false;
@@ -48,8 +40,8 @@ class DataService implements IDataService {
   }
 
   async reinitDB(oldTables: IDataTable[] = []) {
-    await this.dropTables([...oldTables, ...TABLES]);
-    await this.initialiseTables(TABLES);
+    await this.dropTables([...oldTables, ...DB_TABLES]);
+    await this.initialiseTables(DB_TABLES);
   }
 
   getObject<T>(entity: string, key: string, value: string | number): Promise<T> {

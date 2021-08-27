@@ -1,6 +1,7 @@
-import { EAuthColumns, IAuthDataService, IAuthTable } from './auth.model';
+import { IAuthDataService, IAuthTable } from './auth.model';
 import { dataService } from '../../services/core';
 import { EDataEntity } from '../../models/db.model';
+import { EAuthColumns } from '../../common/data-base/tabels';
 
 export class AuthData implements IAuthDataService {
   private entity = EDataEntity.Auth;

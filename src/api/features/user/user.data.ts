@@ -1,7 +1,8 @@
 import { dataService } from '../../services/core';
-import { EUsersColumns, IUserDataService, IUserTable } from './user.model';
+import { IUserDataService, IUserTable } from './user.model';
 import { EDataEntity } from '../../models/db.model';
 import { IUserInfo } from '../../../models';
+import { EUsersColumns } from '../../common/data-base/tabels';
 
 class UserData implements IUserDataService {
   private entity = EDataEntity.Users;
