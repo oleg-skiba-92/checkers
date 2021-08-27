@@ -1,16 +1,12 @@
 <script lang="ts">
 
   import Input from './common/input.svelte';
-  import {EApiValidationError, EApiErrorCode} from '../../models' // Бред
+  import {EApiValidationError, EApiErrorCode} from '../../models'
   import { usersService } from '../services';
   import { modalService } from '../services/core';
 
   import Registration from './registration.svelte';
 
-  let openRegistration = () => {
-    modalService.openModal(Registration);
-  };
-  
   let inputValue = {
     password: '',
     email: '',
@@ -19,8 +15,7 @@
   let loginErrorMessage = {
     password: '',
     email: '',
-  }
-
+  };
 
   let loginErrorAnswer = {
     [EApiValidationError.Required]: 'This fild is required',
@@ -29,6 +24,10 @@
     [EApiValidationError.PasswordIncorrect]: 'Password Incorrect',
     [EApiValidationError.InvalidPassword]: 'Invalid password'
   }
+
+  let openRegistration = () => {
+    modalService.openModal(Registration);
+  };
   
    // при натисненні на кнопку login відправляються дані
    const loginToGame = async() => {
@@ -36,6 +35,7 @@
       password: '',
       email: '',
     }
+
     try {
       let date = await usersService.login(inputValue);
     }
@@ -57,6 +57,7 @@
   <h2 class="fco-login__title">Login</h2>
   <form class="fco-login-form">
 
+    <!-- Start input fields -->
     <Input
       bind:inputValue={inputValue.email}
       labelText="Login"
@@ -75,8 +76,9 @@
       inputId="user-password"
       inputPlaceholder="******"
     />
+    <!-- End input fields -->
     
-    <!-- Button login Registration -->
+    <!-- 2 Buttons: login & Registration -->
     <div class="fco-login__button-wrapper">
       <button 
         type="button"
@@ -94,6 +96,7 @@
     </div>
   </form>
 
+  <!-- Login with ... -->
   <div class="fco-login__horizontal-line-wrapper">
     <div class="fco-login__horizontal-line"></div>
       or connect with 
