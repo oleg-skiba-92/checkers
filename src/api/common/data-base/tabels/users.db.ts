@@ -21,5 +21,6 @@ export const USER_TABLE: IDataTable = {
   ],
   triggers: [
     {name: `${EDBFunctions.AppendNumberGuest}_trigger`, onType: 'BEFORE', event: 'INSERT', fnName: EDBFunctions.AppendNumberGuest},
+    {name: `${EDBFunctions.CreateRating}_trigger`, onType: 'AFTER', event: 'INSERT', fnName: EDBFunctions.CreateRating},
   ],
 };

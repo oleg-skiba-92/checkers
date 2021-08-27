@@ -12,6 +12,7 @@ export enum EDataEntity {
 
 export enum EDBFunctions {
   AppendNumberGuest = 'append_number_guest',
+  CreateRating = 'create_rating',
 }
 
 //#endregion enums
