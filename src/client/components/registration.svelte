@@ -41,7 +41,7 @@
     }
 
     try {
-      let date = await usersService.registration(inputValueRegistration);
+      let data = await usersService.registration(inputValueRegistration);
     }
     catch (err) {
       if (err && err.error === EApiErrorCode.ValidationError) {
@@ -69,7 +69,7 @@
       errorMessage={loginErrorMessage.userName} 
       inputType="text" 
       inputName="userName" 
-      inputId="user-login" 
+      inputId="user-name" 
       inputPlaceholder="example@mail.com"
     />
 
@@ -79,7 +79,7 @@
       errorMessage={loginErrorMessage.email} 
       inputType="text" 
       inputName="email" 
-      inputId="user-login" 
+      inputId="user-email" 
       inputPlaceholder="example@mail.com"
     />
 
@@ -96,16 +96,18 @@
     
     <!-- 2 Buttons: login & Registration -->
     <div class="fco-login__button-wrapper">
+      <button
+      class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width"
+      type="button"
+      on:click={()=> registrationInGame()}
+      >Registration
+    </button>
+      
       <button 
+        type="button"
         class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width"
         on:click={openLogin}
         >Login
-      </button>
-
-      <button
-        class="fco-btn fco-btn--orange fco-btn--align-center fco-btn--width"
-        on:click={()=> registrationInGame()}
-        >Registration
       </button>
     </div>
   </form>
