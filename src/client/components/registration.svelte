@@ -7,13 +7,13 @@
   import { usersService } from '../services';
 
   let inputValueRegistration = {
-    name: '',
+    userName: '',
     password: '',
     email: '',
   };
 
   let loginErrorMessage = {
-    name: '',
+    userName: '',
     password: '',
     email: '',
   };
@@ -35,7 +35,7 @@
    // при натисненні на кнопку Registration відправляються дані
    const registrationInGame = async() => {
     loginErrorMessage = {
-      name: '',
+      userName: '',
       password: '',
       email: '',
     }
@@ -64,9 +64,9 @@
     
     <!-- Start input fields -->
     <Input
-      bind:inputValue={inputValueRegistration.name}
+      bind:inputValue={inputValueRegistration.userName}
       labelText="User name"
-      errorMessage={loginErrorMessage.name} 
+      errorMessage={loginErrorMessage.userName} 
       inputType="text" 
       inputName="userName" 
       inputId="user-login" 
