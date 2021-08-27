@@ -38,6 +38,7 @@
 
     try {
       let date = await usersService.login(inputValue);
+      modalService.closeActiveModal();
     }
     catch (err) {
       if (err && err.error === EApiErrorCode.ValidationError) {

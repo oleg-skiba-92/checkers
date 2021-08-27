@@ -42,6 +42,7 @@
 
     try {
       let data = await usersService.registration(inputValueRegistration);
+      modalService.closeActiveModal();
     }
     catch (err) {
       if (err && err.error === EApiErrorCode.ValidationError) {
