@@ -1,5 +1,5 @@
 import { EColor, IPlayer, IUserInfo } from '../../../models';
-import { EDataEntity, IDataTable } from '../../models/db.model';
+import { EDataEntity, EDBFunctions, IDataTable } from '../../models/db.model';
 
 export enum EUsersColumns {
   ID = 'id',
@@ -19,7 +19,10 @@ export const USER_TABLE: IDataTable = {
     {name: EUsersColumns.DateCreated, type: 'VARCHAR(50)', keys: ['DEFAULT NOW()']},
     {name: EUsersColumns.LastVisited, type: 'VARCHAR(50)', keys: ['DEFAULT NOW()']},
     {name: EUsersColumns.isGuest, type: 'BOOLEAN', keys: ['DEFAULT false']},
-  ]
+  ],
+  triggers: [
+    {name: `${EDBFunctions.AppendNumberGuest}_trigger`, onType: 'BEFORE', event: 'INSERT', fnName: EDBFunctions.AppendNumberGuest},
+  ],
 };
 
 export interface IUserTable {

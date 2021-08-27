@@ -5,8 +5,7 @@ import { IRequest } from '../../models/app.model';
 import { BaseController } from '../../common/controller/controller.base';
 import { ResponseService } from '../../common/response/response.service';
 import { IUserInfo, EAPIEndpoints } from '../../../models';
-import { guestData } from '../guest/guest.data';
-import { EAuthMethod, IAuthData } from '../auth/auth.model';
+import { IAuthData } from '../auth/auth.model';
 
 class UserController extends BaseController {
   get routes(): IControllerRoute[] {
@@ -20,35 +19,19 @@ class UserController extends BaseController {
   }
 
   async userDisconnected(authData: IAuthData): Promise<void> {
-    if (authData.loginMethod === EAuthMethod.Guest) {
-      await guestData.updateLastVisited(authData.userId);
-    } else {
-      await userData.updateLastVisited(authData.userId);
-    }
+    await userData.updateLastVisited(authData.userId);
   }
 
   async getMe(data, req: IRequest): Promise<IApiResponse> {
     let user: IUserInfo;
 
     try {
-      if (!!req.isLoggedIn) {
-        user = await this.getAuthorisedData(req.authData.userId);
-      } else {
-        user = await this.getUnauthorisedData(req.authData.userId);
-      }
+      user = await userData.toUserInfo(await userData.getById(req.authData.userId));
     } catch (e) {
       return ResponseService.unauthorized();
     }
 
     return ResponseService.successJson(user);
-  }
-
-  private async getAuthorisedData(userId: string): Promise<IUserInfo> {
-    return userData.toUserInfo(await userData.getById(userId));
-  }
-
-  private async getUnauthorisedData(userId: string): Promise<IUserInfo> {
-    return guestData.toUserInfo(await guestData.getById(userId));
   }
 }
 

@@ -3,10 +3,13 @@ import { ILogger, Logger } from '../../libs';
 import { IDataService, IDataTable } from '../../models/db.model';
 import { USER_TABLE } from '../../features/user/user.model';
 import { AUTH_TABLE } from '../../features/auth/auth.model';
+import { GUEST_COUNT_TABLE } from '../../features/guest/guest.model';
+import { DB_FUNCTIONS } from '../../common/data-base/functions';
 
 const TABLES: IDataTable[] = [
   {...USER_TABLE},
   {...AUTH_TABLE},
+  {...GUEST_COUNT_TABLE},
 ];
 
 class DataService implements IDataService {
@@ -34,6 +37,8 @@ class DataService implements IDataService {
     try {
       // await this.dropTables(TABLES);
       await this.initialiseTables(TABLES);
+      await this.initialiseFunctions(DB_FUNCTIONS);
+      await this.initialiseTriggers(TABLES);
     } catch (e) {
       this.log.error(`Data tables initialise error: ${e.message}`, e.stack);
       return false;
@@ -86,6 +91,27 @@ class DataService implements IDataService {
       const query = `CREATE TABLE IF NOT EXISTS ${table.name} (${cols.join(', ')});`;
       return this.client.query(query);
     }));
+  }
+
+  private initialiseFunctions(functions: string[]): Promise<any[]> {
+    return Promise.all(functions.map((fn) => this.client.query(fn)));
+  }
+
+  private initialiseTriggers(tables: IDataTable[]): Promise<any[]> {
+    let q = tables.reduce((qqq, table) => {
+      return [...qqq, ...(table.triggers || []).map((trigger) => {
+        const query = `
+DROP TRIGGER IF EXISTS ${trigger.name} ON ${table.name};
+CREATE TRIGGER ${trigger.name}
+${trigger.onType} ${trigger.event} ON  ${table.name}
+FOR EACH ROW
+EXECUTE PROCEDURE ${trigger.fnName}();
+      `;
+        return this.client.query(query);
+      })];
+    }, []);
+
+    return Promise.all(q);
   }
 
   private dropTables(tables: IDataTable[]): Promise<any> {

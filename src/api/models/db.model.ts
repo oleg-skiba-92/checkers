@@ -10,6 +10,10 @@ export enum EDataEntity {
   GuestCount = 'guest_count',
 }
 
+export enum EDBFunctions {
+  AppendNumberGuest = 'append_number_guest',
+}
+
 //#endregion enums
 //#region interfaces
 export interface IColTable {
@@ -21,6 +25,14 @@ export interface IColTable {
 export interface IDataTable {
   name: string;
   cols: IColTable[];
+  triggers?: IDBTrigger[];
+}
+
+export interface IDBTrigger {
+  name: string;
+  onType: 'BEFORE' | 'AFTER';
+  event: 'INSERT' | 'UPDATE' | 'DELETE' | 'TRUNCATE';
+  fnName: EDBFunctions,
 }
 
 export interface IDataService extends IInitializedService {

@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { EApiValidationError, IRegistrationRequest, IUserInfo } from '../../../models';
 import { authService } from './auth.service';
 import { userData } from '../user/user.data';
-import { guestData } from '../guest/guest.data';
 import { authData } from './auth.data';
-import { EAuthMethod, IAuthTable, IGoogleUserInfo } from './auth.model';
+import { EAuthMethod, IGoogleUserInfo } from './auth.model';
 import { BaseController } from '../../common/controller/controller.base';
 import { IControllerRoute } from '../../common/controller/controller.model';
 import { IApiResponse } from '../../common/response/api-response.model';
@@ -35,7 +34,7 @@ export class AuthController extends BaseController {
     return EAPIEndpoints.Auth;
   }
 
-  private async getGoogleAuthUrl(): Promise<IApiResponse> {
+  async getGoogleAuthUrl(): Promise<IApiResponse> {
     return ResponseService.redirect(authService.googleAuthUrl());
   }
 
@@ -83,7 +82,14 @@ export class AuthController extends BaseController {
     if (auth) {
       await authData.updatePassword(auth.user_id, pass);
     } else {
-      auth = await this.createUserProcess(data.userName, data.email, pass, null, false)
+      auth = await authData.create({
+        user_id: uuidv4(),
+        email: data.email,
+        password: pass,
+        google_id: null
+      });
+
+      await this.createUserProcess(auth.user_id, data.userName, false);
     }
 
     let userInfo = userData.toUserInfo(await userData.getById(auth.user_id));
@@ -127,15 +133,15 @@ export class AuthController extends BaseController {
     return ResponseService.redirect('/login');
   }
 
-  private async loginAsGuest(data, req: IRequest): Promise<IApiResponse> {
-    let guest = guestData.toUserInfo(await guestData.create({
-      id: uuidv4(),
-      user_name: 'Guest'
-    }));
+  async loginAsGuest(data, req: IRequest): Promise<IApiResponse> {
+    let id = uuidv4();
 
-    let token = authService.login(guest, EAuthMethod.Guest);
+    await this.createUserProcess(id, 'Guest', true);
 
-    return ResponseService.successJson({user: guest, token});
+    let userInfo = userData.toUserInfo(await userData.getById(id));
+    let token = authService.login(userInfo, EAuthMethod.Guest);
+
+    return ResponseService.successJson({user: userInfo, token});
   }
 
   private async refreshToken(data: { token: string }, req: IRequest): Promise<IApiResponse> {
@@ -171,18 +177,10 @@ export class AuthController extends BaseController {
     // }
     //
     // return userData.toUserInfo(tableUser);
-    return <any>{}
+    return <any>{};
   }
 
-  private async createUserProcess(userName: string, email: string, password: string, googleId: string, isGuest: boolean = false): Promise<IAuthTable> {
-    const id = uuidv4();
-    let auth = await authData.create({
-      user_id: id,
-      email: email || null,
-      password: password || null,
-      google_id: googleId || null
-    });
-
+  private async createUserProcess(id: string, userName: string, isGuest: boolean = false): Promise<any> {
     let user = await userData.createUser({
       id,
       is_guest: isGuest,
@@ -192,7 +190,7 @@ export class AuthController extends BaseController {
 
     // TODO rating
 
-    return auth;
+    return user;
   }
 }
 
